@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>求人を自動検索中... | 松山市ハローワーク案内</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f4f7f8; }
+        .loader-container { text-align: center; }
+        .loader { border: 8px solid #f3f3f3; border-top: 8px solid #005bac; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        p { color: #005bac; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="loader-container">
+        <div class="loader"></div>
+        <p id="status-text">エリアの求人を検索しています...</p>
+    </div>
+
+    <form id="hw-form" method="POST" action="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do">
+        <input type="hidden" name="formName" value="GECA110010Form">
+        <input type="hidden" name="tikuCd" value="38201"> <input type="hidden" id="hw-freeword" name="freeWord" value="">
+        </form>
+
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script>
+        const areaData = {
+            "east": "番町　東雲　八坂　素鵞　桑原　道後　一番町　二番町　三番町　大街道　千舟町　湊町　花園町　持田町　平和通　道後　湯之町　石手",
+            "west": "新玉　雄郡　味酒　清水　大手町　南江戸　竹原　小栗　土居田　宮西　萱町　本町　清水町　山越　衣山",
+            "north": "潮見　久枝　和気　堀江　吉藤　谷町　平田町　久万ノ台　問屋町　西長戸　東長戸　和気町　太山寺町　堀江町",
+            "south": "石井　浮穴　荏原　坂本　東石井　西石井　居相　古川　はなみずき　和泉　今在家　北土居　天山　森松町",
+            "joto": "湯山　日浦　五明　伊台　小野　久米　平井町　鷹子町　来住町　北久米町　南久米町　福音寺町　梅本町　湯の山",
+            "josai": "三津浜　宮前　高浜　味生　生石　垣生　余土　三津　住吉　高浜町　北吉田町　南吉田町　空港通　斎院町　余戸　保免",
+            "hojo": "浅海　立岩　難波　正岡　北条　河野　粟井　北条辻　土手内　柳原　中西　下難波　上難波　光洋台",
+            "island": "泊　由良　睦野　東中島　西中島　神和　由良町　泊町　睦月　中島大浦　津和地　怒和"
+        };
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const areaKey = urlParams.get('area') || 'east';
+
+        liff.init({ liffId: "YOUR_LIFF_ID" }).then(() => {
+            if (!liff.isLoggedIn()) {
+                liff.login();
+            } else {
+                // キーワードをセットしてフォームを自動送信
+                document.getElementById('hw-freeword').value = areaData[areaKey];
+                document.getElementById('hw-form').submit();
+            }
+        }).catch((err) => {
+            console.error('LIFF初期化エラー', err);
+            document.getElementById('status-text').innerText = "エラーが発生しました。もう一度やり直してください。";
+        });
+    </script>
+</body>
+</html>
