@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>プライバシーポリシー | ハローワーク松山 エリア検索支援</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; color: #333; background-color: #f4f7f8; margin: 0; padding: 20px; }
+        .container { max-width: 700px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        h1 { font-size: 1.4rem; color: #005bac; border-bottom: 2px solid #005bac; padding-bottom: 10px; margin-bottom: 25px; }
+        h2 { font-size: 1.1rem; color: #005bac; margin-top: 25px; border-left: 4px solid #005bac; padding-left: 10px; }
+        p, li { font-size: 0.95rem; }
+        ul { padding-left: 20px; }
+        .contact-box { background: #eef6ff; padding: 15px; border-radius: 8px; margin-top: 30px; border: 1px solid #d0e3f7; }
+        .footer-note { text-align: center; font-size: 0.8rem; color: #999; margin-top: 30px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>プライバシーポリシー</h1>
+    <p>ハローワーク松山市（以下「当所」）が提供するLINE公式アカウント内での求人検索支援サービス（以下「本サービス」）における、利用者の情報の取り扱いについて以下の通り定めます。</p>
+
+    <h2>1. 取得する情報</h2>
+    <ul>
+        <li><strong>LINEユーザーID：</strong> 利用者の識別および適切なサービスの提供のため。</li>
+        <li><strong>プロフィール情報：</strong> LINE上の表示名など（アプリ初期化に利用）。</li>
+        <li><strong>利用履歴：</strong> 選択されたエリア情報、ボタンのタップ履歴（サービス改善および統計分析のため）。</li>
+    </ul>
+
+    <h2>2. 利用目的</h2>
+    <ul>
+        <li>利用者が希望するエリア条件に基づき、ハローワークインターネットサービスの検索結果へ正しく誘導するため。</li>
+        <li>サービスの利用状況を分析し、利便性の向上やコンテンツの改善を行うため。</li>
+    </ul>
+
+    <h2>3. データの取り扱いと外部送信</h2>
+    <p>本サービスでは、利用者が選択したエリアに応じた「検索キーワード（地名等）」および「自治体コード」を、厚生労働省が運営する「ハローワークインターネットサービス」に対して送信します。</p>
+    <p>※LINE上の個人名やユーザーIDがハローワークインターネットサービス側に提供されることはありません。</p>
+
+    <h2>4. 第三者提供の禁止</h2>
+    <p>当所は、法令に基づく場合を除き、利用者の同意なく取得した情報を第三者に提供することはありません。</p>
+
+    <h2>5. 安全管理</h2>
+    <p>当所は、取得した情報の漏洩、紛失の防止に向け、適切なセキュリティ対策を講じ、厳重に管理します。</p>
+
+    <div class="contact-box">
+        <strong>【お問い合わせ先】</strong><br>
+        ハローワーク松山市（松山公共職業安定所）<br>
+        電話：[ここに電話番号を記載してください]<br>
+        受付時間：[開庁時間を記載してください]
+    </div>
+</div>
+
+<div class="footer-note">
+    &copy; 2026 ハローワーク松山市 エリア検索支援
+</div>
+
+</body>
+</html>
