@@ -40,7 +40,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const areaKey = urlParams.get('area') || 'east';
 
-        liff.init({ liffId: "2008861133-K7MEPuXN"}).then(() => {
+        liff.init({liffId:"2008861133-K7MEPuXN"}).then(() => {
             if (!liff.isLoggedIn()) {
                 liff.login();
             } else {
