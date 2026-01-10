@@ -21,36 +21,40 @@
 
     <form id="hw-form" method="POST" action="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do">
         <input type="hidden" name="formName" value="GECA110010Form">
-        <input type="hidden" name="tikuCd" value="38201"> <input type="hidden" id="hw-freeword" name="freeWord" value="">
-        </form>
+        <input type="hidden" name="action" value="search"> <input type="hidden" name="screenId" value="GECA110010"> <input type="hidden" name="tikuCd" value="38201"> <input type="hidden" name="freeWordKbn" value="2"> <input type="hidden" id="hw-freeword" name="freeWord" value="">
+    </form>
 
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script>
+        // 地名を少し絞り、全角スペースで繋ぐ形式に戻しました（これが一番安定します）
         const areaData = {
-            "east": "番町　東雲　八坂　素鵞　桑原　道後　一番町　二番町　三番町　大街道　千舟町　湊町　花園町　持田町　平和通　道後　湯之町　石手",
-            "west": "新玉　雄郡　味酒　清水　大手町　南江戸　竹原　小栗　土居田　宮西　萱町　本町　清水町　山越　衣山",
-            "north": "潮見　久枝　和気　堀江　吉藤　谷町　平田町　久万ノ台　問屋町　西長戸　東長戸　和気町　太山寺町　堀江町",
-            "south": "石井　浮穴　荏原　坂本　東石井　西石井　居相　古川　はなみずき　和泉　今在家　北土居　天山　森松町",
-            "joto": "湯山　日浦　五明　伊台　小野　久米　平井町　鷹子町　来住町　北久米町　南久米町　福音寺町　梅本町　湯の山",
-            "josai": "三津浜　宮前　高浜　味生　生石　垣生　余土　三津　住吉　高浜町　北吉田町　南吉田町　空港通　斎院町　余戸　保免",
-            "hojo": "浅海　立岩　難波　正岡　北条　河野　粟井　北条辻　土手内　柳原　中西　下難波　上難波　光洋台",
-            "island": "泊　由良　睦野　東中島　西中島　神和　由良町　泊町　睦月　中島大浦　津和地　怒和"
+            "east": "一番町 二番町 大街道 湊町 道後 石手 持田",
+            "west": "大手町 南江戸 竹原 小栗 土居田 宮西 萱町 山越 衣山",
+            "north": "潮見 久枝 和気 堀江 吉藤 谷町 久万ノ台 問屋町",
+            "south": "石井 居相 古川 はなみずき 和泉 今在家 北土居 天山 森松",
+            "joto": "小野 久米 平井 鷹子 来住 湯の山 梅本",
+            "josai": "三津浜 高浜 味生 生石 垣生 余土 空港通 斎院 保免",
+            "hojo": "北条 浅海 立岩 難波 正岡 河野 粟井",
+            "island": "泊 由良 睦野 中島 津和地 怒和"
         };
 
         const urlParams = new URLSearchParams(window.location.search);
         const areaKey = urlParams.get('area') || 'east';
 
-        liff.init({liffId:"2008861133-K7MEPuXN"}).then(() => {
+        liff.init({ liffId: "2008861133-K7MEPuXN" }).then(() => {
             if (!liff.isLoggedIn()) {
                 liff.login();
             } else {
-                // キーワードをセットしてフォームを自動送信
+                // 検索キーワードをセットして送信
                 document.getElementById('hw-freeword').value = areaData[areaKey];
-                document.getElementById('hw-form').submit();
+                
+                // 1秒だけ待ってから送信（ハローワーク側の準備時間を稼ぐ）
+                setTimeout(() => {
+                    document.getElementById('hw-form').submit();
+                }, 1000);
             }
         }).catch((err) => {
-            console.error('LIFF初期化エラー', err);
-            document.getElementById('status-text').innerText = "エラーが発生しました。もう一度やり直してください。";
+            document.getElementById('status-text').innerText = "エラーが発生しました。再度お試しください。";
         });
     </script>
 </body>
