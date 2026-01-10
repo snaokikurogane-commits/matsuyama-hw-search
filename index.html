@@ -3,59 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>求人を自動検索中... | 松山市ハローワーク案内</title>
+    <title>松山市 求人検索</title>
     <style>
         body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f4f7f8; }
-        .loader-container { text-align: center; }
-        .loader { border: 8px solid #f3f3f3; border-top: 8px solid #005bac; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        p { color: #005bac; font-weight: bold; }
+        .card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; width: 85%; max-width: 400px; }
+        .area-badge { background: #005bac; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; margin-bottom: 10px; display: inline-block; }
+        h1 { font-size: 1.3rem; color: #333; margin: 10px 0 25px; }
+        .search-btn { display: block; background: #ff9800; color: white; padding: 18px; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 1.1rem; border: none; width: 100%; cursor: pointer; box-shadow: 0 4px 0 #e68a00; }
+        .search-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #e68a00; }
+        p { font-size: 0.8rem; color: #666; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="loader-container">
-        <div class="loader"></div>
-        <p id="status-text">エリアの求人を検索しています...</p>
-    </div>
+<div class="card">
+    <div class="area-badge" id="area-label">松山市</div>
+    <h1 id="title">エリア求人を検索</h1>
 
     <form id="hw-form" method="POST" action="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do">
         <input type="hidden" name="formName" value="GECA110010Form">
-        <input type="hidden" name="action" value="search"> <input type="hidden" name="screenId" value="GECA110010"> <input type="hidden" name="tikuCd" value="38201"> <input type="hidden" name="freeWordKbn" value="2"> <input type="hidden" id="hw-freeword" name="freeWord" value="">
+        <input type="hidden" name="todofuken" value="38">
+        <input type="hidden" name="tikuCd" value="38201">
+        <input type="hidden" name="freeWordKbn" value="2">
+        <input type="hidden" id="hw-freeword" name="freeWord" value="">
+        
+        <button type="submit" class="search-btn">🔍 このエリアの求人を見る</button>
     </form>
 
-    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    <script>
-        // 地名を少し絞り、全角スペースで繋ぐ形式に戻しました（これが一番安定します）
-        const areaData = {
-            "east": "一番町 二番町 大街道 湊町 道後 石手 持田",
-            "west": "大手町 南江戸 竹原 小栗 土居田 宮西 萱町 山越 衣山",
-            "north": "潮見 久枝 和気 堀江 吉藤 谷町 久万ノ台 問屋町",
-            "south": "石井 居相 古川 はなみずき 和泉 今在家 北土居 天山 森松",
-            "joto": "小野 久米 平井 鷹子 来住 湯の山 梅本",
-            "josai": "三津浜 高浜 味生 生石 垣生 余土 空港通 斎院 保免",
-            "hojo": "北条 浅海 立岩 難波 正岡 河野 粟井",
-            "island": "泊 由良 睦野 中島 津和地 怒和"
-        };
+    <p>※ハローワーク公式サイトへ移動します</p>
+</div>
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const areaKey = urlParams.get('area') || 'east';
+<script>
+    const areaData = {
+        "east": { name: "中心部東", words: "一番町 二番町 大街道 湊町 道後 石手 持田" },
+        "west": { name: "中心部西", words: "大手町 南江戸 竹原 小栗 土居田 宮西 萱町 山越 衣山" },
+        "north": { name: "城北", words: "潮見 久枝 和気 堀江 吉藤 谷町 久万ノ台 問屋町" },
+        "south": { name: "城南", words: "石井 居相 古川 はなみずき 和泉 今在家 北土居 天山 森松" },
+        "joto": { name: "城東", words: "小野 久米 平井 鷹子 来住 湯の山 梅本" },
+        "josai": { name: "城西", words: "三津浜 高浜 味生 生石 垣生 余土 空港通 斎院 保免" },
+        "hojo": { name: "北条", words: "北条 浅海 立岩 難波 正岡 河野 粟井" },
+        "island": { name: "忽那諸島", words: "泊 由良 睦野 中島 津和地 怒和" }
+    };
 
-        liff.init({ liffId: "2008861133-K7MEPuXN" }).then(() => {
-            if (!liff.isLoggedIn()) {
-                liff.login();
-            } else {
-                // 検索キーワードをセットして送信
-                document.getElementById('hw-freeword').value = areaData[areaKey];
-                
-                // 1秒だけ待ってから送信（ハローワーク側の準備時間を稼ぐ）
-                setTimeout(() => {
-                    document.getElementById('hw-form').submit();
-                }, 1000);
-            }
-        }).catch((err) => {
-            document.getElementById('status-text').innerText = "エラーが発生しました。再度お試しください。";
-        });
-    </script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const areaKey = urlParams.get('area') || 'east';
+    const current = areaData[areaKey];
+
+    // 画面の文字を書き換え
+    document.getElementById('area-label').innerText = "松山市 " + current.name;
+    document.getElementById('hw-freeword').value = current.words;
+</script>
+
 </body>
 </html>
