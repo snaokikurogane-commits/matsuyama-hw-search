@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>かんたん求人検索 | ハローワーク松山</title>
+  <style type="text/css">
+    /* 全体設定 [cite: 3-5] */
+    div { font-family: 'Noto Sans JP', sans-serif; font-size: 16px; }
+    #wrapper { max-width: 600px; margin: 0 auto; padding: 10px 10px 80px 10px; box-sizing: border-box; }
+    .tytle { margin: 10px 0; padding: 3px 0 3px 10px; color: #008000 !important; border-left: 15px #008000 solid; font-size: 18pt; } [cite: 6-7]
+    .section { margin-top: 1.5em; font-weight: bold; margin-bottom: 0.5em; } [cite: 9]
+
+    /* 地区選択ボタン（新規追加） */
+    .areaSelect { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+    .areaSelect .button {
+      flex: 1 1 calc(50% - 10px); background-color: #ffffff; color: #008000 !important;
+      border: 2px solid rgba(89, 179, 0, 0.94); border-radius: 8px; padding: 12px 5px;
+      text-align: center; text-decoration: none !important; font-weight: bold; font-size: 15px; box-sizing: border-box;
+    }
+    .areaSelect .button:active { background-color: rgba(89, 179, 0, 0.94); color: #ffffff !important; }
+
+    /* 各種選択肢の共通デザイン [cite: 13-16, 25-28] */
+    .sikuArea, .ippanArea, .newArea, .jyoukenArea, .freeArea, .gyoushuArea, .jobArea { display: block; }
+    input[type="checkbox"], input[type="radio"] { display: none; }
+    input[type="checkbox"]+label, input[type="radio"]+label {
+      display: inline-block; padding: 5px 10px; margin: 3px 2px; font-size: 18px; font-weight: bold;
+      border: 2px solid rgba(89, 179, 0, 0.94); border-radius: 5px; background: #ffffff; cursor: pointer;
+    }
+    input[type="checkbox"]:checked+label, input[type="radio"]:checked+label { background: rgba(89, 179, 0, 0.94); }
+
+    /* セレクトボックスと入力欄 [cite: 46, 75] */
+    select, .textarea { width: 100%; padding: 0.8em; box-sizing: border-box; border: 2px solid #ccc; font-size: 16px; margin-top: 5px; }
+    .selectbox { margin-bottom: 1em; }
+    #FreeWord { display: none; margin-top: 10px; padding: 10px; background: #f9f9f9; border-radius: 5px; } [cite: 44]
+
+    /* 検索ボタン [cite: 59-60] */
+    .searchbutton {
+      display: block; width: 100%; padding: 15px; background-color: #008000; color: #ffffff !important;
+      text-align: center; text-decoration: none; font-size: 22px; font-weight: bold; border-radius: 10px; margin: 30px 0;
+    }
+
+    /* 応募方法セクション [cite: 62-71] */
+    .l_app { background-color: #f0fff0; padding: 10px; border-radius: 5px; }
+    .app { display: none; list-style: none; padding: 10px; background: white; border: 1px solid #ddd; font-size: 14px; }
+    #app_open:checked ~ .app { display: block; }
+  </style>
+
+  <script type="text/javascript">
+    /* 1. 地区別キーワードの定義 */
+    const areaData = {
+      "east": "一番町 二番町 大街道 湊町 道後 石手",
+      "west": "大手町 南江戸 竹原 小栗 土居田 宮西",
+      "north": "潮見 久枝 和気 堀江 吉藤 谷町",
+      "south": "石井 居相 古川 はなみずき 和泉 森松",
+      "joto": "小野 久米 平井 鷹子 来住 湯の山",
+      "josai": "三津浜 高浜 味生 生石 垣生 空港通",
+      "hojo": "北条 浅海 立岩 難波 泊 由良 中島"
+    };
+
+    /* 2. URLパラメータによる自動セット */
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const areaKey = params.get('area');
+      if (areaKey && areaData[areaKey]) {
+        document.getElementById('u5').checked = true; // 「キーワード入力」を選択
+        checkradio('block');
+        document.getElementById('FreeW').value = areaData[areaKey];
+      }
+    });
+
+    /* 3. 表示切り替えロジック [cite: 93-97] */
+    function checkradio(disp) { document.getElementById('FreeWord').style.display = disp; }
+    function formSwitch() {
+      const ippan = document.ippan.radio1;
+      document.getElementById('selectbox1').style.display = (ippan[1].checked || ippan[2].checked) ? "block" : "none";
+      document.getElementById('selectbox2').style.display = ippan[3].checked ? "block" : "none";
+    }
+
+    /* 4. 検索URL生成ロジック [cite: 76-92] */
+    function Search() {
+      let params = "&siku1Hidden=38201"; // 松山市(38201)に固定
+      
+      // 各種選択値の取得
+      const getVal = (formName) => {
+        let val = "";
+        const elements = document.forms[formName].elements;
+        for(let i=0; i<elements.length; i++) { if(elements[i].checked) val += elements[i].value; }
+        return val;
+      };
+
+      params += getVal('ippan') + getVal('newArri') + getVal('Job') + getVal('jyouken') + getVal('gyoushu');
+      
+      // キーワード処理 [cite: 88]
+      const freeWord = encodeURIComponent(document.getElementById("FreeW").value);
+      if(document.getElementById('u5').checked) params += "&freeWordInput=" + freeWord;
+      else params += getVal('Free');
+
+      // 賃金 [cite: 91]
+      params += "&gkkyIn=" + document.forms['gkkyIn'].gkky.value;
+      params += "&jikyIn=" + document.forms['jikyIn'].jiky.value;
+
+      // 求職番号 [cite: 107]
+      params += "&kSNoJo=" + document.forms['ksjo'].form0.value;
+      params += "&kSNoGe=" + document.forms['ksge'].form1.value;
+
+      const finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchBtn&initDisp&screenId=GECA110010&searchClear=1&kjKbnRadioBtn=1" + params;
+      window.open(finalUrl, '_blank');
+    }
+  </script>
+</head>
+
+<body>
+<div id="wrapper">
+  <h1 class="tytle">かんたん求人検索</h1>
+  <p><strong>ハローワーク松山</strong>管轄の求人を、希望の条件で簡単に検索できます。</p>
+
+  <div class="section">1. 地区を選択してください（キーワードが自動セットされます）</div>
+  <div class="areaSelect">
+    <a href="?area=east" class="button">城東・中央</a>
+    <a href="?area=west" class="button">城西・中央</a>
+    <a href="?area=north" class="button">城北</a>
+    <a href="?area=south" class="button">城南</a>
+    <a href="?area=joto" class="button">久米・小野</a>
+    <a href="?area=josai" class="button">三津・垣生</a>
+    <a href="?area=hojo" class="button">北条・島しょ</a>
+  </div>
+
+  <div class="section">2. 求人区分</div>
+  <div class="ippanArea">
+    <form name="ippan">
+      <input checked="checked" id="s4" name="radio1" onclick="formSwitch()" type="radio" value="" /><label for="s4">限定しない</label>
+      <input id="s1" name="radio1" onclick="formSwitch()" type="radio" value="&ippanCKBox=1&koyoFltmCKBox=1" /><label for="s1">正社員</label>
+      <input id="s3" name="radio1" onclick="formSwitch()" type="radio" value="&ippanCKBox=2" /><label for="s3">パート</label>
+    </form>
+  </div>
+
+  <div id="selectbox1" class="selectbox" style="display:none;">
+    <form name="gkkyIn">月給：<select name="gkky"><option value="">指定しない</option><option value="150000&tatZngyCKBox=1">15万円以上</option><option value="200000&tatZngyCKBox=1">20万円以上</option></select></form>
+  </div>
+  <div id="selectbox2" class="selectbox" style="display:none;">
+    <form name="jikyIn">時給：<select name="jiky"><option value="">指定しない</option><option value="1000">1,000円以上</option><option value="1200">1,200円以上</option></select></form>
+  </div>
+
+  <div class="section">3. こだわり条件</div>
+  <div class="jyoukenArea">
+    <form name="jyouken">
+      <input id="w1" name="j1" type="checkbox" value="&grkiFumonCKBox=1" /><label for="w1">学歴不問</label>
+      <input id="w4" name="j1" type="checkbox" value="&holidayCKBox=6,7,8" /><label for="w4">土日祝休み</label>
+    </form>
+  </div>
+
+  <div class="section">4. 特定の求人・キーワード [cite: 103-105]</div>
+  <div class="freeArea">
+    <form name="Free">
+      <input id="u4" name="radio3" onclick="checkradio('none');" type="radio" value="" checked /><label for="u4">選択なし</label>
+      <input id="u2" name="radio3" onclick="checkradio('none');" type="radio" value="&freeWordInput=%E5%AD%90%E8%82%B2%E3%81%A6%E6%94%AF%E6%8F%B4%E6%B1%82%E4%BA%BA" /><label for="u2">子育て支援</label>
+      <input id="u5" name="radio3" onclick="checkradio('block');" type="radio" value="manual" /><label for="u5">キーワード入力</label>
+    </form>
+  </div>
+  <div id="FreeWord">
+    <input class="textarea" id="FreeW" placeholder="町名などがここに入ります" type="text" />
+  </div>
+
+  <a class="searchbutton" href="javascript:void(0);" onclick="Search()">この条件で検索する</a>
+
+  <div class="l_app">
+    <input id="app_open" type="checkbox" />
+    <label for="app_open" style="cursor:pointer; font-weight:bold;">▼ 応募方法・お問い合わせ先</label>
+    <div class="app">
+      <p>ハローワーク松山 連絡先：<strong>089-941-8609</strong></p>
+      <ul>
+        <li>1. マイページ登録</li>
+        <li>2. 求職情報の登録</li>
+        <li>3. 紹介状の受け取り</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</body>
+</html>
