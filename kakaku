@@ -33,7 +33,7 @@
     </div>
 
     <script>
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwae6RVl-hFhNrREZXNwdEwNmzfKVkoQKOr1g_Z_2JrWuNI0HnO2VGt84F5629636U/exec";
+        const GAS_URL = "あなたのGASウェブアプリURL";
 
         function startScan() {
             const scanner = new Html5Qrcode("reader");
