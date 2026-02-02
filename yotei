@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>山西町ライフ・アプリ</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+        body { font-family: -apple-system, sans-serif; background: #f0f2f5; margin: 0; padding: 0; padding-bottom: 80px; }
+        .container { padding: 15px; display: none; }
+        .active { display: block; }
+        
+        /* カードスタイル */
+        .box { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        
+        /* 入力フォーム */
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 15px; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-blue { background: #007aff; color: white; }
+        .btn-green { background: #34c759; color: white; }
+        
+        /* バーコードカメラ */
+        #reader { width: 100%; border-radius: 10px; overflow: hidden; margin-bottom: 15px; background: #000; }
+        
+        /* 下部ナビゲーションタブ */
+        .nav-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: white; border-top: 1px solid #ddd;
+            display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        .nav-item { text-align: center; color: #888; font-size: 12px; cursor: pointer; width: 50%; }
+        .nav-item.active-tab { color: #007aff; font-weight: bold; }
+        .nav-icon { font-size: 24px; display: block; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+    <div id="tab-shopping" class="container active">
+        <div class="box">
+            <h3>🛒 底値チェック＆登録</h3>
+            <div id="reader"></div>
+            <button class="btn-blue" onclick="startScan()">📷 スキャン開始</button>
+            <hr>
+            <input type="text" id="item" placeholder="品名（自動入力）">
+            <input type="number" id="price" placeholder="価格（税込）" inputmode="numeric">
+            <input type="number" id="weight" placeholder="内容量（g または 個）" inputmode="numeric">
+            <input type="text" id="store" placeholder="店名（フジ、マルナカなど）">
+            <div id="unit-result" style="margin-top:10px; text-align:center;">100g単価：--- 円</div>
+            <button class="btn-green" onclick="submitPrice()">底値リストへ登録</button>
+        </div>
+    </div>
+
+    <div id="tab-schedule" class="container">
+        <div class="box">
+            <h3>📅 新しい予定を追加</h3>
+            <label>イベント名</label>
+            <input type="text" id="event-name" placeholder="例：九州旅行、記念日">
+            
+            <label>日付</label>
+            <input type="date" id="event-date">
+            
+            <button class="btn-green" onclick="submitEvent()">予定を登録する</button>
+        </div>
+        <div class="box" style="text-align:center; color:#666;">
+            <p>ここに登録すると、LINEの<br>「予定まであと何日」に反映されます。</p>
+        </div>
+    </div>
+
+    <div class="nav-bar">
+        <div class="nav-item active-tab" onclick="switchTab('shopping')">
+            <span class="nav-icon">🛒</span>買い物
+        </div>
+        <div class="nav-item" onclick="switchTab('schedule')">
+            <span class="nav-icon">📅</span>予定
+        </div>
+    </div>
+
+    <script>
+        // ★GASのURLをここに貼る
+        const GAS_URL = "あなたのGASウェブアプリURL";
+
+        // タブ切り替え
+        function switchTab(tabName) {
+            document.querySelectorAll('.container').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active-tab'));
+            
+            document.getElementById('tab-' + tabName).classList.add('active');
+            event.currentTarget.classList.add('active-tab');
+        }
+
+        // --- 買い物機能 ---
+        const scanner = new Html5Qrcode("reader");
+        function startScan() {
+            scanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (text) => {
+                scanner.stop(); fetchItem(text);
+            });
+        }
+        async function fetchItem(jan) {
+            const res = await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "web_app", action: "search_jan", jan: jan }) });
+            const data = await res.json();
+            document.getElementById('item').value = data.itemName || "未登録商品";
+        }
+        function calculateUnit() {
+            const p = document.getElementById('price').value, w = document.getElementById('weight').value;
+            if(p && w) document.getElementById('unit-result').innerText = `100g単価：${Math.round((p/w)*100)} 円`;
+        }
+        document.getElementById('price').addEventListener('input', calculateUnit);
+        document.getElementById('weight').addEventListener('input', calculateUnit);
+        async function submitPrice() {
+            const payload = {
+                type: "web_app", action: "register_price",
+                item: document.getElementById('item').value, price: document.getElementById('price').value,
+                weight: document.getElementById('weight').value, store: document.getElementById('store').value
+            };
+            await fetch(GAS_URL, { method: "POST", body: JSON.stringify(payload) });
+            alert("底値を登録しました！");
+        }
+
+        // --- 予定登録機能 ---
+        async function submitEvent() {
+            const name = document.getElementById('event-name').value;
+            const date = document.getElementById('event-date').value;
+            
+            if(!name || !date) return alert("イベント名と日付を入力してください");
+            
+            const payload = { type: "web_app", action: "register_event", name: name, date: date };
+            
+            if(confirm(`【${name}】\n${date}\n\nこの予定を登録しますか？`)) {
+                await fetch(GAS_URL, { method: "POST", body: JSON.stringify(payload) });
+                alert("登録完了！LINEの「予定」ボタンから確認できます。");
+                document.getElementById('event-name').value = "";
+                document.getElementById('event-date').value = "";
+            }
+        }
+    </script>
+</body>
+</html>
