@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ハローワーク松山エリア 求人検索（プレビュー用）</title>
+<title>ハローワーク松山エリア 求人検索</title>
 <style type="text/css">
   /* ▼▼▼ 基本デザイン ▼▼▼ */
   body { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 0; background-color: #f9f9f9; }
@@ -49,8 +49,10 @@
   
   .btn-base { display: flex; align-items: center; justify-content: center; padding: 10px 5px; text-align: center; cursor: pointer; box-sizing: border-box; font-size: 14px; font-weight: bold; border-radius: 6px; text-decoration: none; min-height: 50px; line-height: 1.3; width: 100%; }
 
-  .area-btn { background: #fff; color: #008000; border: 2px solid #008000; }
-  .area-btn.active { background: #008000; color: #fff; }
+  /* 選択時の色設定：area-btn.active を少し強調 */
+  .area-btn { background: #fff; color: #008000; border: 2px solid #008000; transition: all 0.2s; }
+  .area-btn.active { background: #008000; color: #fff; box-shadow: 0 0 5px rgba(0,128,0,0.5); }
+  
   .chkLabel { background: #fff; color: #008000; border: 1px solid #008000; }
   input:checked + .chkLabel { background: #d0f0c0; border: 2px solid #008000; }
   input[type="checkbox"], input[type="radio"] { display: none; }
@@ -102,27 +104,61 @@
     "tobe":   { name: "砥部町",     code: "38402", words: "" },
     "kuma":   { name: "久万高原町", code: "38386", words: "" }
   };
-  var currentCityCode = "38201";
+  
+  // 複数選択用の配列
+  var selectedAreaKeys = [];
 
   window.onload = function() { formSwitch(); };
 
+  // 地区選択（複数対応）
   function selectArea(key) {
-    var data = areaData[key];
-    if (!data) return;
-    currentCityCode = data.code;
-    document.getElementById('FreeW').value = data.words;
-    if (data.words) {
-      document.getElementById('u5').checked = true;
-      document.getElementById('FreeWord').style.display = "block";
+    var btn = document.getElementById('btn-' + key);
+    var index = selectedAreaKeys.indexOf(key);
+
+    if (index === -1) {
+      // 未選択なら追加
+      selectedAreaKeys.push(key);
+      btn.classList.add('active');
     } else {
-      document.getElementById('u4').checked = true;
-      document.getElementById('FreeWord').style.display = "none";
+      // 選択済みなら解除
+      selectedAreaKeys.splice(index, 1);
+      btn.classList.remove('active');
     }
-    document.getElementById('selectedAreaDisplay').innerText = "選択中: " + data.name;
-    var btns = document.getElementsByClassName('area-btn');
-    for(var i=0; i<btns.length; i++) {
-      btns[i].classList.remove('active');
-      if(btns[i].getAttribute('onclick').indexOf("'" + key + "'") !== -1) btns[i].classList.add('active');
+    updateAreaDisplay();
+  }
+
+  // 表示更新
+  function updateAreaDisplay() {
+    var display = document.getElementById('selectedAreaDisplay');
+    if (selectedAreaKeys.length === 0) {
+      display.innerText = "指定なし（松山市全域）";
+      document.getElementById('FreeW').value = "";
+      document.getElementById('u4').checked = true; // キーワードなし
+      document.getElementById('FreeWord').style.display = "none";
+    } else {
+      var names = [];
+      var words = [];
+      for (var i = 0; i < selectedAreaKeys.length; i++) {
+        var k = selectedAreaKeys[i];
+        names.push(areaData[k].name);
+        if(areaData[k].words) words.push(areaData[k].words);
+      }
+      display.innerText = "選択中: " + names.join("、");
+      
+      // キーワードを結合してセット
+      var combinedWords = words.join("　");
+      document.getElementById('FreeW').value = combinedWords;
+      
+      if (combinedWords) {
+        document.getElementById('u5').checked = true; // 入力する
+        document.getElementById('FreeWord').style.display = "block";
+      } else {
+        // キーワードがないエリア（伊予市など）だけの場合
+        if(document.getElementById('FreeW').value === "") {
+             document.getElementById('u4').checked = true;
+             document.getElementById('FreeWord').style.display = "none";
+        }
+      }
     }
   }
 
@@ -144,18 +180,23 @@
   // 全リセット機能
   function resetAll() {
     if(!confirm("選択した条件をすべてリセットしますか？")) return;
-    // エリアを初期値に
-    selectArea('matsuyama_all');
-    // ラジオボタン・チェックボックスをクリア
-    document.getElementById('s4').checked = true; // 雇用:限定なし
-    document.getElementById('job0').checked = true; // 職種:限定なし
-    document.getElementById('ind0').checked = true; // 業界:限定なし
-    document.getElementById('u4').checked = true; // キーワード:なし
-    document.getElementById('x1').checked = true; // 公務:限定なし
-    // チェックボックス(こだわり条件)を全て外す
+    
+    // エリアリセット
+    selectedAreaKeys = [];
+    var btns = document.getElementsByClassName('area-btn');
+    for(var i=0; i<btns.length; i++) btns[i].classList.remove('active');
+    updateAreaDisplay();
+
+    // フォームリセット
+    document.getElementById('s4').checked = true;
+    document.getElementById('job0').checked = true;
+    document.getElementById('ind0').checked = true;
+    document.getElementById('u4').checked = true;
+    document.getElementById('x1').checked = true;
+    
     var checks = document.getElementsByName('j1');
     for(var i=0; i<checks.length; i++) checks[i].checked = false;
-    // 入力欄クリア
+    
     document.forms['ksjo'].f0.value = "";
     document.forms['ksge'].f1.value = "";
     document.getElementById('FreeW').value = "";
@@ -164,7 +205,26 @@
   }
 
   function Search() {
-    var params = "&siku1Hidden=" + currentCityCode;
+    // 1. 選択されたエリアコードを集約（重複なし）
+    var uniqueCodes = [];
+    if (selectedAreaKeys.length === 0) {
+      uniqueCodes.push("38201"); // デフォルト松山市
+    } else {
+      for (var i = 0; i < selectedAreaKeys.length; i++) {
+        var code = areaData[selectedAreaKeys[i]].code;
+        if (uniqueCodes.indexOf(code) === -1) {
+          uniqueCodes.push(code);
+        }
+      }
+    }
+
+    // 2. URLパラメータ構築 (最大3つ)
+    var params = "";
+    for (var j = 0; j < uniqueCodes.length && j < 3; j++) {
+      var num = j + 1;
+      params += "&siku" + num + "Hidden=" + uniqueCodes[j];
+    }
+
     var collect = function(fname) {
       var str = "";
       var el = document.forms[fname].elements;
@@ -172,8 +232,14 @@
       return str;
     };
     params += collect('ippan') + collect('newArri') + collect('jyouken') + collect('gyoushu') + collect('JobIndustry') + collect('JobType');
+    
     var fw = document.getElementById("FreeW").value;
-    if(document.getElementById('u5').checked && fw) { params += "&freeWordInput=" + encodeURIComponent(fw); } else { params += collect('Free'); }
+    if((document.getElementById('u5').checked || selectedAreaKeys.length > 0) && fw) {
+       params += "&freeWordInput=" + encodeURIComponent(fw); 
+    } else { 
+       params += collect('Free'); 
+    }
+    
     params += "&gkkyIn=" + document.forms['gkkyIn'].gkky.value;
     params += "&jikyIn=" + document.forms['jikyIn'].jiky.value;
     params += "&kSNoJo=" + document.forms['ksjo'].f0.value;
@@ -211,14 +277,15 @@
       <h4>操作方法</h4>
       <p>選択した条件を解除・変更するには、以下の通り操作してください。</p>
       <ul>
-        <li><strong>勤務地・職種・業種・就業形態：</strong><br>「限定なし（指定なし）」ボタンを押すか、別の項目を選び直してください。</li>
+        <li><strong>勤務地：</strong><br>ボタンを押すたびに「選択/解除」が切り替わります。<br>※複数のエリアを同時に選択できます。</li>
+        <li><strong>職種・業種・就業形態：</strong><br>「限定なし」ボタンを押すか、別の項目を選び直してください。</li>
         <li><strong>こだわり条件：</strong><br>選択したボタンをもう一度押すと解除されます。</li>
         <li><strong>すべてリセット：</strong><br>画面最下部のグレーの「条件をすべてリセット」ボタンを押してください。</li>
       </ul>
 
       <h4>検索条件について</h4>
       <ul>
-        <li><strong>勤務地：</strong><br>希望するエリアを1つ選択できます。</li>
+        <li><strong>勤務地：</strong><br>希望するエリアを複数選択できます。</li>
         <li><strong>職種・業種：</strong><br>希望するカテゴリを1つ選択できます。<br>※「専門・技術・現場系（青）」と「オフィス・接客系（ピンク）」はどちらか片方のみ選べます。</li>
         <li><strong>就業形態：</strong><br>「フルタイム」「パート」などを選択できます。</li>
         <li><strong>こだわり条件：</strong><br>「土日祝休み」など、細かい条件をいくつでも指定できます。</li>
@@ -240,24 +307,25 @@
   </div>
 
   <div class="section">1. 地区を選択</div>
+  <p style="font-size:0.8em; color:#666;">※複数のエリアを選択できます</p>
   <div class="sub-section">▼松山市内</div>
   <div class="grid-container">
-    <div class="grid-item-2"><a href="javascript:void(0);" onclick="selectArea('matsuyama_all');" class="btn-base area-btn" style="background:#eee; border-color:#aaa; color:#333;">松山市内全域（限定なし）</a></div>
-    <div class="grid-item-2"><a href="javascript:void(0);" onclick="selectArea('east');" class="btn-base area-btn">城東・中央</a></div>
-    <div class="grid-item-2"><a href="javascript:void(0);" onclick="selectArea('west');" class="btn-base area-btn">城西・中央</a></div>
-    <div class="grid-item-2"><a href="javascript:void(0);" onclick="selectArea('north');" class="btn-base area-btn">城北</a></div>
-    <div class="grid-item-2"><a href="javascript:void(0);" onclick="selectArea('south');" class="btn-base area-btn">城南</a></div>
-    <div class="grid-item-2"><a href="javascript:void(0);" onclick="selectArea('joto');" class="btn-base area-btn">久米・小野</a></div>
-    <div class="grid-item-2"><a href="javascript:void(0);" onclick="selectArea('josai');" class="btn-base area-btn">三津・垣生</a></div>
-    <div class="grid-item-2"><a href="javascript:void(0);" onclick="selectArea('hojo');" class="btn-base area-btn">北条・島しょ</a></div>
+    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-matsuyama_all" onclick="selectArea('matsuyama_all');" class="btn-base area-btn" style="background:#eee; border-color:#aaa; color:#333;">松山市内全域（限定なし）</a></div>
+    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-east" onclick="selectArea('east');" class="btn-base area-btn">城東・中央</a></div>
+    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-west" onclick="selectArea('west');" class="btn-base area-btn">城西・中央</a></div>
+    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-north" onclick="selectArea('north');" class="btn-base area-btn">城北</a></div>
+    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-south" onclick="selectArea('south');" class="btn-base area-btn">城南</a></div>
+    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-joto" onclick="selectArea('joto');" class="btn-base area-btn">久米・小野</a></div>
+    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-josai" onclick="selectArea('josai');" class="btn-base area-btn">三津・垣生</a></div>
+    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-hojo" onclick="selectArea('hojo');" class="btn-base area-btn">北条・島しょ</a></div>
   </div>
   <div class="sub-section" style="margin-top:10px;">▼周辺地域</div>
   <div class="grid-container">
-    <div class="grid-item-2"><a href="javascript:void(0);" onclick="selectArea('iyo');" class="btn-base area-btn">伊予市</a></div>
-    <div class="grid-item-2"><a href="javascript:void(0);" onclick="selectArea('toon');" class="btn-base area-btn">東温市</a></div>
-    <div class="grid-item-2"><a href="javascript:void(0);" onclick="selectArea('masaki');" class="btn-base area-btn">松前町</a></div>
-    <div class="grid-item-2"><a href="javascript:void(0);" onclick="selectArea('tobe');" class="btn-base area-btn">砥部町</a></div>
-    <div class="grid-item-2"><a href="javascript:void(0);" onclick="selectArea('kuma');" class="btn-base area-btn">久万高原町</a></div>
+    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-iyo" onclick="selectArea('iyo');" class="btn-base area-btn">伊予市</a></div>
+    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-toon" onclick="selectArea('toon');" class="btn-base area-btn">東温市</a></div>
+    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-masaki" onclick="selectArea('masaki');" class="btn-base area-btn">松前町</a></div>
+    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-tobe" onclick="selectArea('tobe');" class="btn-base area-btn">砥部町</a></div>
+    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-kuma" onclick="selectArea('kuma');" class="btn-base area-btn">久万高原町</a></div>
   </div>
   <div id="selectedAreaDisplay" style="color:#008000; font-weight:bold; margin-top:10px; margin-bottom:15px; border-bottom:1px solid #ccc; padding-bottom:5px;">指定なし（松山市全域）</div>
 
