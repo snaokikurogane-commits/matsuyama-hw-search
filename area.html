@@ -63,10 +63,10 @@
   .searchbutton { display: block; width: 100%; padding: 18px; background: #008000; color: #fff !important; text-align: center; font-size: 22px; font-weight: bold; border-radius: 10px; margin-top: 30px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; }
   .reset-btn { display: block; width: 100%; margin-top: 15px; padding: 12px; background-color: #ccc; color: #333; text-align: center; border-radius: 8px; font-size: 14px; text-decoration: none; border: none; cursor: pointer; box-sizing: border-box; }
 
-  /* ▼▼▼ 追加・修正：応募方法の枠デザイン ▼▼▼ */
+  /* 応募方法の枠デザイン */
   .app-guide { 
     margin-top: 40px; 
-    border: 2px solid #008000; /* 外枠の色 */
+    border: 2px solid #008000; 
     border-radius: 8px; 
     overflow: hidden; 
     background-color: #fff;
@@ -74,17 +74,30 @@
   .app-guide h3 { 
     margin: 0; 
     padding: 12px 15px; 
-    background-color: #008000; /* タイトル背景色 */
-    color: #fff !important;    /* タイトル文字色 */
+    background-color: #008000; 
+    color: #fff !important;    
     font-size: 18px; 
     font-weight: bold;
   }
   .app-guide .guide-body {
     padding: 20px;
-    background-color: #f9fff9; /* 中身の背景色（薄い緑） */
+    background-color: #f9fff9; 
   }
   .app-guide ul { padding-left: 20px; margin-top: 0; }
   .app-guide li { margin-bottom: 8px; line-height: 1.6; }
+  
+  /* 注意書きの赤字スタイル（落ち着いた色に変更） */
+  .warning-box {
+    margin-top: 15px;
+    padding: 12px;
+    background-color: #faf3f3; /* 薄い桜色 */
+    border: 1px solid #cc9999; /* くすんだピンクの枠 */
+    border-radius: 5px;
+    color: #8c2f2f; /* 落ち着いたエンジ色の文字 */
+    font-size: 0.9em;
+    font-weight: bold;
+    line-height: 1.6;
+  }
 
   @media screen and (max-width: 600px) {
     #wrapper { padding: 10px 5px; width: 100%; padding-bottom: 130px; }
@@ -437,7 +450,17 @@
         <li>お近くのハローワーク窓口、またはオンライン（ハローワーク利用登録者のみ）で紹介状の発行を依頼してください。</li>
         <li>一部の求人は、マイページから直接応募できる<strong>「オンライン自主応募」</strong>に対応しています。</li>
       </ul>
-      <p style="margin-top:15px; font-weight:bold; color:#008000;">お問い合わせ先：ハローワーク松山（TEL: 089-941-8609）</p>
+      
+      <div class="warning-box">
+        【注意】<br>
+        オンライン自主応募は、応募者ご自身の直接応募となり、ハローワーク紹介にはなりません。
+      </div>
+
+      <p style="margin-top:15px; font-weight:bold; color:#008000;">お問い合わせ先：ハローワーク松山（TEL: 089-917-8609）</p>
+      <p style="font-size:0.85em; color:#666; margin-top:10px;">
+        ※本検索ツールは、ハローワークインターネットサービスの機能を利用して表示しています。<br>
+        ※検索結果に表示されていても、タイミングによっては募集が終了している場合があります。
+      </p>
     </div>
   </div>
 </div>
