@@ -3,22 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>かんたん求人検索（統合版・文字数制限対策）</title>
+<title>かんたん求人検索（松山版）</title>
 <style type="text/css">
   body { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 0; background-color: #f9f9f9; }
   #wrapper { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding-bottom: 80px; box-sizing: border-box; position: relative; }
   .tytle { margin: 10px 0 5px 0; padding: 3px 0 3px 10px; color: #008000 !important; border-left: 15px #008000 solid; font-size: 18pt; font-weight: bold; line-height: 1.4; }
   .intro-text { font-size: 14px; color: #333; background: #f4f4f4; padding: 10px; border-radius: 5px; margin-bottom: 20px; line-height: 1.6; }
   .caution-text { color: #d32f2f; font-weight: bold; font-size: 0.95em; margin-bottom: 5px; display: block; }
-  .floating-help-btn { position: fixed; top: 15px; right: 15px; z-index: 9999; background-color: #ff9800; color: #ffffff !important; font-weight: bold; font-size: 12px; padding: 8px 12px; border-radius: 20px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.3); opacity: 0.95; }
-  .floating-help-btn:hover { opacity: 1.0; transform: scale(1.05); }
-  .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 10000; }
-  .modal-content { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; max-height: 85vh; background-color: #fff; padding: 20px; border-radius: 10px; overflow-y: auto; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 10001; }
+  .floating-help-btn { position: fixed; top: 15px; right: 15px; z-index: 9999; background-color: #ff9800; color: #ffffff !important; font-weight: bold; font-size: 12px; padding: 8px 12px; border-radius: 20px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.3); opacity: 0.95; cursor: pointer; }
+  
+  /* モーダル共通スタイル */
+  .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; }
+  .modal-content { background-color: #fff; width: 90%; max-width: 500px; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); max-height: 85vh; overflow-y: auto; position: relative; animation: popIn 0.2s ease-out; }
+  @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  
   .modal-header { font-size: 18px; font-weight: bold; color: #008000; border-bottom: 2px solid #008000; padding-bottom: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-  .modal-close-btn { background: #ccc; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-size: 14px; color: #333; }
-  .modal-body h4 { color: #008000; border-left: 5px solid #008000; padding-left: 8px; margin: 15px 0 8px 0; font-size: 16px; }
-  .modal-body p, .modal-body li { font-size: 14px; line-height: 1.6; margin-bottom: 5px; color: #333; }
-  .modal-body ul { padding-left: 20px; margin-top: 5px; }
+  .modal-close-btn { background: #eee; border: none; padding: 5px 12px; cursor: pointer; border-radius: 20px; font-size: 14px; color: #333; font-weight: bold; }
+  
+  /* メッセージモーダル専用 */
+  .msg-title { font-size: 1.1em; font-weight: bold; color: #333; margin-bottom: 10px; text-align: center; }
+  .msg-body { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 20px; text-align: center; white-space: pre-wrap; }
+  .msg-buttons { display: flex; justify-content: center; gap: 15px; }
+  .btn-ok { background: #008000; color: #fff; border: none; padding: 10px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; flex: 1; max-width: 120px; }
+  .btn-cancel { background: #ccc; color: #333; border: none; padding: 10px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; flex: 1; max-width: 120px; }
+
+  /* 既存スタイル */
   .section { margin-top: 2em; font-weight: bold; border-bottom: 2px solid #008000; padding-bottom: 5px; margin-bottom: 15px; color: #333; }
   .sub-section { font-size: 0.9em; color: #555; margin-bottom: 5px; }
   .grid-container { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -78,12 +87,48 @@
     "kuma":   { name: "久万高原町", code: "38386", words: "" }
   };
 
-  // 松山市内グループ
   var matsuyamaGroup = ["matsuyama_all", "east", "west", "north", "south", "joto", "josai", "hojo"];
-  
   var selectedAreaKeys = [];
 
-  // ユニークなコード数をカウントする補助関数
+  // ▼ カスタムモーダル表示関数
+  function showMyModal(title, text, isConfirm, callback) {
+    var overlay = document.getElementById('msg-modal-overlay');
+    document.getElementById('msg-modal-title').innerText = title;
+    document.getElementById('msg-modal-text').innerText = text;
+    
+    var btnOk = document.getElementById('msg-btn-ok');
+    var btnCancel = document.getElementById('msg-btn-cancel');
+
+    // リセット：ボタンのイベントをクリア
+    var newOk = btnOk.cloneNode(true);
+    var newCancel = btnCancel.cloneNode(true);
+    btnOk.parentNode.replaceChild(newOk, btnOk);
+    btnCancel.parentNode.replaceChild(newCancel, btnCancel);
+    
+    // 再取得
+    btnOk = document.getElementById('msg-btn-ok');
+    btnCancel = document.getElementById('msg-btn-cancel');
+
+    if(isConfirm) {
+        btnCancel.style.display = 'block';
+        btnOk.innerText = "検索する";
+    } else {
+        btnCancel.style.display = 'none';
+        btnOk.innerText = "OK";
+    }
+
+    overlay.style.display = 'flex';
+
+    btnOk.onclick = function() {
+        overlay.style.display = 'none';
+        if(callback) callback(true);
+    };
+    btnCancel.onclick = function() {
+        overlay.style.display = 'none';
+        if(callback) callback(false);
+    };
+  }
+
   function countUniqueCodes(keys) {
     var codes = [];
     keys.forEach(function(k) {
@@ -97,18 +142,14 @@
     var btn = document.getElementById('btn-' + key);
     var index = selectedAreaKeys.indexOf(key);
     var isMatsuyama = matsuyamaGroup.indexOf(key) !== -1;
-
-    // 現在の状態をコピーしてシミュレーション
     var nextSelectedKeys = selectedAreaKeys.slice();
 
     if (isMatsuyama) {
-      // ■松山市内の場合（排他：既存の松山グループを除外して追加）
       nextSelectedKeys = nextSelectedKeys.filter(function(k) {
         return matsuyamaGroup.indexOf(k) === -1;
       });
       nextSelectedKeys.push(key);
     } else {
-      // ■周辺地域の場合（トグル：追加または削除）
       if (index === -1) {
         nextSelectedKeys.push(key);
       } else {
@@ -116,15 +157,14 @@
       }
     }
 
-    // 【重要】地域数制限チェック（3つまで）
-    if (nextSelectedKeys.length > selectedAreaKeys.length) { // 増える場合のみチェック
+    if (nextSelectedKeys.length > selectedAreaKeys.length) { 
         if (countUniqueCodes(nextSelectedKeys) > 3) {
-            alert("ハローワークの仕様上、同時に選択できる地域は3つまでです。\n（松山市内は全域で1つとカウントされます）");
-            return; // 処理中断
+            // ★ここをカスタムモーダルに変更
+            showMyModal("選択できません", "ハローワークの仕様上、同時に選択できる地域は3つまでです。\n（松山市内は全域で1つとカウントされます）", false);
+            return;
         }
     }
 
-    // 反映処理
     if(isMatsuyama) {
         matsuyamaGroup.forEach(function(mKey) {
             var mBtn = document.getElementById('btn-' + mKey);
@@ -134,7 +174,6 @@
     
     selectedAreaKeys = nextSelectedKeys;
 
-    // UIリフレッシュ
     var allBtns = document.getElementsByClassName('area-btn');
     for(var i=0; i<allBtns.length; i++) allBtns[i].classList.remove('active');
     
@@ -168,12 +207,10 @@
       display.innerText = "選択中: " + names.join("、");
       document.getElementById('FreeW').value = combinedWords.trim();
       
-      // キーワードがあれば入力欄表示
       if (combinedWords) {
         document.getElementById('u5').checked = true;
         document.getElementById('FreeWord').style.display = "block";
       } else {
-        // キーワードがない場合、手動入力欄が空なら「限定なし」に戻す
         if(document.getElementById('FreeW').value === "") {
              document.getElementById('u4').checked = true;
              document.getElementById('FreeWord').style.display = "none";
@@ -193,27 +230,31 @@
     document.getElementById('ind0').checked = true;
   }
   
-  function openHelp() { document.getElementById('help-modal').style.display = 'block'; }
+  function openHelp() { document.getElementById('help-modal').style.display = 'flex'; }
   function closeHelp() { document.getElementById('help-modal').style.display = 'none'; }
   
   function resetAll() {
-    if(!confirm("選択した条件をすべてリセットしますか？")) return;
-    selectedAreaKeys = [];
-    var btns = document.getElementsByClassName('area-btn');
-    for(var i=0; btns.length > i; i++) btns[i].classList.remove('active');
-    updateAreaDisplay();
+    // ★ここをカスタムモーダルに変更
+    showMyModal("確認", "選択した条件をすべてリセットしますか？", true, function(result){
+        if(!result) return;
+        
+        selectedAreaKeys = [];
+        var btns = document.getElementsByClassName('area-btn');
+        for(var i=0; btns.length > i; i++) btns[i].classList.remove('active');
+        updateAreaDisplay();
 
-    document.getElementById('s4').checked = true;
-    document.getElementById('job0').checked = true;
-    document.getElementById('ind0').checked = true;
-    document.getElementById('u4').checked = true;
-    document.getElementById('x1').checked = true;
-    var checks = document.getElementsByName('j1');
-    for(var i=0; checks.length > i; i++) checks[i].checked = false;
-    document.forms['ksjo'].f0.value = "";
-    document.forms['ksge'].f1.value = "";
-    document.getElementById('FreeW').value = "";
-    closeHelp();
+        document.getElementById('s4').checked = true;
+        document.getElementById('job0').checked = true;
+        document.getElementById('ind0').checked = true;
+        document.getElementById('u4').checked = true;
+        document.getElementById('x1').checked = true;
+        var checks = document.getElementsByName('j1');
+        for(var i=0; checks.length > i; i++) checks[i].checked = false;
+        document.forms['ksjo'].f0.value = "";
+        document.forms['ksge'].f1.value = "";
+        document.getElementById('FreeW').value = "";
+        closeHelp();
+    });
   }
 
   function Search() {
@@ -230,26 +271,21 @@
     }
 
     if(uniqueCodes.length > 3) {
-        alert("地域コードが3つを超えています。選択を減らしてください。");
+        // ★ここをカスタムモーダルに変更
+        showMyModal("エラー", "地域コードが3つを超えています。\n選択を減らしてください。", false);
         return;
     }
 
-    // ★重要：シニア・ミドルシニア選択時の優先制御
-    // 文字数制限回避のため、これらのキーワードが選ばれている場合は
-    // 地区名のキーワード(FreeW)を強制的に無視する
-    var isSeniorMode = document.getElementById('u6').checked; // シニア
-    var isMiddleMode = document.getElementById('u7').checked; // ミドル
+    var isSeniorMode = document.getElementById('u6').checked;
+    var isMiddleMode = document.getElementById('u7').checked;
     var useKeywordPriority = isSeniorMode || isMiddleMode;
 
     var params = "";
-    
-    // siku1～3の生成
     for(var i=0; i < 3; i++) {
         var num = i + 1;
         var val = (uniqueCodes.length > i) ? uniqueCodes[i] : "";
         params += amp + "siku" + num + "Hidden=" + val;
     }
-    
     params += amp + "tDFK1CmbBox=38";
 
     var collect = function(fname) {
@@ -263,39 +299,35 @@
     
     var fw = document.getElementById("FreeW").value;
     
-    // キーワード送信の分岐ロジック
-    // 1. シニアorミドルシニアが選ばれている場合（最優先）
+    // 検索実行関数（あとで呼び出す）
+    var executeSearch = function() {
+        var finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchBtn" + amp + "screenId=GECA110010" + amp + "kjKbnRadioBtn=1" + amp + "searchClear=0" + params;
+        window.open(finalUrl, '_blank');
+    };
+
     if (useKeywordPriority) {
-        // ラジオボタンの値をそのまま使う（地区名は無視して全域検索とする）
         params += collect('Free');
-        
-        // ユーザーへの確認メッセージを少し変更
         if(fw !== "") {
-            if(!confirm("【注】「シニア・ミドルシニア」検索時は、文字数制限のため「地区詳細（町名）」は解除され、松山市全域での検索となります。\n\n検索を続けますか？")) {
-                return;
-            }
+            // ★ここをカスタムモーダルに変更
+            showMyModal("確認", "【注】「シニア・ミドルシニア」検索時は、文字数制限のため「地区詳細（町名）」は解除され、松山市全域での検索となります。\n\n検索を続けますか？", true, function(result){
+                if(result) executeSearch();
+            });
+            return;
         }
-    
-    // 2. 手動入力モード または 地区キーワードがある場合
+        executeSearch();
     } else if((document.getElementById('u5').checked || selectedAreaKeys.length > 0) && fw) {
        var encodedFW = encodeURIComponent(fw);
        params += amp + "freeWordInput=" + encodedFW + amp + "freeWordRadioBtn=0";
-    
-    // 3. その他（限定なし、子育てなど）
+       // ★ここをカスタムモーダルに変更（検索最終確認）
+       showMyModal("検索確認", "【条件】" + document.getElementById('selectedAreaDisplay').innerText + "\n\nこの条件でハローワークの検索を開きますか？", true, function(result){
+           if(result) executeSearch();
+       });
     } else { 
        params += collect('Free'); 
-    }
-    
-    params += amp + "kSNoJo=" + document.forms['ksjo'].f0.value;
-    params += amp + "kSNoGe=" + document.forms['ksge'].f1.value;
-
-    var finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchBtn" + amp + "screenId=GECA110010" + amp + "kjKbnRadioBtn=1" + amp + "searchClear=0" + params;
-    
-    // 優先モードの場合は既にconfirmを出したのでスキップ、それ以外は通常確認
-    if(useKeywordPriority) {
-        window.open(finalUrl, '_blank');
-    } else {
-        if(confirm("【確認】" + document.getElementById('selectedAreaDisplay').innerText + " で検索しますか？")) { window.open(finalUrl, '_blank'); }
+       // ★ここをカスタムモーダルに変更（検索最終確認）
+       showMyModal("検索確認", "【条件】" + document.getElementById('selectedAreaDisplay').innerText + "\n\nこの条件でハローワークの検索を開きますか？", true, function(result){
+           if(result) executeSearch();
+       });
     }
   }
 
@@ -304,7 +336,7 @@
 </head>
 <body>
 
-<a href="javascript:void(0);" class="floating-help-btn" onclick="openHelp(); return false;">？ 利用方法</a>
+<a class="floating-help-btn" onclick="openHelp(); return false;">？ 利用方法</a>
 
 <div id="help-modal" class="modal-overlay" onclick="if(event.target == this) closeHelp();">
   <div class="modal-content">
@@ -316,24 +348,24 @@
       <div style="background:#fff4f4; border:1px solid #d32f2f; padding:10px; border-radius:5px; margin-bottom:15px;">
         <h4 style="color:#d32f2f; border-color:#d32f2f; margin-top:0;">【重要】文字数制限について</h4>
         <p style="font-size:13px; color:#333;">ハローワークのシステム制限により、<strong>「シニア」「ミドルシニア」</strong>を選択した場合、町名の絞り込みは自動的に解除され、<strong>「松山市内全域」</strong>での検索となります。</p>
-        <p style="font-size:12px; color:#666;">（両方の条件を入れると文字数オーバーで検索できなくなるためです）</p>
       </div>
-
       <h4>検索方法</h4>
       <p>1. 指定したい条件のボタンをクリック又はタップしてください。</p>
       <p>2. 希望の条件を選択し終えたら、画面下部の緑色の「検索する」ボタンを押してください。</p>
-      <p>3. ハローワークインターネットサービスの画面が開き、検索結果が表示されます。</p>
-
-      <h4>操作方法</h4>
-      <ul>
-        <li><strong>勤務地：</strong><br>ボタンを押すと選択状態（濃い緑色）になります。松山市内は1つだけ、周辺地域は複数選択可能です（合計3つまで）。</li>
-        <li><strong>職種・業種・就業形態：</strong><br>「限定なし」ボタンを押すか、別の項目を選び直してください。</li>
-        <li><strong>こだわり条件：</strong><br>選択したボタンをもう一度押すと解除されます。</li>
-        <li><strong>すべてリセット：</strong><br>画面最下部のグレーの「条件をすべてリセット」ボタンを押してください。</li>
-      </ul>
       <div style="text-align:center; margin-top:15px;">
         <button onclick="closeHelp()" style="padding:10px 20px; background:#008000; color:#fff; border:none; border-radius:5px; cursor:pointer;">閉じる</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<div id="msg-modal-overlay" class="modal-overlay">
+  <div class="modal-content" style="max-width:350px; text-align:center; padding:25px;">
+    <div id="msg-modal-title" class="msg-title"></div>
+    <div id="msg-modal-text" class="msg-body"></div>
+    <div class="msg-buttons">
+        <button id="msg-btn-cancel" class="btn-cancel">キャンセル</button>
+        <button id="msg-btn-ok" class="btn-ok">OK</button>
     </div>
   </div>
 </div>
@@ -344,7 +376,6 @@
   <div class="intro-text">
     ハローワーク松山管轄の求人情報を、簡単な操作で検索することができます。<br>
     <span class="caution-text">※本機能は簡易検索システムのため、条件によっては全ての求人が表示されない（抜け漏れがある）場合があります。</span>
-    より詳細かつ網羅的な条件で求人を探す場合は、<a href="https://www.hellowork.mhlw.go.jp/" target="_blank">ハローワークインターネットサービス</a>をご利用ください。
   </div>
 
   <div class="section">1. 地区を選択</div>
@@ -450,11 +481,8 @@
   <form name="Free" class="grid-container">
     <div class="grid-item-2"><input checked id="u4" name="radio3" type="radio" value="" onclick="checkradio('none')"/><label for="u4" class="btn-base chkLabel">限定なし</label></div>
     <div class="grid-item-2"><input id="u2" name="radio3" type="radio" value="&freeWordInput=%E5%AD%90%E8%82%B2%E3%81%A6%E6%94%AF%E6%8F%B4%E6%B1%82%E4%BA%BA" onclick="checkradio('none')"/><label for="u2" class="btn-base chkLabel">子育て支援</label></div>
-    
     <div class="grid-item-2"><input id="u6" name="radio3" type="radio" value="&freeWordInput=%E3%82%B7%E3%83%8B%E3%82%A2%E3%80%80%EF%BC%96%EF%BC%90%E6%AD%B3%E4%BB%A5%E4%B8%8A&nOTKNSKFreeWordInput=%E3%83%9F%E3%83%89%E3%83%AB%E3%82%B7%E3%83%8B%E3%82%A2&freeWordRadioBtn=0" onclick="checkradio('none')"/><label for="u6" class="btn-base chkLabel">シニア(60歳~)</label></div>
-    
     <div class="grid-item-2"><input id="u7" name="radio3" type="radio" value="&freeWordInput=%E3%83%9F%E3%83%89%E3%83%AB%E3%82%B7%E3%83%8B%E3%82%A2&freeWordRadioBtn=0" onclick="checkradio('none')"/><label for="u7" class="btn-base chkLabel">ミドルシニア</label></div>
-    
     <div class="grid-item-2" style="flex:100%;"><input id="u5" name="radio3" type="radio" value="manual" onclick="checkradio('block')"/><label for="u5" class="btn-base chkLabel">入力する</label></div>
   </form>
   <div id="FreeWord" style="display:none;">
@@ -477,7 +505,6 @@
   </div>
 
   <a class="searchbutton" href="javascript:void(0);" onclick="Search()">この条件で検索する</a>
-  
   <button class="reset-btn" onclick="resetAll()">条件をすべてリセット</button>
 
   <div class="app-guide">
@@ -485,29 +512,10 @@
     <div class="guide-body">
       <ul>
         <li>求人に応募するには、ハローワークの<strong>「紹介状」</strong>が必要です。</li>
-        <li>お近くのハローワーク窓口、またはオンライン（ハローワーク利用登録者のみ）で紹介状の発行を依頼してください。</li>
-        <li>一部の求人は、マイページから直接応募できる<strong>「オンライン自主応募」</strong>に対応しています。</li>
+        <li>お近くのハローワーク窓口、またはオンラインで紹介状の発行を依頼してください。</li>
       </ul>
-      
-      <div class="warning-box">
-        【注意】<br>
-        オンライン自主応募は、応募者ご自身の直接応募となり、ハローワーク紹介にはなりません。
-      </div>
-
       <p style="margin-top:15px; font-weight:bold; color:#008000;">お問い合わせ先：ハローワーク松山（TEL: 089-917-8609）</p>
-      <p style="font-size:0.85em; color:#666; margin-top:10px;">
-        ※本検索ツールは、ハローワークインターネットサービスの機能を利用して表示しています。<br>
-        ※検索結果に表示されていても、タイミングによっては募集が終了している場合があります。
-      </p>
     </div>
-  </div>
-
-  <div style="margin-top: 30px; text-align: center;">
-    <p style="font-size: 0.9em; font-weight: bold; color: #333; margin-bottom: 5px;">専門サイトはこちら</p>
-    <a href="https://www.mhlw.go.jp/hellowork_iryoukaigohoiku/" target="_blank" style="display: block; background-color: #f0f8ff; border: 2px solid #0066cc; color: #0066cc; padding: 15px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px;">
-      医療・介護・保育求人<br>
-      <span style="font-size: 0.8em;">（厚生労働省 特設サイトへ）</span>
-    </a>
   </div>
 </div>
 </body>
