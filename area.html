@@ -1,29 +1,17 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ハローワーク松山エリア 求人検索</title>
+<title>かんたん求人検索（統合版・文字数制限対策）</title>
 <style type="text/css">
-  /* ▼▼▼ 基本デザイン ▼▼▼ */
   body { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 0; background-color: #f9f9f9; }
   #wrapper { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding-bottom: 80px; box-sizing: border-box; position: relative; }
-  
-  .tytle { margin: 10px 0 5px 0; padding: 3px 0 3px 10px; color: #008000 !important; border-left: 15px #008000 solid; font-size: 18pt; font-weight: bold; }
-  
+  .tytle { margin: 10px 0 5px 0; padding: 3px 0 3px 10px; color: #008000 !important; border-left: 15px #008000 solid; font-size: 18pt; font-weight: bold; line-height: 1.4; }
   .intro-text { font-size: 14px; color: #333; background: #f4f4f4; padding: 10px; border-radius: 5px; margin-bottom: 20px; line-height: 1.6; }
   .caution-text { color: #d32f2f; font-weight: bold; font-size: 0.95em; margin-bottom: 5px; display: block; }
-
-  /* 右上固定ボタン */
-  .floating-help-btn {
-    position: fixed; top: 15px; right: 15px; z-index: 9999;
-    background-color: #ff9800; color: #ffffff !important; font-weight: bold; font-size: 12px;
-    padding: 8px 12px; border-radius: 20px; text-decoration: none;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3); opacity: 0.95;
-  }
+  .floating-help-btn { position: fixed; top: 15px; right: 15px; z-index: 9999; background-color: #ff9800; color: #ffffff !important; font-weight: bold; font-size: 12px; padding: 8px 12px; border-radius: 20px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.3); opacity: 0.95; }
   .floating-help-btn:hover { opacity: 1.0; transform: scale(1.05); }
-
-  /* ポップアップ */
   .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 10000; }
   .modal-content { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; max-height: 85vh; background-color: #fff; padding: 20px; border-radius: 10px; overflow-y: auto; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 10001; }
   .modal-header { font-size: 18px; font-weight: bold; color: #008000; border-bottom: 2px solid #008000; padding-bottom: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
@@ -31,74 +19,34 @@
   .modal-body h4 { color: #008000; border-left: 5px solid #008000; padding-left: 8px; margin: 15px 0 8px 0; font-size: 16px; }
   .modal-body p, .modal-body li { font-size: 14px; line-height: 1.6; margin-bottom: 5px; color: #333; }
   .modal-body ul { padding-left: 20px; margin-top: 5px; }
-
-  /* セクション・レイアウト */
   .section { margin-top: 2em; font-weight: bold; border-bottom: 2px solid #008000; padding-bottom: 5px; margin-bottom: 15px; color: #333; }
   .sub-section { font-size: 0.9em; color: #555; margin-bottom: 5px; }
   .grid-container { display: flex; flex-wrap: wrap; gap: 8px; }
   .grid-item-2 { flex: 1 1 calc(50% - 8px); }
-  
   .btn-base { display: flex; align-items: center; justify-content: center; padding: 10px 5px; text-align: center; cursor: pointer; box-sizing: border-box; font-size: 14px; font-weight: bold; border-radius: 6px; text-decoration: none; min-height: 50px; line-height: 1.3; width: 100%; }
-
   .area-btn { background: #fff; color: #008000; border: 2px solid #008000; transition: all 0.2s; }
   .area-btn.active { background: #008000; color: #fff; box-shadow: 0 0 5px rgba(0,128,0,0.5); }
-  
   .chkLabel { background: #fff; color: #008000; border: 1px solid #008000; }
   input:checked + .chkLabel { background: #d0f0c0; border: 2px solid #008000; }
   input[type="checkbox"], input[type="radio"] { display: none; }
-  
   .industry-btn-label { background: #fff; color: #0066cc; border: 2px solid #0066cc; }
   input:checked + .industry-btn-label { background: #0066cc; color: #fff; }
   .job-btn-label { background: #fff; color: #e6006b; border: 2px solid #e6006b; }
   input:checked + .job-btn-label { background: #e6006b; color: #fff; }
-
   details { margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; overflow: hidden; background: #fff; width: 100%; }
   summary { cursor: pointer; padding: 15px; font-weight: bold; background-color: #f0f0f0; list-style: none; position: relative; }
   summary::after { content: "▼"; position: absolute; right: 20px; transition: transform 0.3s; color: #666; }
   details[open] summary::after { transform: rotate(180deg); }
   .details-content { padding: 10px; background: #fafafa; border-top: 1px solid #ccc; }
-
   select, input[type="text"], input[type="number"] { width: 100%; padding: 12px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
-
   .searchbutton { display: block; width: 100%; padding: 18px; background: #008000; color: #fff !important; text-align: center; font-size: 22px; font-weight: bold; border-radius: 10px; margin-top: 30px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; }
   .reset-btn { display: block; width: 100%; margin-top: 15px; padding: 12px; background-color: #ccc; color: #333; text-align: center; border-radius: 8px; font-size: 14px; text-decoration: none; border: none; cursor: pointer; box-sizing: border-box; }
-
-  /* 応募方法の枠デザイン */
-  .app-guide { 
-    margin-top: 40px; 
-    border: 2px solid #008000; 
-    border-radius: 8px; 
-    overflow: hidden; 
-    background-color: #fff;
-  }
-  .app-guide h3 { 
-    margin: 0; 
-    padding: 12px 15px; 
-    background-color: #008000; 
-    color: #fff !important;    
-    font-size: 18px; 
-    font-weight: bold;
-  }
-  .app-guide .guide-body {
-    padding: 20px;
-    background-color: #f9fff9; 
-  }
+  .app-guide { margin-top: 40px; border: 2px solid #008000; border-radius: 8px; overflow: hidden; background-color: #fff; }
+  .app-guide h3 { margin: 0; padding: 12px 15px; background-color: #008000; color: #fff !important; font-size: 18px; font-weight: bold; }
+  .app-guide .guide-body { padding: 20px; background-color: #f9fff9; }
   .app-guide ul { padding-left: 20px; margin-top: 0; }
   .app-guide li { margin-bottom: 8px; line-height: 1.6; }
-  
-  /* 注意書きの赤字スタイル（落ち着いた色に変更） */
-  .warning-box {
-    margin-top: 15px;
-    padding: 12px;
-    background-color: #faf3f3; /* 薄い桜色 */
-    border: 1px solid #cc9999; /* くすんだピンクの枠 */
-    border-radius: 5px;
-    color: #8c2f2f; /* 落ち着いたエンジ色の文字 */
-    font-size: 0.9em;
-    font-weight: bold;
-    line-height: 1.6;
-  }
-
+  .warning-box { margin-top: 15px; padding: 12px; background-color: #faf3f3; border: 1px solid #cc9999; border-radius: 5px; color: #8c2f2f; font-size: 0.9em; font-weight: bold; line-height: 1.6; }
   @media screen and (max-width: 600px) {
     #wrapper { padding: 10px 5px; width: 100%; padding-bottom: 130px; }
     .btn-base { font-size: 13px; padding: 8px 2px; }
@@ -110,52 +58,97 @@
 </style>
 
 <script type="text/javascript">
+  var amp = String.fromCharCode(38); // 記号回避用
+  
   var areaData = {
+    // ▼松山市内（町名キーワードあり）コードは全て38201
     "matsuyama_all": { name: "松山市内全域", code: "38201", words: "" },
-    "east":  { name: "城東・中央", code: "38201", words: "一番町　二番町　大街道　湊町　道後　石手" },
-    "west":  { name: "城西・中央", code: "38201", words: "大手町　南江戸　竹原　小栗　土居田　宮西" },
-    "north": { name: "城北",     code: "38201", words: "潮見　久枝　和気　堀江　吉藤　谷町" },
-    "south": { name: "城南",     code: "38201", words: "石井　居相　古川　はなみずき　和泉　森松" },
-    "joto":  { name: "久米・小野", code: "38201", words: "小野　久米　平井　鷹子　来住　湯の山" },
-    "josai": { name: "三津・垣生", code: "38201", words: "三津浜　高浜　味生　生石　垣生　空港通" },
-    "hojo":  { name: "北条・島しょ", code: "38201", words: "北条　浅海　立岩　難波　正岡　河野　泊　由良　睦野　中島" },
+    "east":  { name: "城東・中央", code: "38201", words: "一番町　二番町　三番町　千舟町　大街道　湊町　道後　石手　祝谷　東野　樽味　桑原　松末" },
+    "west":  { name: "城西・中央", code: "38201", words: "大手町　南江戸　竹原　小栗　土居田　宮西　萱町　本町　花園町　藤原　保免　余戸" },
+    "north": { name: "城北",      code: "38201", words: "潮見　久枝　和気　堀江　吉藤　谷町　御幸　鴨川　平田　山越　問屋町　内宮　安城寺" },
+    "south": { name: "城南",      code: "38201", words: "石井　居相　古川　はなみずき　和泉　森松　井門　天山　朝生田　土居　北井門　小坂" },
+    "joto":  { name: "久米・小野", code: "38201", words: "小野　久米　平井　鷹子　来住　湯の山　南久米　北久米　畑寺　水泥　福音寺　高井" },
+    "josai": { name: "三津・垣生", code: "38201", words: "三津　高浜　味生　生石　垣生　空港通　富久　南吉田　梅津寺　北斎院　南斎院　別府" },
+    "hojo":  { name: "北条・島しょ", code: "38201", words: "北条　浅海　立岩　難波　正岡　河野　泊　由良　睦野　中島　大浦　粟井　柳原　八反地" },
+    // ▼周辺地域（コードのみ）
     "iyo":    { name: "伊予市",     code: "38210", words: "" },
     "toon":   { name: "東温市",     code: "38211", words: "" },
     "masaki": { name: "松前町",     code: "38401", words: "" },
     "tobe":   { name: "砥部町",     code: "38402", words: "" },
     "kuma":   { name: "久万高原町", code: "38386", words: "" }
   };
+
+  // 松山市内グループ
+  var matsuyamaGroup = ["matsuyama_all", "east", "west", "north", "south", "joto", "josai", "hojo"];
   
   var selectedAreaKeys = [];
+
+  // ユニークなコード数をカウントする補助関数
+  function countUniqueCodes(keys) {
+    var codes = [];
+    keys.forEach(function(k) {
+        var c = areaData[k].code;
+        if(codes.indexOf(c) === -1) codes.push(c);
+    });
+    return codes.length;
+  }
 
   function selectArea(key) {
     var btn = document.getElementById('btn-' + key);
     var index = selectedAreaKeys.indexOf(key);
+    var isMatsuyama = matsuyamaGroup.indexOf(key) !== -1;
 
-    if (index === -1) {
-      var currentWords = "";
-      for (var i = 0; i < selectedAreaKeys.length; i++) {
-        var k = selectedAreaKeys[i];
-        if(areaData[k].words) currentWords += areaData[k].words + "　";
-      }
-      var newWord = areaData[key].words;
-      
-      if (newWord && (currentWords.length + newWord.length > 50)) {
-        alert("選択したエリアのキーワードが長すぎるため、これ以上同時に選択できません。\n（ハローワークのシステム制限：50文字以内）\n\n網羅的に探したい場合は「松山市内全域」をご利用ください。");
-        return;
-      }
+    // 現在の状態をコピーしてシミュレーション
+    var nextSelectedKeys = selectedAreaKeys.slice();
 
-      selectedAreaKeys.push(key);
-      btn.classList.add('active');
+    if (isMatsuyama) {
+      // ■松山市内の場合（排他：既存の松山グループを除外して追加）
+      nextSelectedKeys = nextSelectedKeys.filter(function(k) {
+        return matsuyamaGroup.indexOf(k) === -1;
+      });
+      nextSelectedKeys.push(key);
     } else {
-      selectedAreaKeys.splice(index, 1);
-      btn.classList.remove('active');
+      // ■周辺地域の場合（トグル：追加または削除）
+      if (index === -1) {
+        nextSelectedKeys.push(key);
+      } else {
+        nextSelectedKeys.splice(index, 1);
+      }
     }
+
+    // 【重要】地域数制限チェック（3つまで）
+    if (nextSelectedKeys.length > selectedAreaKeys.length) { // 増える場合のみチェック
+        if (countUniqueCodes(nextSelectedKeys) > 3) {
+            alert("ハローワークの仕様上、同時に選択できる地域は3つまでです。\n（松山市内は全域で1つとカウントされます）");
+            return; // 処理中断
+        }
+    }
+
+    // 反映処理
+    if(isMatsuyama) {
+        matsuyamaGroup.forEach(function(mKey) {
+            var mBtn = document.getElementById('btn-' + mKey);
+            if(mBtn) mBtn.classList.remove('active');
+        });
+    }
+    
+    selectedAreaKeys = nextSelectedKeys;
+
+    // UIリフレッシュ
+    var allBtns = document.getElementsByClassName('area-btn');
+    for(var i=0; i<allBtns.length; i++) allBtns[i].classList.remove('active');
+    
+    selectedAreaKeys.forEach(function(k){
+        var b = document.getElementById('btn-' + k);
+        if(b) b.classList.add('active');
+    });
+
     updateAreaDisplay();
   }
 
   function updateAreaDisplay() {
     var display = document.getElementById('selectedAreaDisplay');
+    
     if (selectedAreaKeys.length === 0) {
       display.innerText = "指定なし（松山市全域）";
       document.getElementById('FreeW').value = "";
@@ -163,21 +156,24 @@
       document.getElementById('FreeWord').style.display = "none";
     } else {
       var names = [];
-      var words = [];
-      for (var i = 0; i < selectedAreaKeys.length; i++) {
-        var k = selectedAreaKeys[i];
+      var combinedWords = "";
+      
+      selectedAreaKeys.forEach(function(k) {
         names.push(areaData[k].name);
-        if(areaData[k].words) words.push(areaData[k].words);
-      }
+        if(areaData[k].words) {
+          combinedWords += areaData[k].words + "　";
+        }
+      });
+      
       display.innerText = "選択中: " + names.join("、");
+      document.getElementById('FreeW').value = combinedWords.trim();
       
-      var combinedWords = words.join("　");
-      document.getElementById('FreeW').value = combinedWords;
-      
+      // キーワードがあれば入力欄表示
       if (combinedWords) {
         document.getElementById('u5').checked = true;
         document.getElementById('FreeWord').style.display = "block";
       } else {
+        // キーワードがない場合、手動入力欄が空なら「限定なし」に戻す
         if(document.getElementById('FreeW').value === "") {
              document.getElementById('u4').checked = true;
              document.getElementById('FreeWord').style.display = "none";
@@ -188,12 +184,12 @@
 
   function clearJobType() {
     var els = document.getElementsByName('radioJobType');
-    for(var i=0; i<els.length; i++) els[i].checked = false;
+    for(var i=0; els.length > i; i++) els[i].checked = false;
     document.getElementById('job0').checked = true;
   }
   function clearIndustry() {
     var els = document.getElementsByName('radioIndustry');
-    for(var i=0; i<els.length; i++) els[i].checked = false;
+    for(var i=0; els.length > i; i++) els[i].checked = false;
     document.getElementById('ind0').checked = true;
   }
   
@@ -204,7 +200,7 @@
     if(!confirm("選択した条件をすべてリセットしますか？")) return;
     selectedAreaKeys = [];
     var btns = document.getElementsByClassName('area-btn');
-    for(var i=0; i<btns.length; i++) btns[i].classList.remove('active');
+    for(var i=0; btns.length > i; i++) btns[i].classList.remove('active');
     updateAreaDisplay();
 
     document.getElementById('s4').checked = true;
@@ -213,7 +209,7 @@
     document.getElementById('u4').checked = true;
     document.getElementById('x1').checked = true;
     var checks = document.getElementsByName('j1');
-    for(var i=0; i<checks.length; i++) checks[i].checked = false;
+    for(var i=0; checks.length > i; i++) checks[i].checked = false;
     document.forms['ksjo'].f0.value = "";
     document.forms['ksge'].f1.value = "";
     document.getElementById('FreeW').value = "";
@@ -225,49 +221,89 @@
     if (selectedAreaKeys.length === 0) {
       uniqueCodes.push("38201");
     } else {
-      for (var i = 0; i < selectedAreaKeys.length; i++) {
-        var code = areaData[selectedAreaKeys[i]].code;
-        if (uniqueCodes.indexOf(code) === -1) {
-          uniqueCodes.push(code);
+      selectedAreaKeys.forEach(function(k) {
+        var c = areaData[k].code;
+        if(uniqueCodes.indexOf(c) === -1) {
+            uniqueCodes.push(c);
         }
-      }
+      });
     }
 
-    var params = "";
-    for (var j = 0; j < uniqueCodes.length && j < 3; j++) {
-      var num = j + 1;
-      params += "&siku" + num + "Hidden=" + uniqueCodes[j];
+    if(uniqueCodes.length > 3) {
+        alert("地域コードが3つを超えています。選択を減らしてください。");
+        return;
     }
+
+    // ★重要：シニア・ミドルシニア選択時の優先制御
+    // 文字数制限回避のため、これらのキーワードが選ばれている場合は
+    // 地区名のキーワード(FreeW)を強制的に無視する
+    var isSeniorMode = document.getElementById('u6').checked; // シニア
+    var isMiddleMode = document.getElementById('u7').checked; // ミドル
+    var useKeywordPriority = isSeniorMode || isMiddleMode;
+
+    var params = "";
+    
+    // siku1～3の生成
+    for(var i=0; i < 3; i++) {
+        var num = i + 1;
+        var val = (uniqueCodes.length > i) ? uniqueCodes[i] : "";
+        params += amp + "siku" + num + "Hidden=" + val;
+    }
+    
+    params += amp + "tDFK1CmbBox=38";
 
     var collect = function(fname) {
       var str = "";
       var el = document.forms[fname].elements;
-      for(var i=0; i<el.length; i++) { if(el[i].checked) str += el[i].value; }
+      for(var i=0; el.length > i; i++) { if(el[i].checked) str += el[i].value; }
       return str;
     };
     
     params += collect('ippan') + collect('newArri') + collect('jyouken') + collect('gyoushu') + collect('JobIndustry') + collect('JobType');
     
     var fw = document.getElementById("FreeW").value;
-    if((document.getElementById('u5').checked || selectedAreaKeys.length > 0) && fw) {
-       params += "&freeWordInput=" + encodeURIComponent(fw); 
+    
+    // キーワード送信の分岐ロジック
+    // 1. シニアorミドルシニアが選ばれている場合（最優先）
+    if (useKeywordPriority) {
+        // ラジオボタンの値をそのまま使う（地区名は無視して全域検索とする）
+        params += collect('Free');
+        
+        // ユーザーへの確認メッセージを少し変更
+        if(fw !== "") {
+            if(!confirm("【注】「シニア・ミドルシニア」検索時は、文字数制限のため「地区詳細（町名）」は解除され、松山市全域での検索となります。\n\n検索を続けますか？")) {
+                return;
+            }
+        }
+    
+    // 2. 手動入力モード または 地区キーワードがある場合
+    } else if((document.getElementById('u5').checked || selectedAreaKeys.length > 0) && fw) {
+       var encodedFW = encodeURIComponent(fw);
+       params += amp + "freeWordInput=" + encodedFW + amp + "freeWordRadioBtn=0";
+    
+    // 3. その他（限定なし、子育てなど）
     } else { 
        params += collect('Free'); 
     }
     
-    params += "&kSNoJo=" + document.forms['ksjo'].f0.value;
-    params += "&kSNoGe=" + document.forms['ksge'].f1.value;
+    params += amp + "kSNoJo=" + document.forms['ksjo'].f0.value;
+    params += amp + "kSNoGe=" + document.forms['ksge'].f1.value;
 
-    var finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchBtn&initDisp&screenId=GECA110010&searchClear=1&kjKbnRadioBtn=1" + params;
+    var finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchBtn" + amp + "screenId=GECA110010" + amp + "kjKbnRadioBtn=1" + amp + "searchClear=0" + params;
     
-    if(confirm("【確認】" + document.getElementById('selectedAreaDisplay').innerText + " で検索しますか？")) { window.open(finalUrl, '_blank'); }
+    // 優先モードの場合は既にconfirmを出したのでスキップ、それ以外は通常確認
+    if(useKeywordPriority) {
+        window.open(finalUrl, '_blank');
+    } else {
+        if(confirm("【確認】" + document.getElementById('selectedAreaDisplay').innerText + " で検索しますか？")) { window.open(finalUrl, '_blank'); }
+    }
   }
 
   function checkradio(disp) { document.getElementById('FreeWord').style.display = disp; }
 </script>
 </head>
-
 <body>
+
 <a href="javascript:void(0);" class="floating-help-btn" onclick="openHelp(); return false;">？ 利用方法</a>
 
 <div id="help-modal" class="modal-overlay" onclick="if(event.target == this) closeHelp();">
@@ -278,12 +314,9 @@
     </div>
     <div class="modal-body">
       <div style="background:#fff4f4; border:1px solid #d32f2f; padding:10px; border-radius:5px; margin-bottom:15px;">
-        <h4 style="color:#d32f2f; border-color:#d32f2f; margin-top:0;">【重要】松山市内のエリア検索について</h4>
-        <p style="font-size:13px; color:#333;">松山市内の地区選択は、求人票の<strong>「町名」をキーワードとして検索する簡易機能</strong>です。</p>
-        <ul style="font-size:13px; color:#333;">
-          <li><strong>検索漏れの可能性：</strong><br>求人票に「町名」がない場合は表示されません。網羅的に探したい場合は<strong>「松山市内全域」</strong>を選択してください。</li>
-          <li><strong>選択数の制限（50文字制限）：</strong><br>システムの仕様上、キーワードは合計50文字までです。エリアの組み合わせによっては、これ以上選択できないよう制限がかかる場合があります。</li>
-        </ul>
+        <h4 style="color:#d32f2f; border-color:#d32f2f; margin-top:0;">【重要】文字数制限について</h4>
+        <p style="font-size:13px; color:#333;">ハローワークのシステム制限により、<strong>「シニア」「ミドルシニア」</strong>を選択した場合、町名の絞り込みは自動的に解除され、<strong>「松山市内全域」</strong>での検索となります。</p>
+        <p style="font-size:12px; color:#666;">（両方の条件を入れると文字数オーバーで検索できなくなるためです）</p>
       </div>
 
       <h4>検索方法</h4>
@@ -293,7 +326,7 @@
 
       <h4>操作方法</h4>
       <ul>
-        <li><strong>勤務地：</strong><br>ボタンを押すたびに「選択/解除」が切り替わります。<br>※複数のエリアを同時に選択できます（キーワード文字数上限まで）。</li>
+        <li><strong>勤務地：</strong><br>ボタンを押すと選択状態（濃い緑色）になります。松山市内は1つだけ、周辺地域は複数選択可能です（合計3つまで）。</li>
         <li><strong>職種・業種・就業形態：</strong><br>「限定なし」ボタンを押すか、別の項目を選び直してください。</li>
         <li><strong>こだわり条件：</strong><br>選択したボタンをもう一度押すと解除されます。</li>
         <li><strong>すべてリセット：</strong><br>画面最下部のグレーの「条件をすべてリセット」ボタンを押してください。</li>
@@ -315,8 +348,8 @@
   </div>
 
   <div class="section">1. 地区を選択</div>
-  <p style="font-size:0.8em; color:#666;">※複数のエリアを選択できます（松山市内エリアは組み合わせに制限あり）</p>
-  <div class="sub-section">▼松山市内</div>
+  <p style="font-size:0.8em; color:#666;">※ハローワークの仕様上、選択できる地域は3つまでです</p>
+  <div class="sub-section">▼松山市内（1つのみ選択可）</div>
   <div class="grid-container">
     <div class="grid-item-2"><a href="javascript:void(0);" id="btn-matsuyama_all" onclick="selectArea('matsuyama_all');" class="btn-base area-btn" style="background:#eee; border-color:#aaa; color:#333;">松山市内全域（限定なし）</a></div>
     <div class="grid-item-2"><a href="javascript:void(0);" id="btn-east" onclick="selectArea('east');" class="btn-base area-btn">城東・中央</a></div>
@@ -327,7 +360,7 @@
     <div class="grid-item-2"><a href="javascript:void(0);" id="btn-josai" onclick="selectArea('josai');" class="btn-base area-btn">三津・垣生</a></div>
     <div class="grid-item-2"><a href="javascript:void(0);" id="btn-hojo" onclick="selectArea('hojo');" class="btn-base area-btn">北条・島しょ</a></div>
   </div>
-  <div class="sub-section" style="margin-top:10px;">▼周辺地域</div>
+  <div class="sub-section" style="margin-top:10px;">▼周辺地域（複数選択可・合計3地域まで）</div>
   <div class="grid-container">
     <div class="grid-item-2"><a href="javascript:void(0);" id="btn-iyo" onclick="selectArea('iyo');" class="btn-base area-btn">伊予市</a></div>
     <div class="grid-item-2"><a href="javascript:void(0);" id="btn-toon" onclick="selectArea('toon');" class="btn-base area-btn">東温市</a></div>
@@ -360,7 +393,7 @@
     <div class="details-content">
       <form name="JobIndustry" class="grid-container">
         <div class="grid-item-2"><input checked id="ind0" name="radioIndustry" type="radio" value="" onclick="clearJobType()"/><label for="ind0" class="btn-base industry-btn-label" style="background:#eee; border-color:#aaa; color:#333;">限定なし</label></div>
-        <div class="grid-item-2"><input id="ind16" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=83&kiboSuruSngBrui2In=84&kiboSuruSngBrui3In=85" onclick="clearJobType()"/><label for="ind16" class="btn-base industry-btn-label">医療，福祉</label></div>
+        <div class="grid-item-2"><input id="ind16" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=83&kiboSuruSngBrui2In=84&kiboSuruSngBrui3In=85" onclick="clearJobType()"/><label for="ind16" class="btn-base industry-btn-label">医療,福祉</label></div>
         <div class="grid-item-2"><input id="ind18" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=88&kiboSuruSngBrui2In=91&kiboSuruSngBrui3In=92" onclick="clearJobType()"/><label for="ind18" class="btn-base industry-btn-label">サービス業・警備</label></div>
         <div class="grid-item-2"><input id="ind9" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=50&kiboSuruSngBrui2In=56&kiboSuruSngBrui3In=61" onclick="clearJobType()"/><label for="ind9" class="btn-base industry-btn-label">卸売業・小売業</label></div>
         <div class="grid-item-2"><input id="ind4" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=06&kiboSuruSngBrui2In=07&kiboSuruSngBrui3In=08" onclick="clearJobType()"/><label for="ind4" class="btn-base industry-btn-label">建設業</label></div>
@@ -370,7 +403,7 @@
         <div class="grid-item-2"><input id="ind19" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=97&kiboSuruSngBrui2In=98" onclick="clearJobType()"/><label for="ind19" class="btn-base industry-btn-label">公務(他を除く)</label></div>
         <div class="grid-item-2"><input id="ind1" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=01&kiboSuruSngBrui2In=02&kiboSuruSngBrui3In=03&kiboSuruSngBrui4In=04" onclick="clearJobType()"/><label for="ind1" class="btn-base industry-btn-label">農林漁業</label></div>
         <div class="grid-item-2"><input id="ind7" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=39&kiboSuruSngBrui2In=40&kiboSuruSngBrui3In=41" onclick="clearJobType()"/><label for="ind7" class="btn-base industry-btn-label">情報通信業</label></div>
-        <div class="grid-item-2"><input id="ind15" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=81&kiboSuruSngBrui2In=82" onclick="clearJobType()"/><label for="ind15" class="btn-base industry-btn-label">教育，学習支援業</label></div>
+        <div class="grid-item-2"><input id="ind15" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=81&kiboSuruSngBrui2In=82" onclick="clearJobType()"/><label for="ind15" class="btn-base industry-btn-label">教育,学習支援業</label></div>
       </form>
     </div>
   </details>
@@ -385,9 +418,9 @@
         <div class="grid-item-2"><input id="job3" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=02,00" onclick="clearIndustry()"/><label for="job3" class="btn-base job-btn-label">営業</label></div>
         <div class="grid-item-2"><input id="job4" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=03,00" onclick="clearIndustry()"/><label for="job4" class="btn-base job-btn-label">販売</label></div>
         <div class="grid-item-2"><input id="job5" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=04,00" onclick="clearIndustry()"/><label for="job5" class="btn-base job-btn-label">接客サービス</label></div>
-        <div class="grid-item-2"><input id="job6" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=05,00" onclick="clearIndustry()"/><label for="job6" class="btn-base job-btn-label">介護・福祉</label></div>
+        <div class="grid-item-2"><input id="job6" name="radioJobType" type="radio" value="&kiboSuruSKSU1In=361" onclick="clearIndustry()"/><label for="job6" class="btn-base job-btn-label">介護・福祉</label></div>
         <div class="grid-item-2"><input id="job7" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=06,00" onclick="clearIndustry()"/><label for="job7" class="btn-base job-btn-label">保育・教育</label></div>
-        <div class="grid-item-2"><input id="job8" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=07,00" onclick="clearIndustry()"/><label for="job8" class="btn-base job-btn-label">医療・看護</label></div>
+        <div class="grid-item-2"><input id="job8" name="radioJobType" type="radio" value="&kiboSuruSKSU1In=131" onclick="clearIndustry()"/><label for="job8" class="btn-base job-btn-label">医療・看護</label></div>
         <div class="grid-item-2"><input id="job9" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=09,00" onclick="clearIndustry()"/><label for="job9" class="btn-base job-btn-label">技術・IT・専門</label></div>
         <div class="grid-item-2"><input id="job10" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=10,00" onclick="clearIndustry()"/><label for="job10" class="btn-base job-btn-label">建築・土木</label></div>
         <div class="grid-item-2"><input id="job11" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=12,00" onclick="clearIndustry()"/><label for="job11" class="btn-base job-btn-label">運輸・配送</label></div>
@@ -417,6 +450,11 @@
   <form name="Free" class="grid-container">
     <div class="grid-item-2"><input checked id="u4" name="radio3" type="radio" value="" onclick="checkradio('none')"/><label for="u4" class="btn-base chkLabel">限定なし</label></div>
     <div class="grid-item-2"><input id="u2" name="radio3" type="radio" value="&freeWordInput=%E5%AD%90%E8%82%B2%E3%81%A6%E6%94%AF%E6%8F%B4%E6%B1%82%E4%BA%BA" onclick="checkradio('none')"/><label for="u2" class="btn-base chkLabel">子育て支援</label></div>
+    
+    <div class="grid-item-2"><input id="u6" name="radio3" type="radio" value="&freeWordInput=%E3%82%B7%E3%83%8B%E3%82%A2%E3%80%80%EF%BC%96%EF%BC%90%E6%AD%B3%E4%BB%A5%E4%B8%8A&nOTKNSKFreeWordInput=%E3%83%9F%E3%83%89%E3%83%AB%E3%82%B7%E3%83%8B%E3%82%A2&freeWordRadioBtn=0" onclick="checkradio('none')"/><label for="u6" class="btn-base chkLabel">シニア(60歳~)</label></div>
+    
+    <div class="grid-item-2"><input id="u7" name="radio3" type="radio" value="&freeWordInput=%E3%83%9F%E3%83%89%E3%83%AB%E3%82%B7%E3%83%8B%E3%82%A2&freeWordRadioBtn=0" onclick="checkradio('none')"/><label for="u7" class="btn-base chkLabel">ミドルシニア</label></div>
+    
     <div class="grid-item-2" style="flex:100%;"><input id="u5" name="radio3" type="radio" value="manual" onclick="checkradio('block')"/><label for="u5" class="btn-base chkLabel">入力する</label></div>
   </form>
   <div id="FreeWord" style="display:none;">
@@ -462,6 +500,14 @@
         ※検索結果に表示されていても、タイミングによっては募集が終了している場合があります。
       </p>
     </div>
+  </div>
+
+  <div style="margin-top: 30px; text-align: center;">
+    <p style="font-size: 0.9em; font-weight: bold; color: #333; margin-bottom: 5px;">専門サイトはこちら</p>
+    <a href="https://www.mhlw.go.jp/hellowork_iryoukaigohoiku/" target="_blank" style="display: block; background-color: #f0f8ff; border: 2px solid #0066cc; color: #0066cc; padding: 15px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px;">
+      医療・介護・保育求人<br>
+      <span style="font-size: 0.8em;">（厚生労働省 特設サイトへ）</span>
+    </a>
   </div>
 </div>
 </body>
