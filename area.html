@@ -14,15 +14,26 @@
   
   /* モーダル共通スタイル */
   .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; }
-  .modal-content { background-color: #fff; width: 90%; max-width: 500px; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); max-height: 85vh; overflow-y: auto; position: relative; animation: popIn 0.2s ease-out; }
+  /* ヘルプ用は少し大きめ */
+  .modal-content-help { background-color: #fff; width: 90%; max-width: 500px; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); max-height: 85vh; overflow-y: auto; position: relative; animation: popIn 0.2s ease-out; }
+  /* アラート用は少し小さめ */
+  .modal-content-msg { background-color: #fff; width: 85%; max-width: 350px; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center; animation: popIn 0.2s ease-out; }
+
   @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   
   .modal-header { font-size: 18px; font-weight: bold; color: #008000; border-bottom: 2px solid #008000; padding-bottom: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
   .modal-close-btn { background: #eee; border: none; padding: 5px 12px; cursor: pointer; border-radius: 20px; font-size: 14px; color: #333; font-weight: bold; }
   
+  /* ヘルプ内のスタイル */
+  .help-section-title { color: #008000; border-left: 5px solid #008000; padding-left: 8px; margin: 15px 0 8px 0; font-size: 16px; font-weight: bold; }
+  .help-text { font-size: 14px; line-height: 1.6; margin-bottom: 5px; color: #333; }
+  .help-list { padding-left: 20px; margin-top: 5px; font-size: 14px; color: #333; line-height: 1.6; }
+  .help-warning { background:#fff4f4; border:1px solid #d32f2f; padding:10px; border-radius:5px; margin-bottom:15px; }
+  .help-warning-title { color:#d32f2f; margin-top:0; font-size:15px; font-weight:bold; }
+
   /* メッセージモーダル専用 */
-  .msg-title { font-size: 1.1em; font-weight: bold; color: #333; margin-bottom: 10px; text-align: center; }
-  .msg-body { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 20px; text-align: center; white-space: pre-wrap; }
+  .msg-title { font-size: 1.1em; font-weight: bold; color: #333; margin-bottom: 10px; }
+  .msg-body { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 20px; white-space: pre-wrap; }
   .msg-buttons { display: flex; justify-content: center; gap: 15px; }
   .btn-ok { background: #008000; color: #fff; border: none; padding: 10px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; flex: 1; max-width: 120px; }
   .btn-cancel { background: #ccc; color: #333; border: none; padding: 10px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; flex: 1; max-width: 120px; }
@@ -159,7 +170,6 @@
 
     if (nextSelectedKeys.length > selectedAreaKeys.length) { 
         if (countUniqueCodes(nextSelectedKeys) > 3) {
-            // ★ここをカスタムモーダルに変更
             showMyModal("選択できません", "ハローワークの仕様上、同時に選択できる地域は3つまでです。\n（松山市内は全域で1つとカウントされます）", false);
             return;
         }
@@ -234,7 +244,6 @@
   function closeHelp() { document.getElementById('help-modal').style.display = 'none'; }
   
   function resetAll() {
-    // ★ここをカスタムモーダルに変更
     showMyModal("確認", "選択した条件をすべてリセットしますか？", true, function(result){
         if(!result) return;
         
@@ -271,7 +280,6 @@
     }
 
     if(uniqueCodes.length > 3) {
-        // ★ここをカスタムモーダルに変更
         showMyModal("エラー", "地域コードが3つを超えています。\n選択を減らしてください。", false);
         return;
     }
@@ -299,7 +307,6 @@
     
     var fw = document.getElementById("FreeW").value;
     
-    // 検索実行関数（あとで呼び出す）
     var executeSearch = function() {
         var finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchBtn" + amp + "screenId=GECA110010" + amp + "kjKbnRadioBtn=1" + amp + "searchClear=0" + params;
         window.open(finalUrl, '_blank');
@@ -308,7 +315,6 @@
     if (useKeywordPriority) {
         params += collect('Free');
         if(fw !== "") {
-            // ★ここをカスタムモーダルに変更
             showMyModal("確認", "【注】「シニア・ミドルシニア」検索時は、文字数制限のため「地区詳細（町名）」は解除され、松山市全域での検索となります。\n\n検索を続けますか？", true, function(result){
                 if(result) executeSearch();
             });
@@ -318,13 +324,11 @@
     } else if((document.getElementById('u5').checked || selectedAreaKeys.length > 0) && fw) {
        var encodedFW = encodeURIComponent(fw);
        params += amp + "freeWordInput=" + encodedFW + amp + "freeWordRadioBtn=0";
-       // ★ここをカスタムモーダルに変更（検索最終確認）
        showMyModal("検索確認", "【条件】" + document.getElementById('selectedAreaDisplay').innerText + "\n\nこの条件でハローワークの検索を開きますか？", true, function(result){
            if(result) executeSearch();
        });
     } else { 
        params += collect('Free'); 
-       // ★ここをカスタムモーダルに変更（検索最終確認）
        showMyModal("検索確認", "【条件】" + document.getElementById('selectedAreaDisplay').innerText + "\n\nこの条件でハローワークの検索を開きますか？", true, function(result){
            if(result) executeSearch();
        });
@@ -339,20 +343,37 @@
 <a class="floating-help-btn" onclick="openHelp(); return false;">？ 利用方法</a>
 
 <div id="help-modal" class="modal-overlay" onclick="if(event.target == this) closeHelp();">
-  <div class="modal-content">
+  <div class="modal-content-help">
     <div class="modal-header">
       <span>利用方法・ご注意</span>
       <button class="modal-close-btn" onclick="closeHelp()">閉じる ×</button>
     </div>
     <div class="modal-body">
-      <div style="background:#fff4f4; border:1px solid #d32f2f; padding:10px; border-radius:5px; margin-bottom:15px;">
-        <h4 style="color:#d32f2f; border-color:#d32f2f; margin-top:0;">【重要】文字数制限について</h4>
-        <p style="font-size:13px; color:#333;">ハローワークのシステム制限により、<strong>「シニア」「ミドルシニア」</strong>を選択した場合、町名の絞り込みは自動的に解除され、<strong>「松山市内全域」</strong>での検索となります。</p>
+      <div class="help-warning">
+        <h4 class="help-warning-title">【重要】松山市内のエリア検索について</h4>
+        <p class="help-text">松山市内の地区選択は、求人数の多い主要な町名をキーワードとして検索する簡易機能です。</p>
+        <p class="help-text"><strong>文字数制限（50文字以内）の関係上、すべての町名を網羅しているわけではありません。</strong></p>
+        <p class="help-text">主要な求人は概ねカバーしていますが、万一の抜け漏れを防ぎたい場合は<strong>「松山市内全域」</strong>を選択してください。</p>
       </div>
-      <h4>検索方法</h4>
-      <p>1. 指定したい条件のボタンをクリック又はタップしてください。</p>
-      <p>2. 希望の条件を選択し終えたら、画面下部の緑色の「検索する」ボタンを押してください。</p>
-      <div style="text-align:center; margin-top:15px;">
+      
+      <div class="help-warning">
+        <h4 class="help-warning-title">【重要】シニア・ミドルシニア選択時</h4>
+        <p class="help-text">「シニア」「ミドルシニア」を選択した場合、文字数制限オーバーを防ぐため、<strong>地区指定は自動的に解除され「松山市内全域」での検索</strong>となります。</p>
+      </div>
+
+      <div class="help-section-title">検索方法</div>
+      <p class="help-text">1. 指定したい条件のボタンをクリック又はタップしてください。</p>
+      <p class="help-text">2. 希望の条件を選択し終えたら、画面下部の緑色の「検索する」ボタンを押してください。</p>
+      <p class="help-text">3. ハローワークインターネットサービスの画面が開き、検索結果が表示されます。</p>
+
+      <div class="help-section-title">操作方法</div>
+      <ul class="help-list">
+        <li><strong>勤務地：</strong><br>ボタンを押すと選択状態（濃い緑色）になります。松山市内は1つだけ、周辺地域は複数選択可能です（合計3つまで）。</li>
+        <li><strong>職種・業種・就業形態：</strong><br>「限定なし」ボタンを押すか、別の項目を選び直してください。</li>
+        <li><strong>こだわり条件：</strong><br>選択したボタンをもう一度押すと解除されます。</li>
+        <li><strong>すべてリセット：</strong><br>画面最下部のグレーの「条件をすべてリセット」ボタンを押してください。</li>
+      </ul>
+      <div style="text-align:center; margin-top:20px;">
         <button onclick="closeHelp()" style="padding:10px 20px; background:#008000; color:#fff; border:none; border-radius:5px; cursor:pointer;">閉じる</button>
       </div>
     </div>
@@ -360,7 +381,7 @@
 </div>
 
 <div id="msg-modal-overlay" class="modal-overlay">
-  <div class="modal-content" style="max-width:350px; text-align:center; padding:25px;">
+  <div class="modal-content-msg">
     <div id="msg-modal-title" class="msg-title"></div>
     <div id="msg-modal-text" class="msg-body"></div>
     <div class="msg-buttons">
