@@ -12,7 +12,7 @@
   .caution-text { color: #d32f2f; font-weight: bold; font-size: 0.95em; margin-bottom: 5px; display: block; }
   .floating-help-btn { position: fixed; top: 15px; right: 15px; z-index: 9999; background-color: #ff9800; color: #ffffff !important; font-weight: bold; font-size: 13px; padding: 10px 16px; border-radius: 25px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.3); opacity: 0.95; cursor: pointer; }
   
-  /* モーダル共通 */
+  /* モーダル */
   .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; }
   .modal-content-help { background-color: #fff; width: 90%; max-width: 500px; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); max-height: 85vh; overflow-y: auto; position: relative; animation: popIn 0.2s ease-out; }
   .modal-content-msg { background-color: #fff; width: 85%; max-width: 350px; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center; animation: popIn 0.2s ease-out; }
@@ -41,17 +41,14 @@
   .grid-container { display: flex; flex-wrap: wrap; gap: 8px; }
   .grid-item-2 { flex: 1 1 calc(50% - 8px); }
   
-  /* ボタン基本 */
   .btn-base { display: flex; align-items: center; justify-content: center; padding: 5px; text-align: center; cursor: pointer; box-sizing: border-box; font-size: 16px; font-weight: bold; border-radius: 8px; text-decoration: none; min-height: 60px; line-height: 1.3; width: 100%; border: 2px solid transparent; transition: all 0.2s; }
   
   .area-btn { background: #fff; color: #008000; border: 2px solid #008000; }
   .area-btn.active { background: #008000; color: #fff; box-shadow: 0 0 5px rgba(0,128,0,0.5); }
   
-  /* 排他制御用 Disabledスタイル */
+  /* 排他制御用 */
   .btn-base.disabled { background-color: #e0e0e0 !important; color: #999 !important; border-color: #ccc !important; pointer-events: none; opacity: 0.7; }
   .area-btn.disabled { background-color: #e0e0e0 !important; color: #999 !important; border-color: #ccc !important; }
-  
-  /* 排他制御メッセージ */
   .exclusion-msg { display: none; color: #d32f2f; font-size: 0.9em; font-weight: bold; margin-bottom: 10px; background: #fff0f0; padding: 8px; border-radius: 4px; border-left: 4px solid #d32f2f; }
 
   .chkLabel { background: #fff; color: #008000; border: 1px solid #008000; }
@@ -104,8 +101,9 @@
     "south": { name: "城南",      code: "38201", words: "石井　居相　古川　はなみずき　和泉　森松　井門　天山　朝生田　土居　北井門　小坂" },
     "joto":  { name: "久米・小野", code: "38201", words: "小野　久米　平井　鷹子　来住　湯の山　南久米　北久米　畑寺　水泥　福音寺　高井" },
     "josai": { name: "三津・垣生", code: "38201", words: "三津　高浜　味生　生石　垣生　空港通　富久　南吉田　梅津寺　北斎院　南斎院　別府" },
-    "hojo":  { name: "北条・島しょ", code: "38201", words: "北条　浅海　立岩　難波　正岡　河野　泊　由良　睦野　中島　大浦　粟井　柳原　八反地" },
-    // ▼周辺地域（併用可）
+    // 【修正】北条エリアのキーワードを少し間引いて50文字制限を回避（検索漏れ防止）
+    "hojo":  { name: "北条・島しょ", code: "38201", words: "北条　浅海　立岩　難波　正岡　河野　由良　睦野　中島　大浦　粟井　柳原　八反地" },
+    // ▼周辺地域
     "iyo":    { name: "伊予市",     code: "38210", words: "" },
     "toon":   { name: "東温市",     code: "38211", words: "" },
     "masaki": { name: "松前町",     code: "38401", words: "" },
@@ -118,58 +116,61 @@
 
   // ▼ 排他制御ロジック
   function updateExclusion() {
-    var isSenior = document.getElementById('u6').checked || document.getElementById('u7').checked;
+    // 特殊キーワード検索が選択されているか（子育て、シニア、ミドル）
+    var isKeywordSearch = document.getElementById('u2').checked || 
+                          document.getElementById('u6').checked || 
+                          document.getElementById('u7').checked;
     
-    // 松山市内エリアが1つ以上選択されているかチェック
-    var isAreaSelected = false;
-    for(var i=0; i<matsuyamaGroup.length; i++){
-        if(selectedAreaKeys.indexOf(matsuyamaGroup[i]) !== -1){
-            isAreaSelected = true;
+    // 詳細なエリア（松山全域以外）が選択されているか
+    var isDetailAreaSelected = false;
+    for(var i=0; i<selectedAreaKeys.length; i++){
+        if(matsuyamaGroup.indexOf(selectedAreaKeys[i]) !== -1 && selectedAreaKeys[i] !== "matsuyama_all"){
+            isDetailAreaSelected = true;
             break;
         }
     }
 
-    // 1. シニア選択中 → 松山市内エリアボタンを無効化
+    // 1. 特殊キーワード選択中 → 詳細エリアボタンを無効化
     matsuyamaGroup.forEach(function(key){
-        var btn = document.getElementById('btn-' + key);
-        if(isSenior) {
-            btn.classList.add('disabled');
-            // もし選択済みなら解除する処理が必要だが、今回はUX上「解除してからロック」が親切
-            // ただし無限ループ防ぐためデータ操作は慎重に。
-            // ここでは「見た目ロック」＋「クリック無効」にする。
-            // ※データ整合性はシニアクリック時にクリアする処理で行う
-        } else {
-            btn.classList.remove('disabled');
+        // 全域ボタンは常に有効、それ以外の詳細エリアはロック
+        if(key !== "matsuyama_all") {
+            var btn = document.getElementById('btn-' + key);
+            if(isKeywordSearch) {
+                btn.classList.add('disabled');
+            } else {
+                btn.classList.remove('disabled');
+            }
         }
     });
-    
-    // エリア警告メッセージ表示制御
-    document.getElementById('area-warning-msg').style.display = isSenior ? 'block' : 'none';
+    // エリア警告メッセージ
+    document.getElementById('area-warning-msg').style.display = isKeywordSearch ? 'block' : 'none';
 
-    // 2. エリア選択中 → シニアボタンを無効化
-    var seniorLabels = [document.querySelector('label[for="u6"]'), document.querySelector('label[for="u7"]')];
-    seniorLabels.forEach(function(lbl){
-        if(isAreaSelected) {
+    // 2. 詳細エリア選択中 → 特殊キーワードボタン(u2,u6,u7)を無効化
+    var specialLabels = [
+        document.querySelector('label[for="u2"]'), // 子育て
+        document.querySelector('label[for="u6"]'), // シニア
+        document.querySelector('label[for="u7"]')  // ミドル
+    ];
+    specialLabels.forEach(function(lbl){
+        if(isDetailAreaSelected) {
             lbl.classList.add('disabled');
         } else {
             lbl.classList.remove('disabled');
         }
     });
-    
-    // シニア警告メッセージ表示制御
-    document.getElementById('senior-warning-msg').style.display = isAreaSelected ? 'block' : 'none';
+    // シニア等警告メッセージ
+    document.getElementById('senior-warning-msg').style.display = isDetailAreaSelected ? 'block' : 'none';
   }
 
-  // シニアボタンクリック時の処理（エリア解除含む）
-  function onSeniorClick() {
-    // もしエリアが選択されていたら強制解除（念のため）
-    // ただし排他制御で押せないはずだが、万が一の整合性確保
-    /* 今回は「エリア選択中はシニアが押せない」仕様なので、
-       ここに来る＝エリアは選択されていない状態。
-       なので特段のリセット処理は不要だが、updateExclusionを呼ぶ
-    */
+  // ラジオボタンクリック時の制御
+  function onRadioClick() {
     updateExclusion();
-    checkradio('none');
+    // 手動入力欄の表示制御
+    if(document.getElementById('u5').checked) {
+        document.getElementById('FreeWord').style.display = 'block';
+    } else {
+        document.getElementById('FreeWord').style.display = 'none';
+    }
   }
 
   // ▼ カスタムモーダル
@@ -208,20 +209,27 @@
   }
 
   function selectArea(key) {
-    // シニア選択中は操作無効
-    if(document.getElementById('u6').checked || document.getElementById('u7').checked) return;
-
+    // ロック中（詳細エリア）なら反応しない
     var btn = document.getElementById('btn-' + key);
+    if(btn.classList.contains('disabled')) return;
+
     var index = selectedAreaKeys.indexOf(key);
     var isMatsuyama = matsuyamaGroup.indexOf(key) !== -1;
     var nextSelectedKeys = selectedAreaKeys.slice();
 
     if (isMatsuyama) {
+      // 松山市内は排他
       nextSelectedKeys = nextSelectedKeys.filter(function(k) {
         return matsuyamaGroup.indexOf(k) === -1;
       });
       nextSelectedKeys.push(key);
+      
+      // 【修正】「松山市内全域」を選んだ場合、シニア等のロックを解除するためにエリア選択ナシ扱いにする必要はないが、
+      // 排他制御ロジック(updateExclusion)内で "matsuyama_all" はロック対象外として判定しているためOK。
+      // ただし、もし詳細エリアから全域に切り替えた場合、u2/u6/u7のロックを外す必要がある。
+      // これは updateExclusion() で自動的に処理される。
     } else {
+      // 周辺地域はトグル
       if (index === -1) {
         nextSelectedKeys.push(key);
       } else {
@@ -262,8 +270,8 @@
     if (selectedAreaKeys.length === 0) {
       display.innerText = "指定なし（松山市全域）";
       document.getElementById('FreeW').value = "";
-      document.getElementById('u4').checked = true;
-      document.getElementById('FreeWord').style.display = "none";
+      document.getElementById('u4').checked = true; // 限定なしに戻す
+      onRadioClick(); // ラジオイベント発火してUI整合
     } else {
       var names = [];
       var combinedWords = "";
@@ -273,16 +281,6 @@
       });
       display.innerText = "選択中: " + names.join("、");
       document.getElementById('FreeW').value = combinedWords.trim();
-      
-      if (combinedWords) {
-        document.getElementById('u5').checked = true;
-        document.getElementById('FreeWord').style.display = "block";
-      } else {
-        if(document.getElementById('FreeW').value === "") {
-             document.getElementById('u4').checked = true;
-             document.getElementById('FreeWord').style.display = "none";
-        }
-      }
     }
   }
 
@@ -310,21 +308,25 @@
         // ボタン状態リセット
         var allBtnBase = document.getElementsByClassName('btn-base');
         for(var i=0; i<allBtnBase.length; i++) allBtnBase[i].classList.remove('disabled');
+        var allLabels = document.getElementsByTagName('label');
+        for(var i=0; i<allLabels.length; i++) allLabels[i].classList.remove('disabled');
+        
         document.getElementById('area-warning-msg').style.display = 'none';
         document.getElementById('senior-warning-msg').style.display = 'none';
 
-        updateAreaDisplay();
         document.getElementById('s4').checked = true;
         document.getElementById('job0').checked = true;
         document.getElementById('ind0').checked = true;
-        document.getElementById('u4').checked = true; // 限定なしへ
+        document.getElementById('u4').checked = true; 
+        
+        updateAreaDisplay();
+        onRadioClick();
+
         var checks = document.getElementsByName('j1');
         for(var i=0; checks.length > i; i++) checks[i].checked = false;
         document.forms['ksjo'].f0.value = "";
         document.forms['ksge'].f1.value = "";
         document.getElementById('FreeW').value = "";
-        
-        updateExclusion();
         closeHelp();
     });
   }
@@ -345,9 +347,9 @@
         return;
     }
 
-    var isSeniorMode = document.getElementById('u6').checked;
-    var isMiddleMode = document.getElementById('u7').checked;
-    var useKeywordPriority = isSeniorMode || isMiddleMode;
+    var isKeywordSearch = document.getElementById('u2').checked || 
+                          document.getElementById('u6').checked || 
+                          document.getElementById('u7').checked;
 
     var params = "";
     for(var i=0; i < 3; i++) {
@@ -364,7 +366,7 @@
       return str;
     };
     
-    params += collect('ippan') + collect('newArri') + collect('jyouken') + collect('JobIndustry') + collect('JobType'); // 公務gyoushu削除済み
+    params += collect('ippan') + collect('newArri') + collect('jyouken') + collect('JobIndustry') + collect('JobType');
     
     var fw = document.getElementById("FreeW").value;
     
@@ -373,16 +375,14 @@
         window.open(finalUrl, '_blank');
     };
 
-    if (useKeywordPriority) {
-        // 排他制御により、ここに来るときは「詳細エリア指定なし」が保証されているはずだが
-        // 念のため、シニアパラメータのみ送信する
+    if (isKeywordSearch) {
         params += collect('Free');
-        showMyModal("検索確認", "【条件】シニア・ミドルシニア（全域検索）\n\nこの条件でハローワークの検索を開きますか？", true, function(result){
-            if(result) executeSearch();
-        });
-    } else if((document.getElementById('u5').checked || selectedAreaKeys.length > 0) && fw) {
+        executeSearch();
+    } else if(fw && fw !== "") {
        var encodedFW = encodeURIComponent(fw);
+       // 【修正】ユーザー指示により、0（OR挙動）に戻す
        params += amp + "freeWordInput=" + encodedFW + amp + "freeWordRadioBtn=0";
+       
        showMyModal("検索確認", "【条件】" + document.getElementById('selectedAreaDisplay').innerText + "\n\nこの条件でハローワークの検索を開きますか？", true, function(result){
            if(result) executeSearch();
        });
@@ -396,7 +396,7 @@
 
   function checkradio(disp) { 
       document.getElementById('FreeWord').style.display = disp; 
-      updateExclusion(); // 状態更新
+      updateExclusion(); 
   }
 </script>
 </head>
@@ -418,9 +418,8 @@
       </div>
       
       <div class="help-warning">
-        <h4 class="help-warning-title">【重要】シニア・ミドルシニア検索</h4>
-        <p class="help-text">シニア求人は件数が限られるため、より多くの求人に出会えるよう<strong>「全域検索」</strong>でご案内しています。</p>
-        <p class="help-text">（※地区指定との併用はできません）</p>
+        <h4 class="help-warning-title">【重要】シニア・子育て・ミドル検索</h4>
+        <p class="help-text">これらの条件を選択した場合、文字数制限の関係上、<strong>地区指定（詳細な町名）との併用はできません</strong>。</p>
       </div>
 
       <div class="help-section-title">検索方法</div>
@@ -465,7 +464,7 @@
   <p style="font-size:0.9em; color:#666;">※ハローワークの仕様上、選択できる地域は3つまでです</p>
   
   <div id="area-warning-msg" class="exclusion-msg">
-    ※シニア検索時は、件数確保のため全域検索となります（詳細地区は選べません）
+    ※「シニア」「子育て」等を選択中は、詳細エリア指定はできません（併用不可）
   </div>
 
   <div class="sub-section">▼松山市内（1つのみ選択可）</div>
@@ -567,17 +566,17 @@
 
   <div class="section">6. キーワード・その他</div>
   <form name="Free" class="grid-container">
-    <div class="grid-item-2"><input checked id="u4" name="radio3" type="radio" value="" onclick="checkradio('none')"/><label for="u4" class="btn-base chkLabel">限定なし</label></div>
-    <div class="grid-item-2"><input id="u2" name="radio3" type="radio" value="&freeWordInput=%E5%AD%90%E8%82%B2%E3%81%A6%E6%94%AF%E6%8F%B4%E6%B1%82%E4%BA%BA" onclick="checkradio('none')"/><label for="u2" class="btn-base chkLabel">子育て支援</label></div>
+    <div class="grid-item-2"><input checked id="u4" name="radio3" type="radio" value="" onclick="onRadioClick()"/><label for="u4" class="btn-base chkLabel">限定なし</label></div>
+    <div class="grid-item-2"><input id="u2" name="radio3" type="radio" value="&freeWordInput=%E5%AD%90%E8%82%B2%E3%81%A6%E6%94%AF%E6%8F%B4%E6%B1%82%E4%BA%BA" onclick="onRadioClick()"/><label for="u2" class="btn-base chkLabel">子育て支援</label></div>
     
     <div id="senior-warning-msg" class="exclusion-msg" style="flex:100%; display:none;">
-      ※エリア指定中は、シニア検索ボタンは使用できません（併用不可）
+      ※エリア指定中は、上記キーワードボタンは使用できません（併用不可）
     </div>
 
-    <div class="grid-item-2"><input id="u6" name="radio3" type="radio" value="&freeWordInput=%E3%82%B7%E3%83%8B%E3%82%A2%E3%80%80%EF%BC%96%EF%BC%90%E6%AD%B3%E4%BB%A5%E4%B8%8A&nOTKNSKFreeWordInput=%E3%83%9F%E3%83%89%E3%83%AB%E3%82%B7%E3%83%8B%E3%82%A2&freeWordRadioBtn=0" onclick="onSeniorClick()"/><label for="u6" class="btn-base chkLabel">シニア(60歳~)</label></div>
-    <div class="grid-item-2"><input id="u7" name="radio3" type="radio" value="&freeWordInput=%E3%83%9F%E3%83%89%E3%83%AB%E3%82%B7%E3%83%8B%E3%82%A2&freeWordRadioBtn=0" onclick="onSeniorClick()"/><label for="u7" class="btn-base chkLabel">ミドルシニア</label></div>
+    <div class="grid-item-2"><input id="u6" name="radio3" type="radio" value="&freeWordInput=%E3%82%B7%E3%83%8B%E3%82%A2%E3%80%80%EF%BC%96%EF%BC%90%E6%AD%B3%E4%BB%A5%E4%B8%8A&nOTKNSKFreeWordInput=%E3%83%9F%E3%83%89%E3%83%AB%E3%82%B7%E3%83%8B%E3%82%A2&freeWordRadioBtn=0" onclick="onRadioClick()"/><label for="u6" class="btn-base chkLabel">シニア(60歳~)</label></div>
+    <div class="grid-item-2"><input id="u7" name="radio3" type="radio" value="&freeWordInput=%E3%83%9F%E3%83%89%E3%83%AB%E3%82%B7%E3%83%8B%E3%82%A2&freeWordRadioBtn=0" onclick="onRadioClick()"/><label for="u7" class="btn-base chkLabel">ミドルシニア</label></div>
     
-    <div class="grid-item-2" style="flex:100%;"><input id="u5" name="radio3" type="radio" value="manual" onclick="checkradio('block')"/><label for="u5" class="btn-base chkLabel">入力する</label></div>
+    <div class="grid-item-2" style="flex:100%;"><input id="u5" name="radio3" type="radio" value="manual" onclick="onRadioClick()"/><label for="u5" class="btn-base chkLabel">入力する</label></div>
   </form>
   <div id="FreeWord" style="display:none;">
     <input class="textarea" id="FreeW" placeholder="全角スペースで区切って入力" type="text" />
