@@ -67,7 +67,10 @@
   details[open] summary::after { transform: rotate(180deg); }
   .details-content { padding: 10px; background: #fafafa; border-top: 1px solid #ccc; }
   
-  select, input[type="text"], input[type="number"] { width: 100%; padding: 14px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; font-size: 17px; }
+  select, input[type="text"] { width: 100%; padding: 14px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; font-size: 17px; }
+  
+  /* 番号入力用スタイル */
+  input.num-input { padding: 12px; margin: 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-size: 18px; text-align: center; }
   
   .searchbutton { display: block; width: 100%; padding: 20px; background: #008000; color: #fff !important; text-align: center; font-size: 24px; font-weight: bold; border-radius: 12px; margin-top: 35px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; }
   .reset-btn { display: block; width: 100%; margin-top: 20px; padding: 14px; background-color: #ccc; color: #333; text-align: center; border-radius: 8px; font-size: 15px; text-decoration: none; border: none; cursor: pointer; box-sizing: border-box; }
@@ -101,7 +104,6 @@
     "south": { name: "城南",      code: "38201", words: "石井　居相　古川　はなみずき　和泉　森松　井門　天山　朝生田　土居　北井門　小坂" },
     "joto":  { name: "久米・小野", code: "38201", words: "小野　久米　平井　鷹子　来住　湯の山　南久米　北久米　畑寺　水泥　福音寺　高井" },
     "josai": { name: "三津・垣生", code: "38201", words: "三津　高浜　味生　生石　垣生　空港通　富久　南吉田　梅津寺　北斎院　南斎院　別府" },
-    // 【修正】北条エリアのキーワードを少し間引いて50文字制限を回避（検索漏れ防止）
     "hojo":  { name: "北条・島しょ", code: "38201", words: "北条　浅海　立岩　難波　正岡　河野　由良　睦野　中島　大浦　粟井　柳原　八反地" },
     // ▼周辺地域
     "iyo":    { name: "伊予市",     code: "38210", words: "" },
@@ -114,14 +116,19 @@
   var matsuyamaGroup = ["matsuyama_all", "east", "west", "north", "south", "joto", "josai", "hojo"];
   var selectedAreaKeys = [];
 
+  // ▼ 自動フォーカス移動
+  function autoFocusNext(current, nextFieldId) {
+    if (current.value.length >= current.maxLength) {
+        document.getElementById(nextFieldId).focus();
+    }
+  }
+
   // ▼ 排他制御ロジック
   function updateExclusion() {
-    // 特殊キーワード検索が選択されているか（子育て、シニア、ミドル）
     var isKeywordSearch = document.getElementById('u2').checked || 
                           document.getElementById('u6').checked || 
                           document.getElementById('u7').checked;
     
-    // 詳細なエリア（松山全域以外）が選択されているか
     var isDetailAreaSelected = false;
     for(var i=0; i<selectedAreaKeys.length; i++){
         if(matsuyamaGroup.indexOf(selectedAreaKeys[i]) !== -1 && selectedAreaKeys[i] !== "matsuyama_all"){
@@ -132,7 +139,6 @@
 
     // 1. 特殊キーワード選択中 → 詳細エリアボタンを無効化
     matsuyamaGroup.forEach(function(key){
-        // 全域ボタンは常に有効、それ以外の詳細エリアはロック
         if(key !== "matsuyama_all") {
             var btn = document.getElementById('btn-' + key);
             if(isKeywordSearch) {
@@ -142,14 +148,13 @@
             }
         }
     });
-    // エリア警告メッセージ
     document.getElementById('area-warning-msg').style.display = isKeywordSearch ? 'block' : 'none';
 
-    // 2. 詳細エリア選択中 → 特殊キーワードボタン(u2,u6,u7)を無効化
+    // 2. 詳細エリア選択中 → 特殊キーワードボタンを無効化
     var specialLabels = [
-        document.querySelector('label[for="u2"]'), // 子育て
-        document.querySelector('label[for="u6"]'), // シニア
-        document.querySelector('label[for="u7"]')  // ミドル
+        document.querySelector('label[for="u2"]'), 
+        document.querySelector('label[for="u6"]'), 
+        document.querySelector('label[for="u7"]') 
     ];
     specialLabels.forEach(function(lbl){
         if(isDetailAreaSelected) {
@@ -158,14 +163,11 @@
             lbl.classList.remove('disabled');
         }
     });
-    // シニア等警告メッセージ
     document.getElementById('senior-warning-msg').style.display = isDetailAreaSelected ? 'block' : 'none';
   }
 
-  // ラジオボタンクリック時の制御
   function onRadioClick() {
     updateExclusion();
-    // 手動入力欄の表示制御
     if(document.getElementById('u5').checked) {
         document.getElementById('FreeWord').style.display = 'block';
     } else {
@@ -209,7 +211,6 @@
   }
 
   function selectArea(key) {
-    // ロック中（詳細エリア）なら反応しない
     var btn = document.getElementById('btn-' + key);
     if(btn.classList.contains('disabled')) return;
 
@@ -218,18 +219,11 @@
     var nextSelectedKeys = selectedAreaKeys.slice();
 
     if (isMatsuyama) {
-      // 松山市内は排他
       nextSelectedKeys = nextSelectedKeys.filter(function(k) {
         return matsuyamaGroup.indexOf(k) === -1;
       });
       nextSelectedKeys.push(key);
-      
-      // 【修正】「松山市内全域」を選んだ場合、シニア等のロックを解除するためにエリア選択ナシ扱いにする必要はないが、
-      // 排他制御ロジック(updateExclusion)内で "matsuyama_all" はロック対象外として判定しているためOK。
-      // ただし、もし詳細エリアから全域に切り替えた場合、u2/u6/u7のロックを外す必要がある。
-      // これは updateExclusion() で自動的に処理される。
     } else {
-      // 周辺地域はトグル
       if (index === -1) {
         nextSelectedKeys.push(key);
       } else {
@@ -262,7 +256,7 @@
     });
 
     updateAreaDisplay();
-    updateExclusion(); // 状態更新
+    updateExclusion(); 
   }
 
   function updateAreaDisplay() {
@@ -270,8 +264,8 @@
     if (selectedAreaKeys.length === 0) {
       display.innerText = "指定なし（松山市全域）";
       document.getElementById('FreeW').value = "";
-      document.getElementById('u4').checked = true; // 限定なしに戻す
-      onRadioClick(); // ラジオイベント発火してUI整合
+      document.getElementById('u4').checked = true; 
+      onRadioClick(); 
     } else {
       var names = [];
       var combinedWords = "";
@@ -305,7 +299,6 @@
         var btns = document.getElementsByClassName('area-btn');
         for(var i=0; btns.length > i; i++) btns[i].classList.remove('active');
         
-        // ボタン状態リセット
         var allBtnBase = document.getElementsByClassName('btn-base');
         for(var i=0; i<allBtnBase.length; i++) allBtnBase[i].classList.remove('disabled');
         var allLabels = document.getElementsByTagName('label');
@@ -324,14 +317,35 @@
 
         var checks = document.getElementsByName('j1');
         for(var i=0; checks.length > i; i++) checks[i].checked = false;
-        document.forms['ksjo'].f0.value = "";
-        document.forms['ksge'].f1.value = "";
+        
+        // 入力欄クリア
+        document.getElementById('f0').value = "";
+        document.getElementById('f1').value = "";
+        document.getElementById('q0').value = "";
+        document.getElementById('q1').value = "";
+        
         document.getElementById('FreeW').value = "";
         closeHelp();
     });
   }
 
   function Search() {
+    // 1. 求人番号（ズバリ検索）があるかチェック
+    var q0 = document.getElementById('q0').value;
+    var q1 = document.getElementById('q1').value;
+    
+    if(q0 && q1) {
+        showMyModal("求人番号検索", "入力された求人番号（" + q0 + "-" + q1 + "）で\nピンポイント検索しますか？", true, function(result){
+            if(result) {
+                // 求人番号指定検索URLへ（詳細表示）
+                var targetUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110050.do?action=searchBtn&screenId=GECA110050&kJBNo1=" + q0 + "&kJBNo2=" + q1;
+                window.open(targetUrl, '_blank');
+            }
+        });
+        return; // 通常検索はしない
+    }
+
+    // 2. 通常検索処理
     var uniqueCodes = [];
     if (selectedAreaKeys.length === 0) {
       uniqueCodes.push("38201");
@@ -370,6 +384,13 @@
     
     var fw = document.getElementById("FreeW").value;
     
+    // 求職番号の追加
+    var ksjo = document.getElementById('f0').value;
+    var ksge = document.getElementById('f1').value;
+    if(ksjo && ksge) {
+        params += amp + "kSNoJo=" + ksjo + amp + "kSNoGe=" + ksge;
+    }
+    
     var executeSearch = function() {
         var finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchBtn" + amp + "screenId=GECA110010" + amp + "kjKbnRadioBtn=1" + amp + "searchClear=0" + params;
         window.open(finalUrl, '_blank');
@@ -380,8 +401,7 @@
         executeSearch();
     } else if(fw && fw !== "") {
        var encodedFW = encodeURIComponent(fw);
-       // 【修正】ユーザー指示により、0（OR挙動）に戻す
-       params += amp + "freeWordInput=" + encodedFW + amp + "freeWordRadioBtn=0";
+       params += amp + "freeWordInput=" + encodedFW + amp + "freeWordRadioBtn=0"; // 0(OR)に戻しました
        
        showMyModal("検索確認", "【条件】" + document.getElementById('selectedAreaDisplay').innerText + "\n\nこの条件でハローワークの検索を開きますか？", true, function(result){
            if(result) executeSearch();
@@ -431,8 +451,7 @@
       <ul class="help-list">
         <li><strong>勤務地：</strong><br>ボタンを押すと選択状態（濃い緑色）になります。松山市内は1つだけ、周辺地域は複数選択可能です（合計3つまで）。</li>
         <li><strong>職種・業種・就業形態：</strong><br>「限定なし」ボタンを押すか、別の項目を選び直してください。</li>
-        <li><strong>こだわり条件：</strong><br>選択したボタンをもう一度押すと解除されます。</li>
-        <li><strong>すべてリセット：</strong><br>画面最下部のグレーの「条件をすべてリセット」ボタンを押してください。</li>
+        <li><strong>求人番号：</strong><br>窓口で案内された求人番号を入力すると、その求人をピンポイントで表示します（他の条件は無視されます）。</li>
       </ul>
       <div style="text-align:center; margin-top:20px;">
         <button onclick="closeHelp()" style="padding:10px 20px; background:#008000; color:#fff; border:none; border-radius:5px; cursor:pointer;">閉じる</button>
@@ -586,9 +605,18 @@
   <p style="font-size:0.9em; color:#666; margin-top:0; margin-bottom:10px; line-height:1.4;">※求職者マイページをお持ちの方は、ログインして検索すると、求職番号の入力が不要になり、より多くの機能が利用できます。</p>
   
   <div style="display:flex; align-items:center;">
-    <form name="ksjo" style="margin:0;"><input id="f0" type="number" placeholder="12345" style="width:80px;"/></form>
+    <form name="ksjo" style="margin:0;"><input id="f0" type="tel" class="num-input" placeholder="12345" style="width:80px;" maxlength="5" oninput="autoFocusNext(this, 'f1')"/></form>
     <span style="margin:0 5px;">-</span>
-    <form name="ksge" style="margin:0;"><input id="f1" type="number" placeholder="12345678" style="width:100px;"/></form>
+    <form name="ksge" style="margin:0;"><input id="f1" type="tel" class="num-input" placeholder="12345678" style="width:110px;" maxlength="8"/></form>
+  </div>
+
+  <div class="section" style="border:none;">8. 求人番号（ズバリ検索）</div>
+  <p style="font-size:0.9em; color:#666; margin-top:0; margin-bottom:10px; line-height:1.4;">※窓口で案内された求人票の番号を入力してください。入力がある場合は、他の条件を無視してこの求人を直接表示します。</p>
+  
+  <div style="display:flex; align-items:center;">
+    <form name="qno1" style="margin:0;"><input id="q0" type="tel" class="num-input" placeholder="38010" style="width:80px;" maxlength="5" oninput="autoFocusNext(this, 'q1')"/></form>
+    <span style="margin:0 5px;">-</span>
+    <form name="qno2" style="margin:0;"><input id="q1" type="tel" class="num-input" placeholder="12345678" style="width:110px;" maxlength="8"/></form>
   </div>
 
   <a class="searchbutton" href="javascript:void(0);" onclick="Search()">この条件で検索する</a>
