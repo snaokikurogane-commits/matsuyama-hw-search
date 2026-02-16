@@ -8,8 +8,9 @@
   body { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 0; background-color: #f9f9f9; }
   #wrapper { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding-bottom: 80px; box-sizing: border-box; position: relative; }
   .tytle { margin: 10px 0 5px 0; padding: 3px 0 3px 10px; color: #008000 !important; border-left: 15px #008000 solid; font-size: 18pt; font-weight: bold; line-height: 1.4; }
-  .intro-text { font-size: 15px; color: #333; background: #f4f4f4; padding: 12px; border-radius: 5px; margin-bottom: 20px; line-height: 1.6; }
-  .caution-text { color: #d32f2f; font-weight: bold; font-size: 0.95em; margin-bottom: 5px; display: block; }
+  .intro-text { font-size: 15px; color: #333; background: #f4f4f4; padding: 15px; border-radius: 5px; margin-bottom: 20px; line-height: 1.6; }
+  .caution-text { color: #d32f2f; font-weight: bold; font-size: 0.95em; display: block; margin-bottom: 10px; }
+  .official-link { font-size: 0.95em; font-weight: bold; color: #0066cc; text-decoration: underline; }
   .floating-help-btn { position: fixed; top: 15px; right: 15px; z-index: 9999; background-color: #ff9800; color: #ffffff !important; font-weight: bold; font-size: 13px; padding: 10px 16px; border-radius: 25px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.3); opacity: 0.95; cursor: pointer; }
   
   /* モーダル */
@@ -105,6 +106,7 @@
     "joto":  { name: "久米・小野", code: "38201", words: "小野　久米　平井　鷹子　来住　湯の山　南久米　北久米　畑寺　水泥　福音寺　高井" },
     "josai": { name: "三津・垣生", code: "38201", words: "三津　高浜　味生　生石　垣生　空港通　富久　南吉田　梅津寺　北斎院　南斎院　別府" },
     "hojo":  { name: "北条・島しょ", code: "38201", words: "北条　浅海　立岩　難波　正岡　河野　由良　睦野　中島　大浦　粟井　柳原　八反地" },
+    // ▼周辺地域
     "iyo":    { name: "伊予市",     code: "38210", words: "" },
     "toon":   { name: "東温市",     code: "38211", words: "" },
     "masaki": { name: "松前町",     code: "38401", words: "" },
@@ -115,12 +117,14 @@
   var matsuyamaGroup = ["matsuyama_all", "east", "west", "north", "south", "joto", "josai", "hojo"];
   var selectedAreaKeys = [];
 
+  // ▼ 自動フォーカス移動
   function autoFocusNext(current, nextFieldId) {
     if (current.value.length >= current.maxLength) {
         document.getElementById(nextFieldId).focus();
     }
   }
 
+  // ▼ 排他制御ロジック
   function updateExclusion() {
     var isKeywordSearch = document.getElementById('u2').checked || 
                           document.getElementById('u6').checked || 
@@ -134,6 +138,7 @@
         }
     }
 
+    // 1. 特殊キーワード選択中 → 詳細エリアボタンを無効化
     matsuyamaGroup.forEach(function(key){
         if(key !== "matsuyama_all") {
             var btn = document.getElementById('btn-' + key);
@@ -146,6 +151,7 @@
     });
     document.getElementById('area-warning-msg').style.display = isKeywordSearch ? 'block' : 'none';
 
+    // 2. 詳細エリア選択中 → 特殊キーワードボタンを無効化
     var specialLabels = [
         document.querySelector('label[for="u2"]'), 
         document.querySelector('label[for="u6"]'), 
@@ -170,6 +176,7 @@
     }
   }
 
+  // ▼ カスタムモーダル
   function showMyModal(title, text, isConfirm, callback) {
     var overlay = document.getElementById('msg-modal-overlay');
     document.getElementById('msg-modal-title').innerText = title;
@@ -314,30 +321,12 @@
         
         document.getElementById('f0').value = "";
         document.getElementById('f1').value = "";
-        document.getElementById('q0').value = "";
-        document.getElementById('q1').value = "";
-        
         document.getElementById('FreeW').value = "";
         closeHelp();
     });
   }
 
   function Search() {
-    // 【求人番号検索】ActionをdispDetailBtnに変更し、13桁連結パラメータを追加
-    var q0 = document.getElementById('q0').value;
-    var q1 = document.getElementById('q1').value;
-    
-    if(q0 && q1) {
-        showMyModal("求人番号検索", "入力された求人番号（" + q0 + "-" + q1 + "）で\nピンポイント検索しますか？", true, function(result){
-            if(result) {
-                // 正しいActionとパラメータ構成
-                var targetUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110050.do?action=dispDetailBtn&screenId=GECA110050&kJBNo=" + q0 + q1 + "&kJBNo1=" + q0 + "&kJBNo2=" + q1;
-                window.open(targetUrl, '_blank');
-            }
-        });
-        return; 
-    }
-
     var uniqueCodes = [];
     if (selectedAreaKeys.length === 0) {
       uniqueCodes.push("38201");
@@ -468,6 +457,9 @@
   <div class="intro-text">
     ハローワーク松山管轄の求人情報を、簡単な操作で検索することができます。<br>
     <span class="caution-text">※本機能は簡易検索システムのため、条件によっては全ての求人が表示されない場合があります。</span>
+    <div style="margin-top:12px; font-size:0.95em;">
+      より詳細な条件で検索したい場合は、<a href="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=initDisp&screenId=GECA110010" target="_blank" class="official-link">ハローワークインターネットサービス</a>をご利用ください。
+    </div>
   </div>
 
   <div class="section">1. 地区を選択</div>
@@ -599,14 +591,6 @@
     <form name="ksjo" style="margin:0;"><input id="f0" type="tel" class="num-input" placeholder="12345" style="width:80px;" maxlength="5" oninput="autoFocusNext(this, 'f1')"/></form>
     <span style="margin:0 5px;">-</span>
     <form name="ksge" style="margin:0;"><input id="f1" type="tel" class="num-input" placeholder="12345678" style="width:110px;" maxlength="8"/></form>
-  </div>
-
-  <div class="section" style="border:none;">8. 求人番号</div>
-  
-  <div style="display:flex; align-items:center;">
-    <form name="qno1" style="margin:0;"><input id="q0" type="tel" class="num-input" placeholder="38010" style="width:80px;" maxlength="5" oninput="autoFocusNext(this, 'q1')"/></form>
-    <span style="margin:0 5px;">-</span>
-    <form name="qno2" style="margin:0;"><input id="q1" type="tel" class="num-input" placeholder="12345678" style="width:110px;" maxlength="8"/></form>
   </div>
 
   <a class="searchbutton" href="javascript:void(0);" onclick="Search()">この条件で検索する</a>
