@@ -318,7 +318,6 @@
         var checks = document.getElementsByName('j1');
         for(var i=0; checks.length > i; i++) checks[i].checked = false;
         
-        // 入力欄クリア
         document.getElementById('f0').value = "";
         document.getElementById('f1').value = "";
         document.getElementById('q0').value = "";
@@ -330,22 +329,19 @@
   }
 
   function Search() {
-    // 1. 求人番号（ズバリ検索）があるかチェック
     var q0 = document.getElementById('q0').value;
     var q1 = document.getElementById('q1').value;
     
     if(q0 && q1) {
         showMyModal("求人番号検索", "入力された求人番号（" + q0 + "-" + q1 + "）で\nピンポイント検索しますか？", true, function(result){
             if(result) {
-                // 求人番号指定検索URLへ（詳細表示）
                 var targetUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110050.do?action=searchBtn&screenId=GECA110050&kJBNo1=" + q0 + "&kJBNo2=" + q1;
                 window.open(targetUrl, '_blank');
             }
         });
-        return; // 通常検索はしない
+        return; 
     }
 
-    // 2. 通常検索処理
     var uniqueCodes = [];
     if (selectedAreaKeys.length === 0) {
       uniqueCodes.push("38201");
@@ -384,7 +380,6 @@
     
     var fw = document.getElementById("FreeW").value;
     
-    // 求職番号の追加
     var ksjo = document.getElementById('f0').value;
     var ksge = document.getElementById('f1').value;
     if(ksjo && ksge) {
@@ -401,7 +396,7 @@
         executeSearch();
     } else if(fw && fw !== "") {
        var encodedFW = encodeURIComponent(fw);
-       params += amp + "freeWordInput=" + encodedFW + amp + "freeWordRadioBtn=0"; // 0(OR)に戻しました
+       params += amp + "freeWordInput=" + encodedFW + amp + "freeWordRadioBtn=0"; // 0(OR)
        
        showMyModal("検索確認", "【条件】" + document.getElementById('selectedAreaDisplay').innerText + "\n\nこの条件でハローワークの検索を開きますか？", true, function(result){
            if(result) executeSearch();
@@ -610,8 +605,7 @@
     <form name="ksge" style="margin:0;"><input id="f1" type="tel" class="num-input" placeholder="12345678" style="width:110px;" maxlength="8"/></form>
   </div>
 
-  <div class="section" style="border:none;">8. 求人番号（ズバリ検索）</div>
-  <p style="font-size:0.9em; color:#666; margin-top:0; margin-bottom:10px; line-height:1.4;">※窓口で案内された求人票の番号を入力してください。入力がある場合は、他の条件を無視してこの求人を直接表示します。</p>
+  <div class="section" style="border:none;">8. 求人番号</div>
   
   <div style="display:flex; align-items:center;">
     <form name="qno1" style="margin:0;"><input id="q0" type="tel" class="num-input" placeholder="38010" style="width:80px;" maxlength="5" oninput="autoFocusNext(this, 'q1')"/></form>
@@ -637,7 +631,7 @@
         （ハローワークの職業紹介を要件とする給付金等は対象外となる場合があります）
       </div>
 
-      <p style="margin-top:15px; font-weight:bold; color:#008000;">お問い合わせ先：ハローワーク松山（TEL: 089-917-8609）</p>
+      <p style="margin-top:15px; font-weight:bold; color:#008000;">お問い合わせ先：<br>ハローワーク松山（TEL: 089-917-8609）</p>
     </div>
   </div>
 </div>
