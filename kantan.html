@@ -364,8 +364,10 @@
     var executeSearch = function() {
         var finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchBtn" + amp + "screenId=GECA110010" + amp + "kjKbnRadioBtn=1" + amp + "searchClear=0" + params;
         
-        // ▼ デバッグ用のアラート表示（本番公開時はこの行を消すか // でコメントアウトしてください）▼
-        alert("【デバッグ用確認】\nこの後、以下のURLで検索を実行します：\n\n" + finalUrl);
+        // ▼ デバッグ用のアラート表示 ▼
+        // 日本語にデコードして表示させることで確認しやすくしています
+        var readableUrl = decodeURIComponent(finalUrl);
+        alert("【デバッグ用確認】\nこの後、以下のURLで検索を実行します：\n\n" + readableUrl);
         // ▲ デバッグ用ここまで ▲
 
         window.open(finalUrl, '_blank');
