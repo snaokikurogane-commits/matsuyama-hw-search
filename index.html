@@ -512,7 +512,7 @@
   <p style="font-size:0.9em; color:#666;">※どちらか一方を選択してください（選択するともう一方は解除されます）</p>
   
   <details>
-    <summary>▼ 業界から探す（青色・人気順）</summary>
+    <summary>▼ 業界から探す</summary>
     <div class="details-content">
       <form name="JobIndustry" class="grid-container">
         <div class="grid-item-2"><input checked id="ind0" name="radioIndustry" type="radio" value="" onclick="clearJobType()"/><label for="ind0" class="btn-base industry-btn-label" style="background:#eee; border-color:#aaa; color:#333;">限定なし</label></div>
@@ -532,41 +532,41 @@
   </details>
 
   <details open>
-    <summary>▼ 職種から探す（ピンク色・全25職種）</summary>
+    <summary>▼ 職種から探す</summary>
     <div class="details-content">
       <form name="JobType" class="grid-container">
         
         <div class="grid-item-full"><input checked id="job0" name="radioJobType" type="radio" value="" onclick="clearIndustry()"/><label for="job0" class="btn-base job-btn-label" style="background:#eee; border-color:#aaa; color:#333;">職種 限定なし</label></div>
         
-        <div class="grid-item-full job-category-title">📁 事務・管理系</div>
+        <div class="grid-item-full job-category-title">事務・管理系</div>
         <div class="grid-item-2"><input id="job1_1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=01,1&kiboSuruSKSU2Hidden=01,11&kiboSuruSKSU3Hidden=01,14&kiboSuruSKSU4Hidden=01,6" onclick="clearIndustry()"/><label for="job1_1" class="btn-base job-btn-label">一般事務・受付</label></div>
         <div class="grid-item-2"><input id="job1_2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=01,12&kiboSuruSKSU2Hidden=01,13&kiboSuruSKSU3Hidden=01,10&kiboSuruSKSU4Hidden=01,15&kiboSuruSKSU5Hidden=01,2" onclick="clearIndustry()"/><label for="job1_2" class="btn-base job-btn-label">専門事務(医療・経理等)</label></div>
         <div class="grid-item-2"><input id="job1_3" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=01,7&kiboSuruSKSU2Hidden=01,8&kiboSuruSKSU3Hidden=01,4&kiboSuruSKSU4Hidden=01,5&kiboSuruSKSU5Hidden=01,3&kiboSuruSKSU6Hidden=01,9" onclick="clearIndustry()"/><label for="job1_3" class="btn-base job-btn-label">コール・その他事務</label></div>
         
-        <div class="grid-item-full job-category-title">🤝 販売・営業・サービス系</div>
+        <div class="grid-item-full job-category-title">販売・営業・サービス系</div>
         <div class="grid-item-2"><input id="job4" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=03,00" onclick="clearIndustry()"/><label for="job4" class="btn-base job-btn-label">販売スタッフ</label></div>
         <div class="grid-item-2"><input id="job3_1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=02,2&kiboSuruSKSU2Hidden=02,3&kiboSuruSKSU3Hidden=02,5&kiboSuruSKSU4Hidden=02,12" onclick="clearIndustry()"/><label for="job3_1" class="btn-base job-btn-label">一般・ルート営業</label></div>
         <div class="grid-item-2"><input id="job3_2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=02,1&kiboSuruSKSU2Hidden=02,10&kiboSuruSKSU3Hidden=02,4&kiboSuruSKSU4Hidden=02,11&kiboSuruSKSU5Hidden=02,6&kiboSuruSKSU6Hidden=02,7&kiboSuruSKSU7Hidden=02,8&kiboSuruSKSU8Hidden=02,9" onclick="clearIndustry()"/><label for="job3_2" class="btn-base job-btn-label">専門営業(不動産等)</label></div>
-        <div class="grid-item-2"><input id="job5_1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=04,2&kiboSuruSKSU2Hidden=04,3&kiboSuruSKSU3Hidden=04,5" onclick="clearIndustry()"/><label for="job5_1" class="btn-base job-btn-label">飲食・調理スタッフ</label></div>
-        <div class="grid-item-2"><input id="job5_2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=04,6&kiboSuruSKSU2Hidden=04,7&kiboSuruSKSU3Hidden=04,8" onclick="clearIndustry()"/><label for="job5_2" class="btn-base job-btn-label">理美容・サロン</label></div>
-        <div class="grid-item-2"><input id="job5_3" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=04,4&kiboSuruSKSU2Hidden=04,1&kiboSuruSKSU3Hidden=04,10&kiboSuruSKSU4Hidden=04,9&kiboSuruSKSU5Hidden=04,11&kiboSuruSKSU6Hidden=04,12" onclick="clearIndustry()"/><label for="job5_3" class="btn-base job-btn-label">ホテル・接客サービス</label></div>
+        <div class="grid-item-2"><input id="job5_1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=04,1&kiboSuruSKSU2Hidden=04,2&kiboSuruSKSU3Hidden=04,9&kiboSuruSKSU4Hidden=04,10&kiboSuruSKSU5Hidden=04,11&kiboSuruSKSU6Hidden=04,12&kiboSuruSKSU7Hidden=04,13" onclick="clearIndustry()"/><label for="job5_1" class="btn-base job-btn-label">飲食・調理スタッフ</label></div>
+        <div class="grid-item-2"><input id="job5_2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=04,5&kiboSuruSKSU2Hidden=04,6&kiboSuruSKSU3Hidden=04,7" onclick="clearIndustry()"/><label for="job5_2" class="btn-base job-btn-label">理美容・サロン</label></div>
+        <div class="grid-item-2"><input id="job5_3" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=04,3&kiboSuruSKSU2Hidden=04,4&kiboSuruSKSU3Hidden=04,8&kiboSuruSKSU4Hidden=04,14&kiboSuruSKSU5Hidden=04,15" onclick="clearIndustry()"/><label for="job5_3" class="btn-base job-btn-label">ホテル・接客サービス</label></div>
 
-        <div class="grid-item-full job-category-title">🏥 医療・福祉・保育・教育系</div>
+        <div class="grid-item-full job-category-title">医療・福祉・保育・教育系</div>
         <div class="grid-item-2"><input id="job8" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=07,11&kiboSuruSKSU2Hidden=07,12" onclick="clearIndustry()"/><label for="job8" class="btn-base job-btn-label">医療・看護</label></div>
         <div class="grid-item-2"><input id="job6_1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=05,1&kiboSuruSKSU2Hidden=05,2" onclick="clearIndustry()"/><label for="job6_1" class="btn-base job-btn-label">介護スタッフ</label></div>
         <div class="grid-item-2"><input id="job6_2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=05,3&kiboSuruSKSU2Hidden=05,4&kiboSuruSKSU3Hidden=05,5&kiboSuruSKSU4Hidden=05,6&kiboSuruSKSU5Hidden=05,7&kiboSuruSKSU6Hidden=05,8" onclick="clearIndustry()"/><label for="job6_2" class="btn-base job-btn-label">ケアマネ・相談員</label></div>
         <div class="grid-item-2"><input id="job7_1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=06,1&kiboSuruSKSU2Hidden=06,2&kiboSuruSKSU3Hidden=06,3&kiboSuruSKSU4Hidden=06,4" onclick="clearIndustry()"/><label for="job7_1" class="btn-base job-btn-label">保育・幼稚園・学童</label></div>
         <div class="grid-item-2"><input id="job7_2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=06,5&kiboSuruSKSU2Hidden=06,6&kiboSuruSKSU3Hidden=06,7&kiboSuruSKSU4Hidden=06,8&kiboSuruSKSU5Hidden=06,9&kiboSuruSKSU6Hidden=06,10&kiboSuruSKSU7Hidden=06,11&kiboSuruSKSU8Hidden=06,12&kiboSuruSKSU9Hidden=06,13" onclick="clearIndustry()"/><label for="job7_2" class="btn-base job-btn-label">教育・講師</label></div>
 
-        <div class="grid-item-full job-category-title">🏭 製造・技術・専門職系</div>
+        <div class="grid-item-full job-category-title">製造・技術・専門職系</div>
         <div class="grid-item-2"><input id="job2_1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=08,6&kiboSuruSKSU2Hidden=08,7&kiboSuruSKSU3Hidden=08,8&kiboSuruSKSU4Hidden=08,9" onclick="clearIndustry()"/><label for="job2_1" class="btn-base job-btn-label">食品製造・加工</label></div>
         <div class="grid-item-2"><input id="job2_2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=08,2&kiboSuruSKSU2Hidden=08,3&kiboSuruSKSU3Hidden=08,4&kiboSuruSKSU4Hidden=08,5" onclick="clearIndustry()"/><label for="job2_2" class="btn-base job-btn-label">組立・検査・工場作業</label></div>
         <div class="grid-item-2"><input id="job2_3" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=08,1&kiboSuruSKSU2Hidden=08,11&kiboSuruSKSU3Hidden=08,12&kiboSuruSKSU4Hidden=08,10" onclick="clearIndustry()"/><label for="job2_3" class="btn-base job-btn-label">機械加工・修理・整備</label></div>
-        <div class="grid-item-2"><input id="job9_1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=09,1&kiboSuruSKSU2Hidden=09,2&kiboSuruSKSU3Hidden=09,3&kiboSuruSKSU4Hidden=09,10" onclick="clearIndustry()"/><label for="job9_1" class="btn-base job-btn-label">IT・WEB制作</label></div>
-        <div class="grid-item-2"><input id="job9_2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=09,4" onclick="clearIndustry()"/><label for="job9_2" class="btn-base job-btn-label">建築・設備エンジニア</label></div>
-        <div class="grid-item-2"><input id="job9_3" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=09,5&kiboSuruSKSU2Hidden=09,6&kiboSuruSKSU3Hidden=09,7&kiboSuruSKSU4Hidden=09,8&kiboSuruSKSU5Hidden=09,9&kiboSuruSKSU6Hidden=09,11" onclick="clearIndustry()"/><label for="job9_3" class="btn-base job-btn-label">その他専門職・士業</label></div>
+        <div class="grid-item-2"><input id="job9_1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=09,10&kiboSuruSKSU2Hidden=09,4&kiboSuruSKSU3Hidden=09,5" onclick="clearIndustry()"/><label for="job9_1" class="btn-base job-btn-label">IT・WEB制作</label></div>
+        <div class="grid-item-2"><input id="job9_2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=09,1&kiboSuruSKSU2Hidden=09,2&kiboSuruSKSU3Hidden=09,3" onclick="clearIndustry()"/><label for="job9_2" class="btn-base job-btn-label">建築・設備エンジニア</label></div>
+        <div class="grid-item-2"><input id="job9_3" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=09,6&kiboSuruSKSU2Hidden=09,7&kiboSuruSKSU3Hidden=09,8&kiboSuruSKSU4Hidden=09,9&kiboSuruSKSU5Hidden=09,11&kiboSuruSKSU6Hidden=09,12&kiboSuruSKSU7Hidden=09,13&kiboSuruSKSU8Hidden=09,14&kiboSuruSKSU9Hidden=09,15" onclick="clearIndustry()"/><label for="job9_3" class="btn-base job-btn-label">その他専門職・士業</label></div>
 
-        <div class="grid-item-full job-category-title">🚚 現場・物流・その他</div>
+        <div class="grid-item-full job-category-title">現場・物流・その他</div>
         <div class="grid-item-2"><input id="job10" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=10,00" onclick="clearIndustry()"/><label for="job10" class="btn-base job-btn-label">建築・土木・電気工事</label></div>
         <div class="grid-item-2"><input id="job11" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=12,00" onclick="clearIndustry()"/><label for="job11" class="btn-base job-btn-label">運輸・配送</label></div>
         <div class="grid-item-2"><input id="job12" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=11,00" onclick="clearIndustry()"/><label for="job12" class="btn-base job-btn-label">警備・施設管理</label></div>
