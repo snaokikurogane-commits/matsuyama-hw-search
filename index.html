@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>かんたん求人検索（松山版）</title>
+<title>かんたん求人検索（松山版）全部入り</title>
 <style type="text/css">
   body { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 0; background-color: #f9f9f9; }
   #wrapper { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding-bottom: 80px; box-sizing: border-box; position: relative; }
@@ -37,15 +37,13 @@
   .btn-cancel { background: #ccc; color: #333; border: none; padding: 12px 30px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; flex: 1; max-width: 140px; }
 
   /* UI要素 */
-  .section { margin-top: 2em; font-weight: bold; border-bottom: 2px solid #008000; padding-bottom: 5px; margin-bottom: 15px; color: #333; font-size: 1.1em; }
+  .section { margin-top: 2.5em; font-weight: bold; border-bottom: 2px solid #008000; padding-bottom: 5px; margin-bottom: 15px; color: #333; font-size: 1.1em; }
   .sub-section { font-size: 1em; color: #555; margin-bottom: 8px; }
   .grid-container { display: flex; flex-wrap: wrap; gap: 8px; }
   .grid-item-2 { flex: 1 1 calc(50% - 8px); }
-  .grid-item-full { flex: 1 1 100%; margin-top: 15px; margin-bottom: 5px; font-weight: bold; font-size: 0.95em; }
-  
-  .job-category-title { color: #666; border-bottom: 2px solid #ccc; padding-bottom: 4px; margin-top: 20px; }
+  .grid-item-full { flex: 1 1 100%; }
 
-  .btn-base { display: flex; align-items: center; justify-content: center; padding: 5px; text-align: center; cursor: pointer; box-sizing: border-box; font-size: 16px; font-weight: bold; border-radius: 8px; text-decoration: none; min-height: 60px; line-height: 1.3; width: 100%; border: 2px solid transparent; transition: all 0.2s; }
+  .btn-base { display: flex; align-items: center; justify-content: center; padding: 5px; text-align: center; cursor: pointer; box-sizing: border-box; font-size: 15px; font-weight: bold; border-radius: 8px; text-decoration: none; min-height: 60px; line-height: 1.3; width: 100%; border: 2px solid transparent; transition: all 0.2s; }
   
   .area-btn { background: #fff; color: #008000; border: 2px solid #008000; }
   .area-btn.active { background: #008000; color: #fff; box-shadow: 0 0 5px rgba(0,128,0,0.5); }
@@ -64,10 +62,6 @@
   
   .job-btn-label { background: #fff; color: #e6006b; border: 2px solid #e6006b; }
   input:checked + .job-btn-label { background: #e6006b; color: #fff; }
-
-  /* 全体検索ボタン用 特別スタイル */
-  .category-all-label { background: #fff5f8; color: #d80065; border: 2px dashed #ffb3d1; margin-bottom: 2px; }
-  input:checked + .category-all-label { background: #d80065; color: #fff; border-style: solid; border-color: #d80065; }
   
   details { margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; overflow: hidden; background: #fff; width: 100%; }
   summary { cursor: pointer; padding: 15px; font-weight: bold; background-color: #f0f0f0; list-style: none; position: relative; font-size: 16px; }
@@ -80,9 +74,16 @@
   /* 番号入力用スタイル */
   input.num-input { padding: 12px; margin: 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-size: 18px; text-align: center; }
   
-  .searchbutton { display: block; width: 100%; padding: 20px; background: #008000; color: #fff !important; text-align: center; font-size: 24px; font-weight: bold; border-radius: 12px; margin-top: 35px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; }
+  .searchbutton { display: block; width: 100%; padding: 20px; background: #008000; color: #fff !important; text-align: center; font-size: 24px; font-weight: bold; border-radius: 12px; margin-top: 15px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; }
   .reset-btn { display: block; width: 100%; margin-top: 20px; padding: 14px; background-color: #ccc; color: #333; text-align: center; border-radius: 8px; font-size: 15px; text-decoration: none; border: none; cursor: pointer; box-sizing: border-box; }
   
+  /* 追加：条件見える化と保存ボタンのデザイン */
+  .condition-summary { background: #e8f5e9; border: 2px dashed #008000; padding: 15px; border-radius: 8px; margin-top: 35px; font-size: 14px; font-weight: bold; color: #333; line-height: 1.6; }
+  .condition-summary-title { color: #008000; margin-bottom: 5px; font-size: 16px; border-bottom: 1px solid #008000; padding-bottom: 3px; }
+  .save-btn-container { display: flex; justify-content: space-between; gap: 10px; margin-top: 10px; }
+  .save-btn { flex: 1; padding: 12px; background: #fff; color: #008000; border: 2px solid #008000; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; }
+  .save-btn:active { background: #e8f5e9; }
+
   .app-guide { margin-top: 40px; border: 2px solid #008000; border-radius: 8px; overflow: hidden; background-color: #fff; }
   .app-guide h3 { margin: 0; padding: 12px 15px; background-color: #008000; color: #fff !important; font-size: 18px; font-weight: bold; }
   .app-guide .guide-body { padding: 20px; background-color: #f9fff9; }
@@ -90,11 +91,13 @@
   .app-guide li { margin-bottom: 8px; line-height: 1.6; font-size: 15px; }
   
   .warning-box { margin-top: 15px; padding: 15px; background-color: #faf3f3; border: 1px solid #cc9999; border-radius: 5px; color: #8c2f2f; font-size: 0.95em; font-weight: bold; line-height: 1.6; }
+  .notice-box { background-color: #fff4f4; border: 1px solid #d32f2f; padding: 12px; border-radius: 5px; margin-bottom: 15px; font-size: 0.9em; color: #333; line-height: 1.5; }
+  .notice-box strong { color: #d32f2f; }
 
   @media screen and (max-width: 600px) {
     #wrapper { padding: 10px 5px; width: 100%; padding-bottom: 140px; }
     .btn-base { font-size: 14px; padding: 5px; min-height: 55px; }
-    .searchbutton { position: fixed; bottom: 0; left: 0; width: 100%; margin: 0; border-radius: 0; z-index: 999; padding: 25px 20px; box-shadow: 0 -5px 15px rgba(0,0,0,0.2); }
+    .searchbutton { position: fixed; bottom: 0; left: 0; width: 100%; margin: 0; border-radius: 0; z-index: 999; padding: 20px 20px; box-shadow: 0 -5px 15px rgba(0,0,0,0.2); }
     .app-guide { margin-top: 30px; }
     .app-guide .guide-body { padding: 15px; }
     .floating-help-btn { top: 20px; font-size: 12px; padding: 8px 12px; }
@@ -124,43 +127,67 @@
   var matsuyamaGroup = ["matsuyama_all", "east", "west", "north", "south", "joto", "josai", "hojo"];
   var selectedAreaKeys = [];
 
-  function autoFocusNext(current, nextFieldId) {
-    if (current.value.length >= current.maxLength) {
-        document.getElementById(nextFieldId).focus();
-    }
-  }
+  // ▼ 初期設定・イベントリスナー
+  document.addEventListener('DOMContentLoaded', function() {
+      // 全てのラジオボタンとチェックボックスに「テキスト更新」のイベントを付与
+      var inputs = document.querySelectorAll('input[type="radio"], input[type="checkbox"]');
+      inputs.forEach(function(input) {
+          input.addEventListener('change', updateConditionText);
+      });
+      
+      // 自動読み込み（保存された条件があれば復元）
+      loadConditionsAuto();
+  });
 
+  // ▼ 排他制御ロジック
   function updateExclusion() {
     var isKeywordSearch = document.getElementById('u2').checked || 
                           document.getElementById('u6').checked || 
                           document.getElementById('u7').checked;
+    
     var isDetailAreaSelected = false;
     for(var i=0; i<selectedAreaKeys.length; i++){
         if(matsuyamaGroup.indexOf(selectedAreaKeys[i]) !== -1 && selectedAreaKeys[i] !== "matsuyama_all"){
-            isDetailAreaSelected = true; break;
+            isDetailAreaSelected = true;
+            break;
         }
     }
+
     matsuyamaGroup.forEach(function(key){
         if(key !== "matsuyama_all") {
             var btn = document.getElementById('btn-' + key);
-            if(isKeywordSearch) { btn.classList.add('disabled'); } else { btn.classList.remove('disabled'); }
+            if(btn) {
+              if(isKeywordSearch) { btn.classList.add('disabled'); } 
+              else { btn.classList.remove('disabled'); }
+            }
         }
     });
     document.getElementById('area-warning-msg').style.display = isKeywordSearch ? 'block' : 'none';
 
-    var specialLabels = [ document.querySelector('label[for="u2"]'), document.querySelector('label[for="u6"]'), document.querySelector('label[for="u7"]') ];
+    var specialLabels = [
+        document.querySelector('label[for="u2"]'), 
+        document.querySelector('label[for="u6"]'), 
+        document.querySelector('label[for="u7"]') 
+    ];
     specialLabels.forEach(function(lbl){
-        if(isDetailAreaSelected) { lbl.classList.add('disabled'); } else { lbl.classList.remove('disabled'); }
+        if(lbl) {
+          if(isDetailAreaSelected) { lbl.classList.add('disabled'); } 
+          else { lbl.classList.remove('disabled'); }
+        }
     });
     document.getElementById('senior-warning-msg').style.display = isDetailAreaSelected ? 'block' : 'none';
   }
 
   function onRadioClick() {
     updateExclusion();
-    if(document.getElementById('u5').checked) { document.getElementById('FreeWord').style.display = 'block'; } 
-    else { document.getElementById('FreeWord').style.display = 'none'; }
+    if(document.getElementById('u5').checked) {
+        document.getElementById('FreeWord').style.display = 'block';
+    } else {
+        document.getElementById('FreeWord').style.display = 'none';
+    }
   }
 
+  // ▼ カスタムモーダル
   function showMyModal(title, text, isConfirm, callback) {
     var overlay = document.getElementById('msg-modal-overlay');
     document.getElementById('msg-modal-title').innerText = title;
@@ -174,8 +201,13 @@
     btnOk = document.getElementById('msg-btn-ok');
     btnCancel = document.getElementById('msg-btn-cancel');
 
-    if(isConfirm) { btnCancel.style.display = 'block'; btnOk.innerText = "検索する"; } 
-    else { btnCancel.style.display = 'none'; btnOk.innerText = "OK"; }
+    if(isConfirm) {
+        btnCancel.style.display = 'block';
+        btnOk.innerText = "検索する";
+    } else {
+        btnCancel.style.display = 'none';
+        btnOk.innerText = "OK";
+    }
     overlay.style.display = 'flex';
     btnOk.onclick = function() { overlay.style.display = 'none'; if(callback) callback(true); };
     btnCancel.onclick = function() { overlay.style.display = 'none'; if(callback) callback(false); };
@@ -183,13 +215,17 @@
 
   function countUniqueCodes(keys) {
     var codes = [];
-    keys.forEach(function(k) { var c = areaData[k].code; if(codes.indexOf(c) === -1) codes.push(c); });
+    keys.forEach(function(k) {
+        var c = areaData[k].code;
+        if(codes.indexOf(c) === -1) codes.push(c);
+    });
     return codes.length;
   }
 
   function selectArea(key) {
     var btn = document.getElementById('btn-' + key);
     if(btn.classList.contains('disabled')) return;
+
     var index = selectedAreaKeys.indexOf(key);
     var isMatsuyama = matsuyamaGroup.indexOf(key) !== -1;
     var nextSelectedKeys = selectedAreaKeys.slice();
@@ -198,7 +234,8 @@
       nextSelectedKeys = nextSelectedKeys.filter(function(k) { return matsuyamaGroup.indexOf(k) === -1; });
       nextSelectedKeys.push(key);
     } else {
-      if (index === -1) { nextSelectedKeys.push(key); } else { nextSelectedKeys.splice(index, 1); }
+      if (index === -1) { nextSelectedKeys.push(key); } 
+      else { nextSelectedKeys.splice(index, 1); }
     }
 
     if (nextSelectedKeys.length > selectedAreaKeys.length) { 
@@ -214,14 +251,20 @@
             if(mBtn) mBtn.classList.remove('active');
         });
     }
+    
     selectedAreaKeys = nextSelectedKeys;
+
     var allBtns = document.getElementsByClassName('area-btn');
     for(var i=0; i<allBtns.length; i++) allBtns[i].classList.remove('active');
+    
     selectedAreaKeys.forEach(function(k){
         var b = document.getElementById('btn-' + k);
         if(b) b.classList.add('active');
     });
-    updateAreaDisplay(); updateExclusion(); 
+
+    updateAreaDisplay();
+    updateExclusion(); 
+    updateConditionText(); // リアルタイム表示を更新
   }
 
   function updateAreaDisplay() {
@@ -229,9 +272,11 @@
     if (selectedAreaKeys.length === 0) {
       display.innerText = "指定なし（松山市全域）";
       document.getElementById('FreeW').value = "";
-      document.getElementById('u4').checked = true; onRadioClick(); 
+      document.getElementById('u4').checked = true; 
+      onRadioClick(); 
     } else {
-      var names = []; var combinedWords = "";
+      var names = [];
+      var combinedWords = "";
       selectedAreaKeys.forEach(function(k) {
         names.push(areaData[k].name);
         if(areaData[k].words) { combinedWords += areaData[k].words + "　"; }
@@ -245,22 +290,25 @@
     var els = document.getElementsByName('radioJobType');
     for(var i=0; els.length > i; i++) els[i].checked = false;
     document.getElementById('job0').checked = true;
+    updateConditionText();
   }
   function clearIndustry() {
     var els = document.getElementsByName('radioIndustry');
     for(var i=0; els.length > i; i++) els[i].checked = false;
     document.getElementById('ind0').checked = true;
+    updateConditionText();
   }
   
   function openHelp() { document.getElementById('help-modal').style.display = 'flex'; }
   function closeHelp() { document.getElementById('help-modal').style.display = 'none'; }
   
   function resetAll() {
-    showMyModal("確認", "選択した条件をすべてリセットしますか？", true, function(result){
+    showMyModal("確認", "選択した条件をすべてリセットしますか？\n（保存されている条件も消去されます）", true, function(result){
         if(!result) return;
         selectedAreaKeys = [];
         var btns = document.getElementsByClassName('area-btn');
         for(var i=0; btns.length > i; i++) btns[i].classList.remove('active');
+        
         var allBtnBase = document.getElementsByClassName('btn-base');
         for(var i=0; i<allBtnBase.length; i++) allBtnBase[i].classList.remove('disabled');
         var allLabels = document.getElementsByTagName('label');
@@ -268,18 +316,141 @@
         
         document.getElementById('area-warning-msg').style.display = 'none';
         document.getElementById('senior-warning-msg').style.display = 'none';
+
         document.getElementById('s4').checked = true;
         document.getElementById('job0').checked = true;
         document.getElementById('ind0').checked = true;
         document.getElementById('u4').checked = true; 
-        updateAreaDisplay(); onRadioClick();
+        document.getElementById('sal0').checked = true; 
+        
+        updateAreaDisplay();
+        onRadioClick();
+
         var checks = document.getElementsByName('j1');
         for(var i=0; checks.length > i; i++) checks[i].checked = false;
-        document.getElementById('f0').value = ""; document.getElementById('f1').value = ""; document.getElementById('FreeW').value = "";
+        
+        document.getElementById('f_num').value = "";
+        document.getElementById('f0').value = "";
+        document.getElementById('f1').value = "";
+        document.getElementById('FreeW').value = "";
+        
+        localStorage.removeItem('hw_search_conditions'); // 保存データもクリア
+        updateConditionText();
         closeHelp();
     });
   }
 
+  // ▼ 追加機能①：求人番号のコピペ対応（自動分割）
+  function formatJobNumber(el) {
+    var val = el.value.replace(/[^0-9]/g, ''); // 数字以外（ハイフンなど）を除去
+    if (val.length > 5) {
+      document.getElementById('f0').value = val.substring(0, 5);
+      document.getElementById('f1').value = val.substring(5, 13);
+    } else {
+      document.getElementById('f0').value = val;
+      document.getElementById('f1').value = "";
+    }
+  }
+
+  // ▼ 追加機能②：現在の条件テキスト更新
+  function updateConditionText() {
+    var text = "";
+    
+    // エリア
+    var area = document.getElementById('selectedAreaDisplay').innerText.replace("選択中: ", "");
+    text += "📍" + area + "\n";
+
+    // 区分
+    var ippan = document.querySelector('input[name="radio1"]:checked');
+    var ippanText = ippan ? document.querySelector('label[for="' + ippan.id + '"]').innerText : "";
+    
+    // 職種（業界または職種）
+    var jobText = "";
+    var ind = document.querySelector('input[name="radioIndustry"]:checked');
+    if(ind && ind.id !== 'ind0') jobText = document.querySelector('label[for="' + ind.id + '"]').innerText;
+    var job = document.querySelector('input[name="radioJobType"]:checked');
+    if(job && job.id !== 'job0') jobText = document.querySelector('label[for="' + job.id + '"]').innerText;
+    if(!jobText) jobText = "職種指定なし";
+
+    text += "💼" + ippanText + " / " + jobText + "\n";
+
+    // チェックボックスと給与
+    var conds = [];
+    var checks = document.querySelectorAll('input[name="j1"]:checked');
+    checks.forEach(function(c){
+        conds.push(document.querySelector('label[for="' + c.id + '"]').innerText);
+    });
+    
+    var salary = document.querySelector('input[name="radioSalary"]:checked');
+    if(salary && salary.id !== 'sal0') conds.push(document.querySelector('label[for="' + salary.id + '"]').innerText);
+
+    // シニア等の特殊キーワード
+    var kw = document.querySelector('input[name="radio3"]:checked');
+    if(kw && kw.id !== 'u4' && kw.id !== 'u5') conds.push(document.querySelector('label[for="' + kw.id + '"]').innerText);
+
+    if(conds.length > 0) {
+        text += "✨" + conds.join("、") + "\n";
+    } else {
+        text += "✨条件指定なし\n";
+    }
+
+    document.getElementById('current-conditions-text').innerText = text;
+  }
+
+  // ▼ 追加機能③：検索条件の保存と復元（LocalStorage）
+  function saveConditions() {
+    var state = {
+        areaKeys: selectedAreaKeys,
+        radios: {},
+        checkboxes: {}
+    };
+    // 全ラジオボタンの状態保存
+    var radios = document.querySelectorAll('input[type="radio"]');
+    radios.forEach(function(r) { if(r.checked) state.radios[r.name] = r.id; });
+    
+    // 全チェックボックスの状態保存
+    var checks = document.querySelectorAll('input[type="checkbox"]');
+    checks.forEach(function(c) { state.checkboxes[c.id] = c.checked; });
+
+    localStorage.setItem('hw_search_conditions', JSON.stringify(state));
+    showMyModal("保存完了", "現在の検索条件をブラウザに保存しました。\n次回開いた時に自動で読み込まれます。", false);
+  }
+
+  function loadConditionsAuto() {
+    var saved = localStorage.getItem('hw_search_conditions');
+    if(saved) {
+        var state = JSON.parse(saved);
+        
+        // エリア復元
+        selectedAreaKeys = state.areaKeys || [];
+        var allBtns = document.getElementsByClassName('area-btn');
+        for(var i=0; i<allBtns.length; i++) allBtns[i].classList.remove('active');
+        selectedAreaKeys.forEach(function(k){
+            var b = document.getElementById('btn-' + k);
+            if(b) b.classList.add('active');
+        });
+        updateAreaDisplay();
+
+        // ラジオボタン復元
+        for(var name in state.radios) {
+            var el = document.getElementById(state.radios[name]);
+            if(el) el.checked = true;
+        }
+
+        // チェックボックス復元
+        for(var id in state.checkboxes) {
+            var el = document.getElementById(id);
+            if(el) el.checked = state.checkboxes[id];
+        }
+        
+        onRadioClick(); // 排他制御などの反映
+        updateConditionText(); // テキスト更新
+    } else {
+        updateConditionText(); // 初回時のテキスト更新
+    }
+  }
+
+  // ▼ 検索実行処理
   function Search() {
     var uniqueCodes = [];
     if (selectedAreaKeys.length === 0) {
@@ -292,10 +463,14 @@
     }
 
     if(uniqueCodes.length > 3) {
-        showMyModal("エラー", "地域コードが3つを超えています。\n選択を減らしてください。", false); return;
+        showMyModal("エラー", "地域コードが3つを超えています。\n選択を減らしてください。", false);
+        return;
     }
 
-    var isKeywordSearch = document.getElementById('u2').checked || document.getElementById('u6').checked || document.getElementById('u7').checked;
+    var isKeywordSearch = document.getElementById('u2').checked || 
+                          document.getElementById('u6').checked || 
+                          document.getElementById('u7').checked;
+
     var params = "";
     for(var i=0; i < 3; i++) {
         var num = i + 1;
@@ -305,16 +480,22 @@
     params += amp + "tDFK1CmbBox=38";
 
     var collect = function(fname) {
-      var str = ""; var el = document.forms[fname].elements;
+      var str = "";
+      var el = document.forms[fname].elements;
       for(var i=0; el.length > i; i++) { if(el[i].checked) str += el[i].value; }
       return str;
     };
     
-    params += collect('ippan') + collect('newArri') + collect('jyouken') + collect('JobIndustry') + collect('JobType');
+    // 基本パラメータ ＋ 給与パラメータを追加
+    params += collect('ippan') + collect('newArri') + collect('jyouken') + collect('JobIndustry') + collect('JobType') + collect('salary');
+    
     var fw = document.getElementById("FreeW").value;
+    
     var ksjo = document.getElementById('f0').value;
     var ksge = document.getElementById('f1').value;
-    if(ksjo && ksge) { params += amp + "kSNoJo=" + ksjo + amp + "kSNoGe=" + ksge; }
+    if(ksjo && ksge) {
+        params += amp + "kSNoJo=" + ksjo + amp + "kSNoGe=" + ksge;
+    }
     
     var executeSearch = function() {
         var finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchBtn" + amp + "screenId=GECA110010" + amp + "kjKbnRadioBtn=1" + amp + "searchClear=0" + params;
@@ -322,16 +503,18 @@
     };
 
     if (isKeywordSearch) {
-        params += collect('Free'); executeSearch();
+        params += collect('Free');
+        executeSearch();
     } else if(fw && fw !== "") {
        var encodedFW = encodeURIComponent(fw);
        params += amp + "freeWordInput=" + encodedFW + amp + "freeWordRadioBtn=0"; // OR検索
-       showMyModal("検索確認", "【条件】" + document.getElementById('selectedAreaDisplay').innerText + "\n\nこの条件でハローワークの検索を開きますか？", true, function(result){
+       
+       showMyModal("検索確認", "下に表示されている条件で\nハローワークの検索を開きますか？", true, function(result){
            if(result) executeSearch();
        });
     } else { 
        params += collect('Free'); 
-       showMyModal("検索確認", "【条件】" + document.getElementById('selectedAreaDisplay').innerText + "\n\nこの条件でハローワークの検索を開きますか？", true, function(result){
+       showMyModal("検索確認", "下に表示されている条件で\nハローワークの検索を開きますか？", true, function(result){
            if(result) executeSearch();
        });
     }
@@ -350,9 +533,9 @@
     </div>
     <div class="modal-body">
       <div class="help-warning">
-        <h4 class="help-warning-title">【重要】松山市内のエリア検索について</h4>
-        <p class="help-text">松山市内の地区選択は、<strong>求人数の多い主要なエリア（町名）を抽出して検索</strong>する便利な機能です。</p>
-        <p class="help-text">ピンポイントな町名で見つからない場合や、抜け漏れなく探したい場合は、<strong>「松山市内全域」</strong>を選択することをお勧めします。</p>
+        <h4 class="help-warning-title">【重要】抜け漏れ防止について</h4>
+        <p class="help-text"><strong>【エリア】</strong><br>松山市内の地区指定は、主要な町名を抽出しています。確実に見つけたい場合は<strong>「松山市内全域」</strong>をお勧めします。</p>
+        <p class="help-text"><strong>【職種】</strong><br>各ボタンは需要の高い主要な職種（最大3つ）を抽出しています。希望の求人が見つからない場合は<strong>「職種 限定なし」</strong>を選択するか、<strong>検索先の画面を上にスクロールして職種を再選択</strong>してください。</p>
       </div>
       
       <div class="help-warning">
@@ -360,16 +543,10 @@
         <p class="help-text">これらの条件を選択した場合、文字数制限の関係上、<strong>地区指定（詳細な町名）との併用はできません</strong>。</p>
       </div>
 
-      <div class="help-section-title">検索方法</div>
-      <p class="help-text">1. 指定したい条件のボタンをクリック又はタップしてください。</p>
-      <p class="help-text">2. 希望の条件を選択し終えたら、画面下部の緑色の「検索する」ボタンを押してください。</p>
-      <p class="help-text">3. ハローワークインターネットサービスの画面が開き、検索結果が表示されます。</p>
-
       <div class="help-section-title">操作方法</div>
       <ul class="help-list">
-        <li><strong>勤務地：</strong><br>ボタンを押すと選択状態（濃い緑色）になります。松山市内は1つだけ、周辺地域は複数選択可能です（合計3つまで）。</li>
-        <li><strong>職種・業種・就業形態：</strong><br>「限定なし」ボタンを押すか、別の項目を選び直してください。</li>
-        <li><strong>求人番号：</strong><br>窓口で案内された求人番号を入力すると、その求人をピンポイントで表示します（他の条件は無視されます）。</li>
+        <li><strong>条件の保存：</strong>一番下の「条件を保存」ボタンを押すと、次回開いた時にいつもの検索条件が自動でセットされます。</li>
+        <li><strong>求人番号のコピペ：</strong>窓口やLINEで送られた「12345-12345678」という番号をそのまま貼り付けて検索できます。</li>
       </ul>
       <div style="text-align:center; margin-top:20px;">
         <button onclick="closeHelp()" style="padding:10px 20px; background:#008000; color:#fff; border:none; border-radius:5px; cursor:pointer;">閉じる</button>
@@ -401,7 +578,12 @@
   </div>
 
   <div class="section">1. 地区を選択</div>
-  <p style="font-size:0.9em; color:#666;">※ハローワークの仕様上、選択できる地域は3つまでです</p>
+  
+  <div class="notice-box">
+    <strong>【エリア選択時のご注意】</strong><br>
+    ・ハローワークの仕様上、同時に選択できる地域は<strong>3つまで</strong>です。<br>
+    ・松山市内の地区指定は、主要なエリア（町名）を抽出します。抜け漏れなく探したい場合は<strong>「松山市内全域（限定なし）」</strong>を推奨します。
+  </div>
   
   <div id="area-warning-msg" class="exclusion-msg">
     ※「シニア」「子育て」等を選択中は、詳細エリア指定はできません（併用不可）
@@ -466,55 +648,31 @@
     </div>
   </details>
 
-  <details open>
+  <details>
     <summary>▼ 職種から探す</summary>
     <div class="details-content">
+      <div class="notice-box" style="margin-top: 5px;">
+        <strong>【職種選択時のご注意】</strong><br>
+        各ボタンは需要の高い主要な職種（最大3つ）を抽出しています。抜け漏れなく探したい場合は一番上の<strong>「職種 限定なし」</strong>を選択するか、<strong>検索先の画面を上にスクロールして職種を再選択</strong>してください。
+      </div>
+
       <form name="JobType" class="grid-container">
-        
         <div class="grid-item-full"><input checked id="job0" name="radioJobType" type="radio" value="" onclick="clearIndustry()"/><label for="job0" class="btn-base job-btn-label" style="background:#eee; border-color:#aaa; color:#333;">職種 限定なし</label></div>
         
-        <div class="grid-item-full job-category-title">事務・管理系</div>
-        <div class="grid-item-full"><input id="job_all_1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=01,00" onclick="clearIndustry()"/><label for="job_all_1" class="btn-base category-all-label">事務・管理系 すべて</label></div>
-        <div class="grid-item-2"><input id="job1_1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=01,1&kiboSuruSKSU2Hidden=01,11&kiboSuruSKSU3Hidden=01,6" onclick="clearIndustry()"/><label for="job1_1" class="btn-base job-btn-label">一般事務・データ入力</label></div>
-        <div class="grid-item-2"><input id="job1_2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=01,12" onclick="clearIndustry()"/><label for="job1_2" class="btn-base job-btn-label">専門事務(医療・介護)</label></div>
-        <div class="grid-item-2"><input id="job1_3" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=01,13&kiboSuruSKSU2Hidden=01,10&kiboSuruSKSU3Hidden=01,15" onclick="clearIndustry()"/><label for="job1_3" class="btn-base job-btn-label">専門事務(経理・総務等)</label></div>
-        <div class="grid-item-2"><input id="job1_4" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=01,7&kiboSuruSKSU2Hidden=01,8&kiboSuruSKSU3Hidden=01,3" onclick="clearIndustry()"/><label for="job1_4" class="btn-base job-btn-label">コール・外勤・その他</label></div>
-        
-        <div class="grid-item-full job-category-title">販売・営業・サービス系</div>
-        <div class="grid-item-full"><input id="job_all_2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=02,00&kiboSuruSKSU2Hidden=03,00&kiboSuruSKSU3Hidden=04,00" onclick="clearIndustry()"/><label for="job_all_2" class="btn-base category-all-label">販売・営業・サービス系 すべて</label></div>
-        <div class="grid-item-2"><input id="job4" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=03,00" onclick="clearIndustry()"/><label for="job4" class="btn-base job-btn-label">販売スタッフ</label></div>
-        <div class="grid-item-2"><input id="job3_1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=02,2&kiboSuruSKSU2Hidden=02,3&kiboSuruSKSU3Hidden=02,12" onclick="clearIndustry()"/><label for="job3_1" class="btn-base job-btn-label">一般・ルート営業</label></div>
-        <div class="grid-item-2"><input id="job3_2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=02,1&kiboSuruSKSU2Hidden=02,10&kiboSuruSKSU3Hidden=02,4" onclick="clearIndustry()"/><label for="job3_2" class="btn-base job-btn-label">専門営業(不動産・IT等)</label></div>
-        <div class="grid-item-2"><input id="job5_1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=04,1&kiboSuruSKSU2Hidden=04,11&kiboSuruSKSU3Hidden=04,12" onclick="clearIndustry()"/><label for="job5_1" class="btn-base job-btn-label">飲食・調理スタッフ</label></div>
-        <div class="grid-item-2"><input id="job5_2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=04,5&kiboSuruSKSU2Hidden=04,6&kiboSuruSKSU3Hidden=04,7" onclick="clearIndustry()"/><label for="job5_2" class="btn-base job-btn-label">理美容・サロン</label></div>
-        <div class="grid-item-2"><input id="job5_3" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=04,3&kiboSuruSKSU2Hidden=04,4&kiboSuruSKSU3Hidden=04,14" onclick="clearIndustry()"/><label for="job5_3" class="btn-base job-btn-label">ホテル・接客サービス</label></div>
-
-        <div class="grid-item-full job-category-title">医療・福祉・保育・教育系</div>
-        <div class="grid-item-full"><input id="job_all_3" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=05,00&kiboSuruSKSU2Hidden=06,00&kiboSuruSKSU3Hidden=07,00" onclick="clearIndustry()"/><label for="job_all_3" class="btn-base category-all-label">医療・福祉・保育・教育系 すべて</label></div>
-        <div class="grid-item-2"><input id="job8_1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=07,11&kiboSuruSKSU2Hidden=07,12" onclick="clearIndustry()"/><label for="job8_1" class="btn-base job-btn-label">看護師・准看護師</label></div>
-        <div class="grid-item-2"><input id="job8_2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=07,13&kiboSuruSKSU2Hidden=07,15&kiboSuruSKSU3Hidden=07,3" onclick="clearIndustry()"/><label for="job8_2" class="btn-base job-btn-label">その他医療・保健(助手等)</label></div>
-        <div class="grid-item-2"><input id="job6_1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=05,1&kiboSuruSKSU2Hidden=05,2" onclick="clearIndustry()"/><label for="job6_1" class="btn-base job-btn-label">介護スタッフ</label></div>
-        <div class="grid-item-2"><input id="job6_2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=05,3&kiboSuruSKSU2Hidden=05,4&kiboSuruSKSU3Hidden=05,8" onclick="clearIndustry()"/><label for="job6_2" class="btn-base job-btn-label">ケアマネ・相談員</label></div>
-        <div class="grid-item-2"><input id="job7_1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=06,1&kiboSuruSKSU2Hidden=06,3&kiboSuruSKSU3Hidden=06,4" onclick="clearIndustry()"/><label for="job7_1" class="btn-base job-btn-label">保育・幼稚園・学童</label></div>
-        <div class="grid-item-2"><input id="job7_2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=06,5&kiboSuruSKSU2Hidden=06,8&kiboSuruSKSU3Hidden=06,9" onclick="clearIndustry()"/><label for="job7_2" class="btn-base job-btn-label">教育・講師</label></div>
-
-        <div class="grid-item-full job-category-title">製造・技術・専門職系</div>
-        <div class="grid-item-full"><input id="job_all_4" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=08,00&kiboSuruSKSU2Hidden=09,00" onclick="clearIndustry()"/><label for="job_all_4" class="btn-base category-all-label">製造・技術・専門職系 すべて</label></div>
-        <div class="grid-item-2"><input id="job2_1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=08,6&kiboSuruSKSU2Hidden=08,7&kiboSuruSKSU3Hidden=08,8" onclick="clearIndustry()"/><label for="job2_1" class="btn-base job-btn-label">食品製造・加工</label></div>
-        <div class="grid-item-2"><input id="job2_2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=08,2&kiboSuruSKSU2Hidden=08,4&kiboSuruSKSU3Hidden=08,5" onclick="clearIndustry()"/><label for="job2_2" class="btn-base job-btn-label">組立・検査・工場作業</label></div>
-        <div class="grid-item-2"><input id="job2_3" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=08,1&kiboSuruSKSU2Hidden=08,11&kiboSuruSKSU3Hidden=08,12" onclick="clearIndustry()"/><label for="job2_3" class="btn-base job-btn-label">機械加工・修理・整備</label></div>
-        <div class="grid-item-2"><input id="job9_1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=09,4&kiboSuruSKSU2Hidden=09,10&kiboSuruSKSU3Hidden=09,5" onclick="clearIndustry()"/><label for="job9_1" class="btn-base job-btn-label">IT・WEB制作</label></div>
-        <div class="grid-item-2"><input id="job9_2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=09,1&kiboSuruSKSU2Hidden=09,2&kiboSuruSKSU3Hidden=09,3" onclick="clearIndustry()"/><label for="job9_2" class="btn-base job-btn-label">建築・設備エンジニア</label></div>
-        <div class="grid-item-2"><input id="job9_3" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=09,6&kiboSuruSKSU2Hidden=09,7&kiboSuruSKSU3Hidden=09,11" onclick="clearIndustry()"/><label for="job9_3" class="btn-base job-btn-label">その他専門職・士業</label></div>
-
-        <div class="grid-item-full job-category-title">現場・物流・その他</div>
-        <div class="grid-item-2"><input id="job10" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=10,00" onclick="clearIndustry()"/><label for="job10" class="btn-base job-btn-label">建築・土木・電気工事</label></div>
-        <div class="grid-item-2"><input id="job11" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=12,00" onclick="clearIndustry()"/><label for="job11" class="btn-base job-btn-label">運輸・配送</label></div>
-        <div class="grid-item-2"><input id="job12" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=11,00" onclick="clearIndustry()"/><label for="job12" class="btn-base job-btn-label">警備・施設管理</label></div>
-        <div class="grid-item-2"><input id="job14_1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=13,1&kiboSuruSKSU2Hidden=13,2&kiboSuruSKSU3Hidden=13,3" onclick="clearIndustry()"/><label for="job14_1" class="btn-base job-btn-label">清掃スタッフ</label></div>
-        <div class="grid-item-2"><input id="job14_2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=13,4&kiboSuruSKSU2Hidden=13,6&kiboSuruSKSU3Hidden=13,8" onclick="clearIndustry()"/><label for="job14_2" class="btn-base job-btn-label">倉庫・軽作業・仕分け</label></div>
-        <div class="grid-item-2"><input id="job13" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=14,00" onclick="clearIndustry()"/><label for="job13" class="btn-base job-btn-label">農林漁業</label></div>
-        
+        <div class="grid-item-2"><input id="job1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=01,00" onclick="clearIndustry()"/><label for="job1" class="btn-base job-btn-label">事務・管理職</label></div>
+        <div class="grid-item-2"><input id="job2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=02,00" onclick="clearIndustry()"/><label for="job2" class="btn-base job-btn-label">営業</label></div>
+        <div class="grid-item-2"><input id="job3" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=03,00" onclick="clearIndustry()"/><label for="job3" class="btn-base job-btn-label">販売</label></div>
+        <div class="grid-item-2"><input id="job4" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=04,00" onclick="clearIndustry()"/><label for="job4" class="btn-base job-btn-label">接客・サービス</label></div>
+        <div class="grid-item-2"><input id="job5" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=05,00" onclick="clearIndustry()"/><label for="job5" class="btn-base job-btn-label">介護・福祉</label></div>
+        <div class="grid-item-2"><input id="job6" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=06,00" onclick="clearIndustry()"/><label for="job6" class="btn-base job-btn-label">保育・教育</label></div>
+        <div class="grid-item-2"><input id="job7" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=07,00" onclick="clearIndustry()"/><label for="job7" class="btn-base job-btn-label">医療・看護</label></div>
+        <div class="grid-item-2"><input id="job8" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=08,00" onclick="clearIndustry()"/><label for="job8" class="btn-base job-btn-label">製造・修理</label></div>
+        <div class="grid-item-2"><input id="job9" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=09,00" onclick="clearIndustry()"/><label for="job9" class="btn-base job-btn-label">技術・IT・専門職</label></div>
+        <div class="grid-item-2"><input id="job10" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=10,00" onclick="clearIndustry()"/><label for="job10" class="btn-base job-btn-label">建築・土木・電気</label></div>
+        <div class="grid-item-2"><input id="job11" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=11,00" onclick="clearIndustry()"/><label for="job11" class="btn-base job-btn-label">警備・施設管理</label></div>
+        <div class="grid-item-2"><input id="job12" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=12,00" onclick="clearIndustry()"/><label for="job12" class="btn-base job-btn-label">運輸・配送</label></div>
+        <div class="grid-item-2"><input id="job13" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=13,00" onclick="clearIndustry()"/><label for="job13" class="btn-base job-btn-label">清掃・軽作業</label></div>
+        <div class="grid-item-2"><input id="job14" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=14,00" onclick="clearIndustry()"/><label for="job14" class="btn-base job-btn-label">農林漁業</label></div>
       </form>
     </div>
   </details>
@@ -524,16 +682,28 @@
     <div class="grid-item-2"><input id="w1" name="j1" type="checkbox" value="&grkiFumonCKBox=1"/><label for="w1" class="btn-base chkLabel">学歴不問</label></div>
     <div class="grid-item-2"><input id="w2" name="j1" type="checkbox" value="&hynaKikntFumonCKBox=1"/><label for="w2" class="btn-base chkLabel">経験不問</label></div>
     <div class="grid-item-2"><input id="w3" name="j1" type="checkbox" value="&hynaMenkyoSkkuFumonCKBox=1"/><label for="w3" class="btn-base chkLabel">資格不問</label></div>
-    <div class="grid-item-2"><input id="w4" name="j1" type="checkbox" value="&holidayCKBox=6,7,8"/><label for="w4" class="btn-base chkLabel">土日祝休み</label></div>
-    <div class="grid-item-2"><input id="w5" name="j1" type="checkbox" value="&kurumaTuukinCKBox=1"/><label for="w5" class="btn-base chkLabel">マイカー通勤</label></div>
     <div class="grid-item-2"><input id="w6" name="j1" type="checkbox" value="&tenkinNashiCKBox=1"/><label for="w6" class="btn-base chkLabel">転勤なし</label></div>
     <div class="grid-item-2"><input id="w7" name="j1" type="checkbox" value="&zangyoNashiCKBox=1"/><label for="w7" class="btn-base chkLabel">残業なし</label></div>
     <div class="grid-item-2"><input id="w8" name="j1" type="checkbox" value="&shoyoAriCKBox=1"/><label for="w8" class="btn-base chkLabel">賞与あり</label></div>
     <div class="grid-item-2"><input id="w9" name="j1" type="checkbox" value="&nyukyoKanoJutakuCKBox=1"/><label for="w9" class="btn-base chkLabel">単身住宅有</label></div>
     <div class="grid-item-2"><input id="w10" name="j1" type="checkbox" value="&takujiShoCKBox=1"/><label for="w10" class="btn-base chkLabel">託児施設有</label></div>
+    <div class="grid-item-2"><input id="w5" name="j1" type="checkbox" value="&kurumaTuukinCKBox=1"/><label for="w5" class="btn-base chkLabel">マイカー通勤</label></div>
+    
+    <div class="grid-item-2"><input id="w4" name="j1" type="checkbox" value="&holidayCKBox=6,7,8"/><label for="w4" class="btn-base chkLabel">土日祝休み</label></div>
+    <div class="grid-item-2"><input id="w11" name="j1" type="checkbox" value="&nknKyuujitu120ijoCKBox=1"/><label for="w11" class="btn-base chkLabel">年間休日120日〜</label></div>
+    <div class="grid-item-2"><input id="w12" name="j1" type="checkbox" value="&kznSyukyuNikaCKBox=1"/><label for="w12" class="btn-base chkLabel">完全週休2日制</label></div>
+    <div class="grid-item-2"><input id="w13" name="j1" type="checkbox" value="&ktaiSeiNashiCKBox=1"/><label for="w13" class="btn-base chkLabel">日勤のみ(交替無)</label></div>
   </form>
 
-  <div class="section">6. キーワード・その他</div>
+  <div class="section">6. 給与（賃金）</div>
+  <form name="salary" class="grid-container">
+    <div class="grid-item-2"><input checked id="sal0" name="radioSalary" type="radio" value=""/><label for="sal0" class="btn-base chkLabel" style="background:#eee; border-color:#aaa; color:#333;">指定なし</label></div>
+    <div class="grid-item-2"><input id="sal1" name="radioSalary" type="radio" value="&tngnKigenKagenInput=1100"/><label for="sal1" class="btn-base chkLabel">時給 1,100円以上</label></div>
+    <div class="grid-item-2"><input id="sal2" name="radioSalary" type="radio" value="&tngnKigenKagenInput=200000"/><label for="sal2" class="btn-base chkLabel">月給 20万円以上</label></div>
+    <div class="grid-item-2"><input id="sal3" name="radioSalary" type="radio" value="&tngnKigenKagenInput=250000"/><label for="sal3" class="btn-base chkLabel">月給 25万円以上</label></div>
+  </form>
+
+  <div class="section">7. キーワード・その他</div>
   <form name="Free" class="grid-container">
     <div class="grid-item-2"><input checked id="u4" name="radio3" type="radio" value="" onclick="onRadioClick()"/><label for="u4" class="btn-base chkLabel">限定なし</label></div>
     <div class="grid-item-2"><input id="u2" name="radio3" type="radio" value="&freeWordInput=%E5%AD%90%E8%82%B2%E3%81%A6%E6%94%AF%E6%8F%B4%E6%B1%82%E4%BA%BA" onclick="onRadioClick()"/><label for="u2" class="btn-base chkLabel">子育て支援</label></div>
@@ -551,17 +721,28 @@
     <input class="textarea" id="FreeW" placeholder="全角スペースで区切って入力" type="text" />
   </div>
 
-  <div class="section" style="border:none;">7. 求職番号（お持ちの方）</div>
-  <p style="font-size:0.9em; color:#666; margin-top:0; margin-bottom:10px; line-height:1.4;">※求職者マイページをお持ちの方は、ログインして検索すると、求職番号の入力が不要になり、より多くの機能が利用できます。</p>
+  <div class="section" style="border:none;">8. 求人番号（お持ちの方）</div>
+  <p style="font-size:0.9em; color:#666; margin-top:0; margin-bottom:10px; line-height:1.4;">
+    ※ハイフン（-）を含めたままコピー＆ペーストできます。求人番号を指定すると他の条件は無視されます。
+  </p>
   
-  <div style="display:flex; align-items:center;">
-    <form name="ksjo" style="margin:0;"><input id="f0" type="tel" class="num-input" placeholder="12345" style="width:80px;" maxlength="5" oninput="autoFocusNext(this, 'f1')"/></form>
-    <span style="margin:0 5px;">-</span>
-    <form name="ksge" style="margin:0;"><input id="f1" type="tel" class="num-input" placeholder="12345678" style="width:110px;" maxlength="8"/></form>
+  <div>
+    <input id="f_num" type="tel" class="num-input" placeholder="例: 38010-12345678" style="width:100%; letter-spacing: 1px;" oninput="formatJobNumber(this)"/>
+    <input type="hidden" id="f0" />
+    <input type="hidden" id="f1" />
+  </div>
+
+  <div class="condition-summary">
+    <div class="condition-summary-title">🔍 現在の検索条件</div>
+    <div id="current-conditions-text" style="white-space: pre-wrap; font-weight: normal; margin-top: 8px;"></div>
+    
+    <div class="save-btn-container">
+      <button class="save-btn" onclick="saveConditions()">この条件を保存</button>
+      <button class="save-btn" style="color: #666; border-color: #ccc;" onclick="resetAll()">リセット</button>
+    </div>
   </div>
 
   <a class="searchbutton" href="javascript:void(0);" onclick="Search()">この条件で検索する</a>
-  <button class="reset-btn" onclick="resetAll()">条件をすべてリセット</button>
 
   <div class="app-guide">
     <h3>▼ 求人への応募方法</h3>
