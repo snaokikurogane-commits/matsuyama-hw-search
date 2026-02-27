@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>松山市 エリア＆地図検索ツール</title>
+    <title>松山市 エリア＆地図検索ツール（ハローワーク窓口用）</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -22,9 +22,6 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             margin-bottom: 20px;
         }
-        .input-group {
-            margin-bottom: 15px;
-        }
         .input-group label {
             display: block;
             font-weight: bold;
@@ -40,10 +37,6 @@
             border: 2px solid #ccc;
             border-radius: 4px;
         }
-        input[type="text"]:focus {
-            border-color: #4CAF50;
-            outline: none;
-        }
         
         #gmap-btn {
             display: none;
@@ -56,10 +49,16 @@
             margin-top: 10px;
             display: inline-block;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            transition: background-color 0.3s;
         }
-        #gmap-btn:hover {
-            background-color: #3367D6;
+
+        /* ハローワーク用コピペエリアのスタイル */
+        #hw-copy-area {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            border: 1px solid #90caf9;
         }
 
         .main-container {
@@ -67,62 +66,33 @@
             gap: 20px;
             flex-wrap: wrap;
         }
-        .left-panel {
-            flex: 1;
-            min-width: 300px;
-        }
-        .right-panel {
-            flex: 1;
-            min-width: 400px;
-        }
+        .left-panel { flex: 1; min-width: 300px; }
+        .right-panel { flex: 1; min-width: 400px; }
 
         #real-map {
             width: 100%;
             height: 600px;
             border-radius: 8px;
             border: 2px solid #ccc;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .map-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
+        .map-grid { display: flex; flex-direction: column; gap: 15px; }
         .area-block {
-            background: #fff;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            padding: 10px;
+            background: #fff; border: 2px solid #ddd;
+            border-radius: 8px; padding: 10px;
         }
         .area-title {
-            font-weight: bold;
-            background: #e0f2f1;
-            color: #00695c;
-            padding: 8px;
-            text-align: center;
-            border-radius: 4px;
-            margin-bottom: 10px;
+            font-weight: bold; background: #e0f2f1; color: #00695c;
+            padding: 8px; text-align: center; border-radius: 4px; margin-bottom: 10px;
         }
-        .district-row {
-            display: flex;
-            gap: 5px;
-            flex-wrap: wrap;
-        }
+        .district-row { display: flex; gap: 5px; flex-wrap: wrap; }
         .district {
-            padding: 6px 10px;
-            border: 1px solid #aaa;
-            border-radius: 4px;
-            background: #fafafa;
-            font-size: 13px;
-            transition: all 0.3s;
+            padding: 6px 10px; border: 1px solid #aaa; border-radius: 4px;
+            background: #fafafa; font-size: 13px; transition: all 0.3s;
         }
         .district.highlight {
-            background-color: #fff59d;
-            border-color: #fbc02d;
-            color: #e65100;
-            font-weight: bold;
-            box-shadow: 0 0 10px rgba(255, 235, 59, 0.9);
+            background-color: #fff59d; border-color: #fbc02d; color: #e65100;
+            font-weight: bold; box-shadow: 0 0 10px rgba(255, 235, 59, 0.9);
             transform: scale(1.05);
         }
     </style>
@@ -134,10 +104,22 @@
         
         <div class="input-group">
             <label>住所（町名やふりがな）を入力して検索</label>
-            <input type="text" id="search-input" placeholder="例: 大西谷、どうご、堀江">
+            <input type="text" id="search-input" placeholder="例: うまき、堀江、大西谷">
         </div>
 
         <a id="gmap-btn" href="#" target="_blank">🌍 この町名をGoogleマップで確認する</a>
+
+        <div id="hw-copy-area">
+            <h4 style="margin-top: 0; color: #1565c0; margin-bottom: 5px;">💼 HWインターネットサービス用 フリーワード（50文字以内）</h4>
+            <p style="font-size:12px; color:#555; margin-top:0; margin-bottom: 10px;">
+                ※自転車通勤などを想定した周辺地区のキーワード（全角スペース区切り）です。<br>
+                「検索した町名」＋「周辺の地区名」を自動で最大50文字まで組み合わせています。
+            </p>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="hw-copy-text" readonly style="flex:1; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; background: #fff; font-weight:bold; color:#d32f2f;">
+                <button id="copy-btn" style="padding: 10px 20px; font-size: 16px; background:#4CAF50; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:bold; transition: 0.3s;">コピー</button>
+            </div>
+        </div>
     </div>
 
     <div class="main-container">
@@ -147,13 +129,12 @@
         </div>
 
         <div class="right-panel">
-            <h3>■ 実際の地図（該当地区がポワッと光ります）</h3>
+            <h3>■ 実際の地図（該当地区が赤く光ります）</h3>
             <div id="real-map"></div>
         </div>
     </div>
 
     <script>
-        // --- 1. エリアごとの「おおよその緯度・経度」 ---
         const districtCoords = {
             "道後": [33.850, 132.788], "堀江": [33.886, 132.738], "五明": [33.873, 132.833],
             "浅海": [34.019, 132.775], "番町": [33.840, 132.768], "粟井": [33.993, 132.784],
@@ -170,7 +151,6 @@
             "難波": [33.984, 132.804], "忽那諸島": [33.914, 132.614]
         };
 
-        // --- 2. CSVデータを直接埋め込み（全354件） ---
         const masterData = [
             { bango: "13", chiku: "道後", choumei: "上市", furigana: "かみいち" },
             { bango: "13", chiku: "道後", choumei: "南町", furigana: "みなみまち" },
@@ -432,14 +412,14 @@
             { bango: "30", chiku: "宮前", "choumei": "三津", "furigana": "みつ" },
             { bango: "30", chiku: "宮前", "choumei": "古三津", "furigana": "ふるみつ" },
             { bango: "30", chiku: "宮前", "choumei": "古三津町", "furigana": "ふるみつちょう" },
-            { bango: "30", chiku: "宮前", "choumei": "山西町", "furigana": "やまにしちょう" },
+            { bango: "30", chiku: "宮前", "choumei": "山西町", furigana: "やまにしちょう" },
             { bango: "30", chiku: "宮前", "choumei": "新浜町", "furigana": "しんはまちょう" },
             { bango: "30", chiku: "宮前", "choumei": "松ノ木", "furigana": "まつのき" },
             { bango: "30", chiku: "宮前", "choumei": "神田町", "furigana": "かんだまち" },
             { bango: "30", chiku: "宮前", "choumei": "須賀町", "furigana": "すがまち" },
             { bango: "30", chiku: "宮前", "choumei": "高山町", "furigana": "たかやまちょう" },
-            { bango: "31", chiku: "高浜", "choumei": "梅津寺町", "furigana": "ばいしんじまち" },
-            { bango: "31", chiku: "高浜", "choumei": "港山町", "furigana": "みなとやままち" },
+            { bango: "31", chiku: "高浜", "choumei": "梅津寺町", furigana: "ばいしんじまち" },
+            { bango: "31", chiku: "高浜", "choumei": "港山町", furigana": "みなとやままち" },
             { bango: "31", chiku: "高浜", "choumei": "高浜町", "furigana": "たかはまちょう" },
             { bango: "38", chiku: "北条", "choumei": "北条", "furigana": "ほうじょう" },
             { bango: "38", chiku: "北条", "choumei": "北条辻", "furigana": "ほうじょうつじ" },
@@ -512,7 +492,6 @@
             { bango: "45", chiku: "忽那諸島", "choumei": "野忽那", "furigana": "のくつな" }
         ];
 
-        // --- 3. 実際の地図（Leaflet）の初期設定 ---
         const map = L.map('real-map').setView([33.8392, 132.7653], 12);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
@@ -520,7 +499,6 @@
 
         let currentHighlightLayer = null;
 
-        // --- 4. ブロック図の生成 ---
         const blocks = [
             { title: "【 北条エリア 】", items: [{id:"40", name:"浅海"}, {id:"42", name:"立岩"}, {id:"43", name:"難波"}, {id:"41", name:"正岡"}, {id:"38", name:"北条"}, {id:"39", name:"河野"}, {id:"44", name:"粟井"}] },
             { title: "【 城北 】", items: [{id:"36", name:"堀江"}, {id:"35", name:"和気"}, {id:"37", name:"久枝"}, {id:"34", name:"潮見"}] },
@@ -541,11 +519,17 @@
             blockMap.innerHTML += html;
         });
 
-        // --- 5. 検索＆ハイライト処理 ---
+        // テキストから余分な数字や空白を取り除く関数
+        function cleanName(str) {
+            return str.replace(/[0-9\s　\[\]]+/g, '').trim();
+        }
+
         document.getElementById('search-input').addEventListener('input', function(e) {
             const keyword = e.target.value.trim();
             const districts = document.querySelectorAll('.district');
             const gmapBtn = document.getElementById('gmap-btn');
+            const hwCopyArea = document.getElementById('hw-copy-area');
+            const hwCopyText = document.getElementById('hw-copy-text');
             
             if (currentHighlightLayer) {
                 map.removeLayer(currentHighlightLayer);
@@ -554,22 +538,32 @@
             if (keyword === "") {
                 districts.forEach(el => el.classList.remove('highlight'));
                 gmapBtn.style.display = "none";
+                hwCopyArea.style.display = "none";
+                hwCopyText.value = "";
                 return;
             }
 
             const matchedNumbers = new Set();
-            let matchedTownName = "";
+            let matchedTowns = [];
+            let matchedDistricts = new Set();
             let matchedDistrictName = "";
+            let primaryTownName = "";
 
+            // ① マスタデータから合致する町や地区を洗い出す
             masterData.forEach(item => {
                 if (item.chiku.includes(keyword) || item.choumei.includes(keyword) || item.furigana.includes(keyword)) {
                     const nums = item.bango.match(/\d+/g);
                     if (nums) nums.forEach(n => matchedNumbers.add(n));
-                    matchedTownName = item.choumei; 
-                    matchedDistrictName = item.chiku; 
+                    
+                    matchedTowns.push(item.choumei);
+                    matchedDistricts.add(item.chiku);
+                    
+                    if (!primaryTownName) primaryTownName = item.choumei;
+                    if (!matchedDistrictName) matchedDistrictName = item.chiku; 
                 }
             });
 
+            // マップとブロックのハイライト
             districts.forEach(el => {
                 const elIds = el.dataset.id.match(/\d+/g) || [];
                 if (elIds.some(id => matchedNumbers.has(id))) {
@@ -579,27 +573,96 @@
                 }
             });
 
-            // Googleマップへのリンク
-            if (matchedTownName) {
+            if (matchedTowns.length > 0 || matchedDistricts.size > 0) {
                 gmapBtn.style.display = "inline-block";
-                gmapBtn.href = `https://www.google.com/maps/search/?api=1&query=愛媛県松山市 ${matchedTownName}`;
+                hwCopyArea.style.display = "block";
+                gmapBtn.href = `https://www.google.com/maps/search/?api=1&query=愛媛県松山市 ${primaryTownName}`;
+                
+                // ② 関連する周辺地区（同じエリア）を探し出す
+                let relatedDistricts = new Set();
+                matchedDistricts.forEach(d => {
+                    let parts = d.split(/[　\s]+/);
+                    parts.forEach(part => {
+                        if (!part) return;
+                        blocks.forEach(block => {
+                            // その地区が含まれるエリアを探す
+                            if (block.items.some(i => i.name === part || part.includes(i.name))) {
+                                block.items.forEach(i => relatedDistricts.add(cleanName(i.name)));
+                            }
+                        });
+                    });
+                });
+
+                // ③ ハローワーク検索用の文字列を組み立てる
+                let hwTerms = [];
+                
+                // 検索キーワードと完全に一致する町名があれば、先頭に置く（例: うまき -> 馬木町）
+                let exactTownMatch = matchedTowns.find(t => t === keyword || t.includes(keyword));
+                if (!exactTownMatch) exactTownMatch = matchedTowns[0];
+                if (exactTownMatch) hwTerms.push(exactTownMatch);
+                
+                // 地区名を順番に追加
+                matchedDistricts.forEach(d => {
+                    d.split(/[　\s]+/).forEach(p => { if (p) hwTerms.push(p); });
+                });
+                relatedDistricts.forEach(rd => hwTerms.push(rd));
+
+                // 重複を削除
+                hwTerms = [...new Set(hwTerms)];
+
+                // 全角スペースで繋ぎ、50文字を超えないように制限する
+                let currentTerms = [];
+                for (let term of hwTerms) {
+                    let nextStr = currentTerms.length === 0 ? term : currentTerms.join("　") + "　" + term;
+                    if (nextStr.length > 50) {
+                        break; // 50文字を超える場合は追加をストップ
+                    }
+                    currentTerms.push(term);
+                }
+                
+                hwCopyText.value = currentTerms.join("　");
+
+                // 実際の地図のハイライト
+                if (matchedDistrictName && districtCoords[cleanName(matchedDistrictName.split(/[　\s]+/)[0])]) {
+                    const coords = districtCoords[cleanName(matchedDistrictName.split(/[　\s]+/)[0])];
+                    map.flyTo(coords, 13, { duration: 1.5 });
+                    currentHighlightLayer = L.circle(coords, {
+                        color: 'red', fillColor: '#ff3333', fillOpacity: 0.4, weight: 2, radius: 2000
+                    }).addTo(map);
+                }
             } else {
                 gmapBtn.style.display = "none";
-            }
-
-            // 実際の地図を光らせる
-            if (matchedDistrictName && districtCoords[matchedDistrictName]) {
-                const coords = districtCoords[matchedDistrictName];
-                map.flyTo(coords, 13, { duration: 1.5 });
-                currentHighlightLayer = L.circle(coords, {
-                    color: 'red',
-                    fillColor: '#ff3333',
-                    fillOpacity: 0.4,
-                    weight: 2,
-                    radius: 2000
-                }).addTo(map);
+                hwCopyArea.style.display = "none";
             }
         });
+
+        // 「コピー」ボタンの機能
+        document.getElementById('copy-btn').addEventListener('click', function() {
+            const copyText = document.getElementById('hw-copy-text');
+            if (!copyText.value) return;
+            
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // モバイル端末用
+            
+            try {
+                // クリップボードにコピー
+                document.execCommand('copy');
+                
+                // ボタンの見た目を「コピーしました！」に変更
+                const btn = document.getElementById('copy-btn');
+                btn.innerText = "コピーしました！";
+                btn.style.backgroundColor = "#ff9800";
+                
+                // 2秒後に元の見た目に戻す
+                setTimeout(() => {
+                    btn.innerText = "コピー";
+                    btn.style.backgroundColor = "#4CAF50";
+                }, 2000);
+            } catch (err) {
+                alert("コピーに失敗しました。お手数ですが手動で選択してコピーしてください。");
+            }
+        });
+
     </script>
 </body>
 </html>
