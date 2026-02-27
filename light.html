@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>エリア検索ツール</title>
+    <title>松山市 エリア・地図検索ツール</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <style>
         body {
             font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
@@ -34,54 +38,82 @@
             border: 2px solid #ccc;
             border-radius: 4px;
         }
-        input[type="text"]:focus {
-            border-color: #4CAF50;
-            outline: none;
+        
+        /* Googleマップボタンのスタイル */
+        #gmap-btn {
+            display: none; /* 初期状態は非表示 */
+            background-color: #4285F4;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 10px;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: background-color 0.3s;
         }
-        /* マップのレイアウト設定 */
-        .map-grid {
+        #gmap-btn:hover {
+            background-color: #3367D6;
+        }
+
+        /* 画面を左右に分けるレイアウト */
+        .main-container {
             display: flex;
             gap: 20px;
             flex-wrap: wrap;
-            justify-content: flex-start;
         }
-        .map-col {
+        .left-panel {
+            flex: 1;
+            min-width: 300px;
+        }
+        .right-panel {
+            flex: 1;
+            min-width: 400px;
+        }
+
+        /* 実際の地図（Leaflet）のサイズ */
+        #real-map {
+            width: 100%;
+            height: 600px;
+            border-radius: 8px;
+            border: 2px solid #ccc;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* ブロック図のレイアウト設定 */
+        .map-grid {
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            min-width: 250px;
+            gap: 15px;
         }
         .area-block {
             background: #fff;
             border: 2px solid #ddd;
             border-radius: 8px;
             padding: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
         .area-title {
             font-weight: bold;
             background: #e0f2f1;
             color: #00695c;
             padding: 8px;
-            margin-bottom: 15px;
             text-align: center;
             border-radius: 4px;
+            margin-bottom: 10px;
         }
         .district-row {
             display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-bottom: 10px;
+            gap: 5px;
+            flex-wrap: wrap;
         }
         .district {
-            padding: 8px 12px;
+            padding: 6px 10px;
             border: 1px solid #aaa;
             border-radius: 4px;
             background: #fafafa;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            text-align: center;
-            min-width: 80px;
+            font-size: 13px;
+            transition: all 0.3s;
         }
         /* 光る（ハイライト）エフェクト */
         .district.highlight {
@@ -89,138 +121,87 @@
             border-color: #fbc02d;
             color: #e65100;
             font-weight: bold;
-            box-shadow: 0 0 15px rgba(255, 235, 59, 0.9);
+            box-shadow: 0 0 10px rgba(255, 235, 59, 0.9);
             transform: scale(1.05);
-            z-index: 10;
-            position: relative;
         }
     </style>
 </head>
 <body>
 
     <div class="header-panel">
-        <h1>🔍 エリア検索ツール</h1>
+        <h1>🔍 松山市 エリア＆地図検索ツール（窓口用）</h1>
         
         <div class="input-group">
-            <label>1. マスタデータの読み込み（任意）</label>
-            <p style="font-size:12px; color:#666; margin-top:0;">「マスタ.csv」を選択すると、全件の町名から検索できるようになります。</p>
+            <label>1. マスタCSVの読み込み（任意）</label>
             <input type="file" id="csv-file" accept=".csv">
-            <span id="load-status" style="margin-left: 10px; color: green; font-weight: bold;"></span>
+            <span id="load-status" style="color: green; font-weight: bold;"></span>
         </div>
 
         <div class="input-group">
-            <label>2. エリアを検索（町名・ふりがな・地区名）</label>
-            <input type="text" id="search-input" placeholder="例: 道後、かみいち、堀江">
+            <label>2. 住所（町名やふりがな）を入力</label>
+            <input type="text" id="search-input" placeholder="例: 大西谷、どうご、堀江">
         </div>
+
+        <a id="gmap-btn" href="#" target="_blank" style="display: none;">🌍 この町名をGoogleマップで確認する</a>
     </div>
 
-    <div class="map-grid">
-        <div class="map-col">
-            <div class="area-block">
-                <div class="area-title">【 忽那・島しょ部 】</div>
-                <div class="district-row"><div class="district" data-id="45">[ 45 忽那諸島 ]</div></div>
-            </div>
-            <div class="area-block">
-                <div class="area-title">【 城西 】</div>
-                <div class="district-row"><div class="district" data-id="32">[ 32 興居島 ]</div></div>
-                <div class="district-row"><div class="district" data-id="31">[ 31 高浜 ]</div></div>
-                <div class="district-row"><div class="district" data-id="29">[ 29 三津浜 ]</div></div>
-                <div class="district-row"><div class="district" data-id="30">[ 30 宮前 ]</div></div>
-                <div class="district-row"><div class="district" data-id="26">[ 26 味生 ]</div></div>
-                <div class="district-row"><div class="district" data-id="28">[ 28 生石 ]</div></div>
-                <div class="district-row"><div class="district" data-id="27">[ 27 垣生 ]</div></div>
-                <div class="district-row"><div class="district" data-id="25">[ 25 余土 ]</div></div>
-            </div>
+    <div class="main-container">
+        <div class="left-panel">
+            <h3>■ エリア区分図</h3>
+            <div class="map-grid" id="block-map">
+                </div>
         </div>
 
-        <div class="map-col">
-            <div class="area-block">
-                <div class="area-title">【 城北 】</div>
-                <div class="district-row">
-                    <div class="district" data-id="36">[ 36 堀江 ]</div>
-                    <div class="district" data-id="35">[ 35 和気 ]</div>
-                </div>
-                <div class="district-row">
-                    <div class="district" data-id="37">[ 37 久枝 ]</div>
-                    <div class="district" data-id="34">[ 34 潮見 ]</div>
-                </div>
-            </div>
-            <div class="area-block">
-                <div class="area-title">【 中心部 】</div>
-                <div class="district-row"><div class="district" data-id="20">[ 20 味酒 ]</div></div>
-                <div class="district-row"><div class="district" data-id="24">[ 24 清水 ]</div></div>
-                <div class="district-row"><div class="district" data-id="19">[ 19 新玉 ]</div></div>
-                <div class="district-row"><div class="district" data-id="14">[ 14 東雲 ]</div></div>
-                <div class="district-row"><div class="district" data-id="13">[ 13 道後 ]</div></div>
-                <div class="district-row"><div class="district" data-id="16">[ 16 番町 ]</div></div>
-                <div class="district-row"><div class="district" data-id="15">[ 15 八坂 ]</div></div>
-                <div class="district-row"><div class="district" data-id="21,22">[ 21　22 雄郡 ]</div></div>
-                <div class="district-row"><div class="district" data-id="17">[ 17 素鵞 ]</div></div>
-                <div class="district-row"><div class="district" data-id="18">[ 18 桑原 ]</div></div>
-            </div>
-            <div class="area-block">
-                <div class="area-title">【 城南 】</div>
-                <div class="district-row"><div class="district" data-id="08,09">[ 08　09 石井 ]</div></div>
-                <div class="district-row"><div class="district" data-id="10">[ 10 浮穴 ]</div></div>
-                <div class="district-row"><div class="district" data-id="11">[ 11 荏原 ]</div></div>
-                <div class="district-row"><div class="district" data-id="12">[ 12 坂本 ]</div></div>
-            </div>
-        </div>
-
-        <div class="map-col">
-            <div class="area-block">
-                <div class="area-title">【 北条エリア 】</div>
-                <div class="district-row">
-                    <div class="district" data-id="40">[ 40 浅海 ]</div>
-                    <div class="district" data-id="42">[ 42 立岩 ]</div>
-                </div>
-                <div class="district-row">
-                    <div class="district" data-id="43">[ 43 難波 ]</div>
-                    <div class="district" data-id="41">[ 41 正岡 ]</div>
-                </div>
-                <div class="district-row">
-                    <div class="district" data-id="38">[ 38 北条 ]</div>
-                    <div class="district" data-id="39">[ 39 河野 ]</div>
-                </div>
-                <div class="district-row">
-                    <div class="district" data-id="44">[ 44 粟井 ]</div>
-                </div>
-            </div>
-            <div class="area-block">
-                <div class="area-title">【 城東 】</div>
-                <div class="district-row"><div class="district" data-id="01">[ 01 五明 ]</div></div>
-                <div class="district-row"><div class="district" data-id="02">[ 02 伊台 ]</div></div>
-                <div class="district-row"><div class="district" data-id="03">[ 03 湯山 ]</div></div>
-                <div class="district-row"><div class="district" data-id="04">[ 04 日浦 ]</div></div>
-                <div class="district-row"><div class="district" data-id="05,06">[ 05　06 久米 ]</div></div>
-                <div class="district-row"><div class="district" data-id="07">[ 07 小野 ]</div></div>
-            </div>
+        <div class="right-panel">
+            <h3>■ 実際の地図（該当地区がポワッと光ります）</h3>
+            <div id="real-map"></div>
         </div>
     </div>
 
     <script>
-        // --- 1. お試し用の初期データ（マスタCSVを読み込むと上書き・追加されます） ---
+        // --- 1. エリアごとの「おおよその緯度・経度」マスタ ---
+        // 実際の地図で色を塗るための中心座標です（代表的なものをいくつか登録しています）
+        const districtCoords = {
+            "道後": [33.850, 132.788],
+            "堀江": [33.886, 132.738],
+            "五明": [33.873, 132.833],
+            "浅海": [34.019, 132.775],
+            "番町": [33.840, 132.768],
+            "粟井": [33.993, 132.784],
+            "興居島": [33.887, 132.690],
+            "三津浜": [33.858, 132.712],
+            "北条": [33.974, 132.776],
+            "桑原": [33.825, 132.788],
+            "石井": [33.805, 132.768]
+        };
+
+        // --- 2. お試し用の初期データ（CSVで上書きされます） ---
         let masterData = [
             { bango: "13", chiku: "道後", choumei: "上市", furigana: "かみいち" },
-            { bango: "13", chiku: "道後", choumei: "道後", furigana: "どうご" },
             { bango: "36", chiku: "堀江", choumei: "堀江", furigana: "ほりえ" },
-            { bango: "01", chiku: "五明", choumei: "五明", furigana: "ごみょう" },
-            { bango: "40", chiku: "浅海", choumei: "浅海", furigana: "あさなみ" },
+            { bango: "44", chiku: "粟井", choumei: "大西谷", furigana: "おおにしだに" },
             { bango: "16", chiku: "番町", choumei: "一番町", furigana: "いちばんちょう" }
         ];
 
-        // --- 2. CSV読み込み処理 ---
+        // --- 3. 実際の地図（Leaflet）の初期設定 ---
+        // 松山市役所あたりを中心に設定
+        const map = L.map('real-map').setView([33.8392, 132.7653], 12);
+        
+        // 白地図（OpenStreetMap）を読み込み
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        let currentHighlightLayer = null; // 現在光っている円を保存する変数
+
+        // --- 4. CSV読み込み処理 ---
         document.getElementById('csv-file').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(event) {
-                const text = event.target.result;
-                const lines = text.split('\n');
-                
+                const lines = event.target.result.split('\n');
                 let newData = [];
-                // 1行目はヘッダーと見なして i=1 から開始
                 for (let i = 1; i < lines.length; i++) {
                     const cols = lines[i].split(',');
                     if (cols.length >= 5) {
@@ -233,55 +214,96 @@
                     }
                 }
                 if (newData.length > 0) {
-                    masterData = newData; // データを上書き
-                    document.getElementById('load-status').innerText = `読込完了（${newData.length}件の町名）`;
+                    masterData = newData;
+                    document.getElementById('load-status').innerText = `読込完了（${newData.length}件）`;
                 }
             };
-            // 日本語の文字化け防止のためShift-JISやUTF-8を自動判定させやすい設定
             reader.readAsText(file);
         });
 
-        // --- 3. 検索＆ハイライト処理 ---
+        // --- 5. ブロック図の生成（HTMLをスッキリさせるためJSで生成） ---
+        const blocks = [
+            { title: "【 北条エリア 】", items: [{id:"40", name:"浅海"}, {id:"42", name:"立岩"}, {id:"43", name:"難波"}, {id:"41", name:"正岡"}, {id:"38", name:"北条"}, {id:"39", name:"河野"}, {id:"44", name:"粟井"}] },
+            { title: "【 城北 】", items: [{id:"36", name:"堀江"}, {id:"35", name:"和気"}, {id:"37", name:"久枝"}, {id:"34", name:"潮見"}] },
+            { title: "【 中心部 】", items: [{id:"20", name:"味酒"}, {id:"24", name:"清水"}, {id:"19", name:"新玉"}, {id:"14", name:"東雲"}, {id:"13", name:"道後"}, {id:"16", name:"番町"}, {id:"15", name:"八坂"}, {id:"21,22", name:"雄郡"}, {id:"17", name:"素鵞"}, {id:"18", name:"桑原"}] }
+        ];
+        
+        const blockMap = document.getElementById('block-map');
+        blocks.forEach(block => {
+            let html = `<div class="area-block"><div class="area-title">${block.title}</div><div class="district-row">`;
+            block.items.forEach(item => {
+                html += `<div class="district" data-id="${item.id}" data-name="${item.name}">[ ${item.id} ${item.name} ]</div>`;
+            });
+            html += `</div></div>`;
+            blockMap.innerHTML += html;
+        });
+
+        // --- 6. 検索＆ハイライト処理 ---
         document.getElementById('search-input').addEventListener('input', function(e) {
             const keyword = e.target.value.trim();
             const districts = document.querySelectorAll('.district');
+            const gmapBtn = document.getElementById('gmap-btn');
             
-            // 入力が空の場合は全てのハイライトを消す
+            // 地図上の光を一旦消す
+            if (currentHighlightLayer) {
+                map.removeLayer(currentHighlightLayer);
+            }
+
             if (keyword === "") {
                 districts.forEach(el => el.classList.remove('highlight'));
+                gmapBtn.style.display = "none";
                 return;
             }
 
-            // マスタデータから、キーワードが「地区」「町名」「ふりがな」のいずれかに含まれるか探す
             const matchedNumbers = new Set();
+            let matchedTownName = "";
+            let matchedDistrictName = "";
+
+            // キーワードに一致するデータを探す
             masterData.forEach(item => {
-                if (
-                    item.chiku.includes(keyword) || 
-                    item.choumei.includes(keyword) || 
-                    item.furigana.includes(keyword)
-                ) {
-                    // 番号には "13　14" のように複数入っている場合があるので、数字だけ抽出する
+                if (item.chiku.includes(keyword) || item.choumei.includes(keyword) || item.furigana.includes(keyword)) {
                     const nums = item.bango.match(/\d+/g);
-                    if (nums) {
-                        nums.forEach(n => matchedNumbers.add(n));
-                    }
+                    if (nums) nums.forEach(n => matchedNumbers.add(n));
+                    matchedTownName = item.choumei; // Googleマップ検索用に保持
+                    matchedDistrictName = item.chiku; // 実際の地図移動用に保持
                 }
             });
 
-            // 画面上のマップ要素のクラスを切り替える
+            // ブロック図を光らせる
             districts.forEach(el => {
-                // 要素の data-id （例: "05,06"）から数字を抽出
                 const elIds = el.dataset.id.match(/\d+/g) || [];
-                
-                // 抽出した数字のどれかが matchedNumbers に含まれていれば光らせる
-                const isMatch = elIds.some(id => matchedNumbers.has(id));
-                
-                if (isMatch) {
+                if (elIds.some(id => matchedNumbers.has(id))) {
                     el.classList.add('highlight');
                 } else {
                     el.classList.remove('highlight');
                 }
             });
+
+            // --- Googleマップボタンの表示 ---
+            if (matchedTownName) {
+                gmapBtn.style.display = "inline-block";
+                // 例: "愛媛県松山市 大西谷" でGoogleマップ検索するURLを生成
+                gmapBtn.href = `https://www.google.com/maps/search/?api=1&query=愛媛県松山市 ${matchedTownName}`;
+            } else {
+                gmapBtn.style.display = "none";
+            }
+
+            // --- 実際の地図上をポワッと赤く光らせる ---
+            if (matchedDistrictName && districtCoords[matchedDistrictName]) {
+                const coords = districtCoords[matchedDistrictName];
+                
+                // その場所に地図を移動
+                map.flyTo(coords, 13, { duration: 1.5 });
+
+                // 赤い円（ポワッとした光）を描画
+                currentHighlightLayer = L.circle(coords, {
+                    color: 'red',
+                    fillColor: '#ff3333',
+                    fillOpacity: 0.4,
+                    weight: 2,
+                    radius: 2000 // 半径2kmの円（地区の広さに応じて調整可能）
+                }).addTo(map);
+            }
         });
     </script>
 </body>
