@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>エリア検索ツール</title>
+    <style>
+        body {
+            font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+            margin: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .header-panel {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="text"] {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="text"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        /* マップのレイアウト設定 */
+        .map-grid {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+        .map-col {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-width: 250px;
+        }
+        .area-block {
+            background: #fff;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .area-title {
+            font-weight: bold;
+            background: #e0f2f1;
+            color: #00695c;
+            padding: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            border-radius: 4px;
+        }
+        .district-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .district {
+            padding: 8px 12px;
+            border: 1px solid #aaa;
+            border-radius: 4px;
+            background: #fafafa;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            text-align: center;
+            min-width: 80px;
+        }
+        /* 光る（ハイライト）エフェクト */
+        .district.highlight {
+            background-color: #fff59d;
+            border-color: #fbc02d;
+            color: #e65100;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(255, 235, 59, 0.9);
+            transform: scale(1.05);
+            z-index: 10;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-panel">
+        <h1>🔍 エリア検索ツール</h1>
+        
+        <div class="input-group">
+            <label>1. マスタデータの読み込み（任意）</label>
+            <p style="font-size:12px; color:#666; margin-top:0;">「マスタ.csv」を選択すると、全件の町名から検索できるようになります。</p>
+            <input type="file" id="csv-file" accept=".csv">
+            <span id="load-status" style="margin-left: 10px; color: green; font-weight: bold;"></span>
+        </div>
+
+        <div class="input-group">
+            <label>2. エリアを検索（町名・ふりがな・地区名）</label>
+            <input type="text" id="search-input" placeholder="例: 道後、かみいち、堀江">
+        </div>
+    </div>
+
+    <div class="map-grid">
+        <div class="map-col">
+            <div class="area-block">
+                <div class="area-title">【 忽那・島しょ部 】</div>
+                <div class="district-row"><div class="district" data-id="45">[ 45 忽那諸島 ]</div></div>
+            </div>
+            <div class="area-block">
+                <div class="area-title">【 城西 】</div>
+                <div class="district-row"><div class="district" data-id="32">[ 32 興居島 ]</div></div>
+                <div class="district-row"><div class="district" data-id="31">[ 31 高浜 ]</div></div>
+                <div class="district-row"><div class="district" data-id="29">[ 29 三津浜 ]</div></div>
+                <div class="district-row"><div class="district" data-id="30">[ 30 宮前 ]</div></div>
+                <div class="district-row"><div class="district" data-id="26">[ 26 味生 ]</div></div>
+                <div class="district-row"><div class="district" data-id="28">[ 28 生石 ]</div></div>
+                <div class="district-row"><div class="district" data-id="27">[ 27 垣生 ]</div></div>
+                <div class="district-row"><div class="district" data-id="25">[ 25 余土 ]</div></div>
+            </div>
+        </div>
+
+        <div class="map-col">
+            <div class="area-block">
+                <div class="area-title">【 城北 】</div>
+                <div class="district-row">
+                    <div class="district" data-id="36">[ 36 堀江 ]</div>
+                    <div class="district" data-id="35">[ 35 和気 ]</div>
+                </div>
+                <div class="district-row">
+                    <div class="district" data-id="37">[ 37 久枝 ]</div>
+                    <div class="district" data-id="34">[ 34 潮見 ]</div>
+                </div>
+            </div>
+            <div class="area-block">
+                <div class="area-title">【 中心部 】</div>
+                <div class="district-row"><div class="district" data-id="20">[ 20 味酒 ]</div></div>
+                <div class="district-row"><div class="district" data-id="24">[ 24 清水 ]</div></div>
+                <div class="district-row"><div class="district" data-id="19">[ 19 新玉 ]</div></div>
+                <div class="district-row"><div class="district" data-id="14">[ 14 東雲 ]</div></div>
+                <div class="district-row"><div class="district" data-id="13">[ 13 道後 ]</div></div>
+                <div class="district-row"><div class="district" data-id="16">[ 16 番町 ]</div></div>
+                <div class="district-row"><div class="district" data-id="15">[ 15 八坂 ]</div></div>
+                <div class="district-row"><div class="district" data-id="21,22">[ 21　22 雄郡 ]</div></div>
+                <div class="district-row"><div class="district" data-id="17">[ 17 素鵞 ]</div></div>
+                <div class="district-row"><div class="district" data-id="18">[ 18 桑原 ]</div></div>
+            </div>
+            <div class="area-block">
+                <div class="area-title">【 城南 】</div>
+                <div class="district-row"><div class="district" data-id="08,09">[ 08　09 石井 ]</div></div>
+                <div class="district-row"><div class="district" data-id="10">[ 10 浮穴 ]</div></div>
+                <div class="district-row"><div class="district" data-id="11">[ 11 荏原 ]</div></div>
+                <div class="district-row"><div class="district" data-id="12">[ 12 坂本 ]</div></div>
+            </div>
+        </div>
+
+        <div class="map-col">
+            <div class="area-block">
+                <div class="area-title">【 北条エリア 】</div>
+                <div class="district-row">
+                    <div class="district" data-id="40">[ 40 浅海 ]</div>
+                    <div class="district" data-id="42">[ 42 立岩 ]</div>
+                </div>
+                <div class="district-row">
+                    <div class="district" data-id="43">[ 43 難波 ]</div>
+                    <div class="district" data-id="41">[ 41 正岡 ]</div>
+                </div>
+                <div class="district-row">
+                    <div class="district" data-id="38">[ 38 北条 ]</div>
+                    <div class="district" data-id="39">[ 39 河野 ]</div>
+                </div>
+                <div class="district-row">
+                    <div class="district" data-id="44">[ 44 粟井 ]</div>
+                </div>
+            </div>
+            <div class="area-block">
+                <div class="area-title">【 城東 】</div>
+                <div class="district-row"><div class="district" data-id="01">[ 01 五明 ]</div></div>
+                <div class="district-row"><div class="district" data-id="02">[ 02 伊台 ]</div></div>
+                <div class="district-row"><div class="district" data-id="03">[ 03 湯山 ]</div></div>
+                <div class="district-row"><div class="district" data-id="04">[ 04 日浦 ]</div></div>
+                <div class="district-row"><div class="district" data-id="05,06">[ 05　06 久米 ]</div></div>
+                <div class="district-row"><div class="district" data-id="07">[ 07 小野 ]</div></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. お試し用の初期データ（マスタCSVを読み込むと上書き・追加されます） ---
+        let masterData = [
+            { bango: "13", chiku: "道後", choumei: "上市", furigana: "かみいち" },
+            { bango: "13", chiku: "道後", choumei: "道後", furigana: "どうご" },
+            { bango: "36", chiku: "堀江", choumei: "堀江", furigana: "ほりえ" },
+            { bango: "01", chiku: "五明", choumei: "五明", furigana: "ごみょう" },
+            { bango: "40", chiku: "浅海", choumei: "浅海", furigana: "あさなみ" },
+            { bango: "16", chiku: "番町", choumei: "一番町", furigana: "いちばんちょう" }
+        ];
+
+        // --- 2. CSV読み込み処理 ---
+        document.getElementById('csv-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const text = event.target.result;
+                const lines = text.split('\n');
+                
+                let newData = [];
+                // 1行目はヘッダーと見なして i=1 から開始
+                for (let i = 1; i < lines.length; i++) {
+                    const cols = lines[i].split(',');
+                    if (cols.length >= 5) {
+                        newData.push({
+                            bango: cols[0] ? cols[0].trim() : "",
+                            chiku: cols[2] ? cols[2].trim() : "",
+                            choumei: cols[3] ? cols[3].trim() : "",
+                            furigana: cols[4] ? cols[4].trim() : ""
+                        });
+                    }
+                }
+                if (newData.length > 0) {
+                    masterData = newData; // データを上書き
+                    document.getElementById('load-status').innerText = `読込完了（${newData.length}件の町名）`;
+                }
+            };
+            // 日本語の文字化け防止のためShift-JISやUTF-8を自動判定させやすい設定
+            reader.readAsText(file);
+        });
+
+        // --- 3. 検索＆ハイライト処理 ---
+        document.getElementById('search-input').addEventListener('input', function(e) {
+            const keyword = e.target.value.trim();
+            const districts = document.querySelectorAll('.district');
+            
+            // 入力が空の場合は全てのハイライトを消す
+            if (keyword === "") {
+                districts.forEach(el => el.classList.remove('highlight'));
+                return;
+            }
+
+            // マスタデータから、キーワードが「地区」「町名」「ふりがな」のいずれかに含まれるか探す
+            const matchedNumbers = new Set();
+            masterData.forEach(item => {
+                if (
+                    item.chiku.includes(keyword) || 
+                    item.choumei.includes(keyword) || 
+                    item.furigana.includes(keyword)
+                ) {
+                    // 番号には "13　14" のように複数入っている場合があるので、数字だけ抽出する
+                    const nums = item.bango.match(/\d+/g);
+                    if (nums) {
+                        nums.forEach(n => matchedNumbers.add(n));
+                    }
+                }
+            });
+
+            // 画面上のマップ要素のクラスを切り替える
+            districts.forEach(el => {
+                // 要素の data-id （例: "05,06"）から数字を抽出
+                const elIds = el.dataset.id.match(/\d+/g) || [];
+                
+                // 抽出した数字のどれかが matchedNumbers に含まれていれば光らせる
+                const isMatch = elIds.some(id => matchedNumbers.has(id));
+                
+                if (isMatch) {
+                    el.classList.add('highlight');
+                } else {
+                    el.classList.remove('highlight');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
