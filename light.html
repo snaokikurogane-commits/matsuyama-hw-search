@@ -4,22 +4,33 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>松山市 エリア検索ツール（ハローワーク窓口用）</title>
+    <title>松山市 エリア検索＆求人ワード作成ツール</title>
     
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
     <style>
         body { font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif; margin: 20px; background-color: #f4f7f6; color: #333; }
         .header-panel { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
         .input-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 18px; color: #00695c; }
         input[type="text"] { width: 100%; max-width: 400px; padding: 12px; font-size: 16px; border: 2px solid #ccc; border-radius: 4px; }
-        #gmap-btn { display: none; background-color: #4285F4; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; margin-top: 10px; display: inline-block; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        #hw-copy-area { display: none; margin-top: 20px; padding: 15px; background: #e3f2fd; border-radius: 8px; border: 1px solid #90caf9; }
-        .main-container { display: flex; gap: 20px; flex-wrap: wrap; }
+        
+        #result-area { display: none; margin-top: 20px; }
+        
+        .gmap-btn {
+            background-color: #4285F4; color: white; text-decoration: none; padding: 12px 20px; 
+            border-radius: 5px; font-weight: bold; display: inline-flex; align-items: center; gap: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; margin-bottom: 20px;
+        }
+        .gmap-btn:hover { background-color: #3367D6; }
+
+        .hw-copy-box { background: #e3f2fd; border-radius: 8px; border: 1px solid #90caf9; padding: 15px; }
+        .hw-copy-box h4 { margin-top: 0; color: #1565c0; margin-bottom: 5px; }
+        .hw-copy-box p { font-size: 13px; color: #555; margin-top: 0; margin-bottom: 10px; }
+        
+        .copy-flex { display: flex; gap: 10px; }
+        .copy-flex input { flex: 1; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; font-weight:bold; color:#d32f2f; }
+        .copy-flex button { padding: 10px 20px; font-size: 16px; background:#4CAF50; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:bold; }
+
+        .main-container { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 20px; }
         .left-panel { flex: 1; min-width: 300px; }
-        .right-panel { flex: 1; min-width: 400px; }
-        #real-map { width: 100%; height: 600px; border-radius: 8px; border: 2px solid #ccc; background: #eee; text-align: center; }
         .map-grid { display: flex; flex-direction: column; gap: 15px; }
         .area-block { background: #fff; border: 2px solid #ddd; border-radius: 8px; padding: 10px; }
         .area-title { font-weight: bold; background: #e0f2f1; color: #00695c; padding: 8px; text-align: center; border-radius: 4px; margin-bottom: 10px; }
@@ -31,67 +42,43 @@
 <body>
 
     <div class="header-panel">
-        <h1>🔍 松山市 エリア＆地図検索ツール（窓口用）</h1>
+        <h1>🔍 松山市 周辺町名検索ツール（求人検索用）</h1>
         
         <div class="input-group">
-            <label>住所（町名やふりがな）を入力して検索</label>
-            <input type="text" id="search-input" placeholder="例: うまき、堀江、大西谷">
+            <label>住所（町名やふりがな）を入力</label>
+            <input type="text" id="search-input" placeholder="例: うまき、堀江、かみいち">
         </div>
 
-        <a id="gmap-btn" href="#" target="_blank">🌍 この町名をGoogleマップで確認する</a>
+        <div id="result-area">
+            <a id="gmap-btn" class="gmap-btn" href="#" target="_blank">
+                🌍 <span id="gmap-text">Googleマップで確認する</span>
+            </a>
 
-        <div id="hw-copy-area">
-            <h4 style="margin-top: 0; color: #1565c0; margin-bottom: 5px;">💼 HWインターネットサービス用 フリーワード（50文字以内）</h4>
-            <p style="font-size:12px; color:#555; margin-top:0; margin-bottom: 10px;">
-                ※「検索した町名」＋「周辺の地区名」を自動で最大50文字まで組み合わせています。（全角スペース区切り）
-            </p>
-            <div style="display: flex; gap: 10px;">
-                <input type="text" id="hw-copy-text" readonly style="flex:1; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; background: #fff; font-weight:bold; color:#d32f2f;">
-                <button id="copy-btn" style="padding: 10px 20px; font-size: 16px; background:#4CAF50; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:bold; transition: 0.3s;">コピー</button>
+            <div class="hw-copy-box">
+                <h4>💼 周辺の「町名」フリーワード（50文字以内）</h4>
+                <p>※検索した町名と同じエリア内にある具体的な「町名」を自動で集めています。</p>
+                <div class="copy-flex">
+                    <input type="text" id="hw-copy-text" readonly>
+                    <button id="copy-btn">コピー</button>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="main-container">
         <div class="left-panel">
-            <h3>■ エリア区分図</h3>
+            <h3>■ エリア位置関係（該当地区が光ります）</h3>
             <div class="map-grid" id="block-map"></div>
-        </div>
-
-        <div class="right-panel">
-            <h3>■ 実際の地図（該当地区が赤く光ります）</h3>
-            <div id="real-map"></div>
         </div>
     </div>
 
     <script>
-        var districtCoords = {
-            "道後": [33.850, 132.788], "堀江": [33.886, 132.738], "五明": [33.873, 132.833],
-            "浅海": [34.019, 132.775], "番町": [33.840, 132.768], "粟井": [33.993, 132.784],
-            "興居島": [33.887, 132.690], "三津浜": [33.858, 132.712], "北条": [33.974, 132.776],
-            "桑原": [33.825, 132.788], "石井": [33.805, 132.768], "浮穴": [33.784, 132.783],
-            "久米": [33.815, 132.802], "和気": [33.875, 132.733], "味酒": [33.843, 132.753],
-            "東雲": [33.846, 132.774], "清水": [33.852, 132.760], "新玉": [33.832, 132.752],
-            "八坂": [33.834, 132.773], "雄郡": [33.824, 132.754], "素鵞": [33.831, 132.784],
-            "小野": [33.802, 132.831], "荏原": [33.774, 132.802], "坂本": [33.754, 132.812],
-            "伊台": [33.863, 132.803], "湯山": [33.853, 132.833], "日浦": [33.883, 132.853],
-            "余土": [33.804, 132.734], "味生": [33.834, 132.724], "垣生": [33.814, 132.714],
-            "生石": [33.824, 132.734], "宮前": [33.864, 132.724], "高浜": [33.884, 132.704],
-            "河野": [33.954, 132.764], "正岡": [33.964, 132.794], "立岩": [33.994, 132.814],
-            "難波": [33.984, 132.804], "忽那諸島": [33.914, 132.614]
-        };
-
+        // 松山市の全町名データ（354件）
         var masterData = [
-            { bango: "13", chiku: "道後", choumei: "上市", furigana: "かみいち" }, { bango: "13", chiku: "道後", choumei: "南町", furigana: "みなみまち" }, { bango: "13", chiku: "道後", choumei: "山田町", furigana: "やまだちょう" }, { bango: "13", chiku: "道後", choumei: "岩崎町", furigana: "いわさきまち" }, { bango: "13", chiku: "道後", choumei: "常光寺町", furigana: "じょうこうじちょう" }, { bango: "13", chiku: "道後", choumei: "新石手", furigana: "しんいして" }, { bango: "13", chiku: "道後", choumei: "桜谷町", furigana: "さくらだにちょう" }, { bango: "13", chiku: "道後", choumei: "石手", furigana: "いして" }, { bango: "13", chiku: "道後", choumei: "石手白石", furigana: "いしてしらいし" }, { bango: "13", chiku: "道後", choumei: "祝谷", furigana: "いわいだに" }, { bango: "13", chiku: "道後", choumei: "祝谷東町", furigana: "いわいだにひがしまち" }, { bango: "13", chiku: "道後", choumei: "祝谷町", furigana: "いわいだにまち" }, { bango: "13", chiku: "道後", choumei: "祝谷西町", furigana: "いわいだににしまち" }, { bango: "13", chiku: "道後", choumei: "紅葉町", furigana: "もみじまち" }, { bango: "13", chiku: "道後", choumei: "溝辺町", furigana: "みぞのべまち" }, { bango: "13", chiku: "道後", choumei: "道後一万", furigana: "どうごいちまん" }, { bango: "13", chiku: "道後", choumei: "道後今市", furigana: "どうごいまいち" }, { bango: "13", chiku: "道後", choumei: "道後北代", furigana: "どうごきたしろ" }, { bango: "13", chiku: "道後", choumei: "道後喜多町", furigana: "どうごきたまち" }, { bango: "13", chiku: "道後", choumei: "道後多幸町", furigana: "どうごたこうちょう" }, { bango: "13", chiku: "道後", choumei: "道後姫塚", furigana: "どうごひめづか" }, { bango: "13", chiku: "道後", choumei: "道後公園", furigana: "どうごこうえん" }, { bango: "13", chiku: "道後", choumei: "道後湯之町", furigana: "どうごゆのまち" }, { bango: "13", chiku: "道後", choumei: "道後湯月町", furigana: "どうごゆづきちょう" }, { bango: "13", chiku: "道後", choumei: "道後町", furigana: "どうごまち" }, { bango: "13", chiku: "道後", choumei: "道後緑台", furigana: "どうごみどりだい" }, { bango: "13", chiku: "道後", choumei: "道後鷺谷町", furigana: "どうごさぎだにちょう" }, { bango: "14", chiku: "東雲", choumei: "中一万町", furigana: "なかいちまんまち" }, { bango: "14", chiku: "東雲", choumei: "勝山町", furigana: "かつやまちょう" }, { bango: "14", chiku: "東雲", choumei: "北持田町", furigana: "きたもちだまち" }, { bango: "14", chiku: "東雲", choumei: "南持田町", furigana: "みなみもちだまち" }, { bango: "14", chiku: "東雲", choumei: "喜与町", furigana: "きよまち" }, { bango: "14", chiku: "東雲", choumei: "御宝町", furigana: "みたからまち" }, { bango: "14", chiku: "東雲", choumei: "文京町", furigana: "ぶんきょうちょう" }, { bango: "14", chiku: "東雲", choumei: "旭町", furigana: "あさひまち" }, { bango: "14", chiku: "東雲", choumei: "昭和町", furigana: "しょうわまち" }, { bango: "14", chiku: "東雲", choumei: "東一万町", furigana: "ひがしいちまんまち" }, { bango: "14", chiku: "東雲", choumei: "歩行町", furigana: "かちまち" }, { bango: "14", chiku: "東雲", choumei: "清町", furigana: "きよまち" }, { bango: "14", chiku: "東雲", choumei: "築山町", furigana: "つきやまちょう" }, { bango: "14", chiku: "東雲", choumei: "鉄砲町", furigana: "てっぽうちょう" }, { bango: "13　14", chiku: "東雲　道後", choumei: "持田町", furigana: "もちだまち" }, { bango: "14　16", chiku: "東雲　番町", choumei: "一番町", furigana: "いちばんちょう" }, { bango: "14　16", chiku: "東雲　番町", choumei: "大街道", furigana: "おおかいどう" }, { bango: "15", chiku: "八坂", choumei: "北立花町", furigana: "きたたちばなまち" }, { bango: "15", chiku: "八坂", choumei: "新立町", furigana: "しんたちまち" }, { bango: "15", chiku: "八坂", choumei: "永木町", furigana: "ながきまち" }, { bango: "15", chiku: "八坂", choumei: "河原町", furigana: "かわらまち" }, { bango: "15", chiku: "八坂", choumei: "湯渡町", furigana: "ゆわたりまち" }, { bango: "15", chiku: "八坂", choumei: "錦町", furigana: "にしきまち" }, { bango: "16", chiku: "番町", choumei: "二番町", furigana: "にばんちょう" }, { bango: "16", chiku: "番町", choumei: "南堀端町", furigana: "みなみほりばたちょう" }, { bango: "16", chiku: "番町", choumei: "堀之内", furigana: "ほりのうち" }, { bango: "16", chiku: "番町", choumei: "丸之内", furigana: "まるのうち" }, { bango: "16", chiku: "番町", choumei: "花園町", furigana: "はなぞのまち" }, { bango: "15　16　19", chiku: "八坂　新玉　番町", choumei: "三番町", furigana: "さんばんちょう" }, { bango: "15　16　19", chiku: "八坂　新玉　番町", choumei: "千舟町", furigana: "ちふねまち" }, { bango: "15　16　19", chiku: "八坂　新玉　番町", choumei: "湊町", furigana: "みなとまち" }, { bango: "16　17", chiku: "番町　素鵞", choumei: "中村", furigana: "なかむら" }, { bango: "16　17", chiku: "番町　素鵞", choumei: "小坂", furigana: "こさか" }, { bango: "15　16　17", chiku: "八坂　番町　素鵞", choumei: "祇園町", furigana: "ぎおんまち" }, { bango: "16　17　21　22", chiku: "番町　素鵞　雄郡", choumei: "柳井町", furigana: "やないまち" }, { bango: "15　16　17　21　22", chiku: "八坂　番町　素鵞　雄郡", choumei: "立花", furigana: "たちばな" }, { bango: "17", chiku: "素鵞", choumei: "上野町", furigana: "うえのまち" }, { bango: "17", chiku: "素鵞", choumei: "天山", furigana: "あまやま" }, { bango: "17", chiku: "素鵞", choumei: "拓川町", furigana: "たくせんちょう" }, { bango: "17", chiku: "素鵞", choumei: "日の出町", furigana: "ひのでまち" }, { bango: "17", chiku: "素鵞", choumei: "朝生田町", furigana: "あそだまち" }, { bango: "17", chiku: "素鵞", choumei: "東石井", furigana: "ひがしいしい" }, { bango: "17", chiku: "素鵞", choumei: "素鵞町", furigana: "そがまち" }, { bango: "18", chiku: "桑原", choumei: "三町", furigana: "さんちょう" }, { bango: "18", chiku: "桑原", choumei: "北久米町", furigana: "きたくめまち" }, { bango: "18", chiku: "桑原", choumei: "南久米町", furigana: "みなみくめまち" }, { bango: "18", chiku: "桑原", choumei: "束本", furigana: "つかもと" }, { bango: "18", chiku: "桑原", choumei: "東野", furigana: "ひがしの" }, { bango: "18", chiku: "桑原", choumei: "松末", furigana: "まつすえ" }, { bango: "18", chiku: "桑原", choumei: "枝松", furigana: "えだまつ" }, { bango: "18", chiku: "桑原", choumei: "桑原", furigana: "くわばら" }, { bango: "18", chiku: "桑原", choumei: "正円寺", furigana: "しょうえんじ" }, { bango: "18", chiku: "桑原", choumei: "樽味", furigana: "たるみ" }, { bango: "18", chiku: "桑原", choumei: "畑寺", furigana: "はたでら" }, { bango: "18", chiku: "桑原", choumei: "畑寺町", furigana: "はたでらまち" }, { bango: "14　20　23　24", chiku: "味酒　東雲　清水", choumei: "平和通", furigana: "へいわどおり" }, { bango: "19", chiku: "新玉", choumei: "南江戸", furigana: "みなみえど" }, { bango: "19", chiku: "新玉", choumei: "南江戸町", furigana: "みなみえどまち" }, { bango: "19", chiku: "新玉", choumei: "泉町", furigana: "いずみまち" }, { bango: "19", chiku: "新玉", choumei: "空港通", furigana: "くうこうどおり" }, { bango: "19", chiku: "新玉", choumei: "高岡町", furigana: "たかおかまち" }, { bango: "20", chiku: "味酒", choumei: "古町", furigana: "こまち" }, { bango: "20", chiku: "味酒", choumei: "味酒町", furigana: "みさけまち" }, { bango: "20", chiku: "味酒", choumei: "宮西", furigana: "みやにし" }, { bango: "20", chiku: "味酒", choumei: "大手町", furigana: "おおてまち" }, { bango: "20", chiku: "味酒", choumei: "愛光町", furigana: "あいこうちょう" }, { bango: "20", chiku: "味酒", choumei: "松前町", furigana: "まさきまち" }, { bango: "20", chiku: "味酒", choumei: "本町", furigana: "ほんまち" }, { bango: "20", chiku: "味酒", choumei: "萱町", furigana: "かやまち" }, { bango: "20", chiku: "味酒", choumei: "衣山", furigana: "きぬやま" }, { bango: "20", chiku: "味酒", choumei: "西一万町", furigana: "にしいちまんまち" }, { bango: "20", chiku: "味酒", choumei: "若草町", furigana: "わかくさちょう" }, { bango: "20", chiku: "味酒", choumei: "辻町", furigana: "つじまち" }, { bango: "20　23　24", chiku: "味酒　清水", choumei: "木屋町", furigana: "きやちょう" }, { bango: "20　23　24", chiku: "味酒　清水", choumei: "清水町", furigana: "しみずまち" }, { bango: "20　23　24", chiku: "味酒　清水", choumei: "高砂町", furigana: "たかさごまち" }, { bango: "20　21　22　23　24", chiku: "味酒　清水　雄郡", choumei: "竹原", furigana: "たけわら" }, { bango: "21　22", chiku: "雄郡", choumei: "土居田町", furigana: "どいだちょう" }, { bango: "21　22", chiku: "雄郡", choumei: "小栗", furigana: "おぐり" }, { bango: "21　22", chiku: "雄郡", choumei: "春日町", furigana: "かすがまち" }, { bango: "21　22", chiku: "雄郡", choumei: "竹原町", furigana: "たけわらまち" }, { bango: "21　22", chiku: "雄郡", choumei: "藤原", furigana: "ふじわら" }, { bango: "21　22", chiku: "雄郡", choumei: "藤原町", furigana: "ふじわらまち" }, { bango: "21　22", chiku: "雄郡", choumei: "雄郡", furigana: "ゆうぐん" }, { bango: "23　24", chiku: "清水", choumei: "中央", furigana: "ちゅうおう" }, { bango: "23　24", chiku: "清水", choumei: "姫原", furigana: "ひめばら" }, { bango: "23　24", chiku: "清水", choumei: "山越", furigana: "やまごえ" }, { bango: "23　24", chiku: "清水", choumei: "山越町", furigana: "やまごえまち" }, { bango: "23　24", chiku: "清水", choumei: "御幸", furigana: "みゆき" }, { bango: "23　24", chiku: "清水", choumei: "美沢", furigana: "みさわ" }, { bango: "23　24", chiku: "清水", choumei: "道後樋又", furigana: "どうごひまた" }, { bango: "34", chiku: "潮見", choumei: "吉藤", furigana: "よしふじ" }, { bango: "34", chiku: "潮見", choumei: "志津川町", furigana: "しつかわまち" }, { bango: "34", chiku: "潮見", choumei: "平田町", furigana: "ひらたまち" }, { bango: "34", chiku: "潮見", choumei: "谷町", furigana: "たにまち" }, { bango: "34　37", chiku: "久枝　潮見", choumei: "鴨川", furigana: "かもがわ" }, { bango: "35", chiku: "和気", choumei: "勝岡町", furigana: "かつおかちょう" }, { bango: "35", chiku: "和気", choumei: "太山寺町", furigana: "たいさんじちょう" }, { bango: "35", chiku: "和気", choumei: "和気町", furigana: "わけちょう" }, { bango: "35", chiku: "和気", choumei: "馬木町", furigana: "うまきちょう" }, { bango: "36", chiku: "堀江", choumei: "内宮町", furigana: "うちみやちょう" }, { bango: "36", chiku: "堀江", choumei: "堀江町", furigana: "ほりえちょう" }, { bango: "36", chiku: "堀江", choumei: "権現町", furigana: "ごんげんちょう" }, { bango: "36", chiku: "堀江", choumei: "福角町", furigana: "ふくずみちょう" }, { bango: "37", chiku: "久枝", choumei: "久万ノ台", furigana: "くまのだい" }, { bango: "37", chiku: "久枝", choumei: "南白水", furigana: "みなみしらみず" }, { bango: "37", chiku: "久枝", choumei: "安城寺町", furigana: "あんじょうじまち" }, { bango: "37", chiku: "久枝", choumei: "東長戸", furigana: "ひがしながと" }, { bango: "37", chiku: "久枝", choumei: "西長戸町", furigana: "にしながとちょう" }, { bango: "37", chiku: "久枝", choumei: "高木町", furigana: "たかぎちょう" }, { bango: "20　37", chiku: "久枝", choumei: "朝日ケ丘", furigana: "あさひがおか" }, { bango: "20　37", chiku: "久枝", choumei: "問屋町", furigana: "といやちょう" }, { bango: "08　09", chiku: "石井", choumei: "今在家", furigana: "いまざいけ" }, { bango: "08　09", chiku: "石井", choumei: "北土居", furigana: "きたどい" }, { bango: "08　09", chiku: "石井", choumei: "古川北", furigana: "ふるかわきた" }, { bango: "08　09", chiku: "石井", choumei: "古川南", furigana: "ふるかわみなみ" }, { bango: "08　09", chiku: "石井", choumei: "古川西", furigana: "ふるかわにし" }, { bango: "08　09", chiku: "石井", choumei: "和泉北", furigana: "いづみきた" }, { bango: "08　09", chiku: "石井", choumei: "和泉南", furigana: "いづみみなみ" }, { bango: "08　09", chiku: "石井", choumei: "土居田町", furigana: "どいだちょう" }, { bango: "08　09", chiku: "石井", choumei: "土居町", furigana: "どいまち" }, { bango: "08　09", chiku: "石井", choumei: "天山", furigana: "あまやま" }, { bango: "08　09", chiku: "石井", choumei: "居相", furigana: "いあい" }, { bango: "08　09", chiku: "石井", choumei: "星岡", furigana: "ほしおか" }, { bango: "08　09", chiku: "石井", choumei: "星岡町", furigana: "ほしおかまち" }, { bango: "08　09", chiku: "石井", choumei: "朝生田町", furigana: "あそだまち" }, { bango: "08　09", chiku: "石井", choumei: "東石井", furigana: "ひがしいしい" }, { bango: "08　09", chiku: "石井", choumei: "東石井町", furigana: "ひがしいしい" }, { bango: "08　09", chiku: "石井", choumei: "西石井", furigana: "にしいしい" }, { bango: "08　09", chiku: "石井", choumei: "越智", furigana: "おち" }, { bango: "10", chiku: "浮穴", choumei: "井門町", furigana: "いどまち" }, { bango: "10", chiku: "浮穴", choumei: "北井門", furigana: "きたいど" }, { bango: "10", chiku: "浮穴", choumei: "南高井町", furigana: "みなみたかいまち" }, { bango: "10", chiku: "浮穴", choumei: "森松町", furigana: "もりまつまち" }, { bango: "11", chiku: "荏原", choumei: "上野町", furigana: "うえのまち" }, { bango: "11", chiku: "荏原", choumei: "中野町", furigana: "なかのまち" }, { bango: "11", chiku: "荏原", choumei: "大橋町", furigana: "おおはしまち" }, { bango: "11", chiku: "荏原", choumei: "恵原町", furigana: "えばらまち" }, { bango: "11", chiku: "荏原", choumei: "東方町", furigana: "ひがしかたまち" }, { bango: "11", chiku: "荏原", choumei: "津吉町", furigana: "つよしまち" }, { bango: "12", chiku: "坂本", choumei: "久谷町", furigana: "くたにまち" }, { bango: "12", chiku: "坂本", choumei: "小村町", furigana: "こむらまち" }, { bango: "12", chiku: "坂本", choumei: "浄瑠璃町", furigana: "じょうるりまち" }, { bango: "12", chiku: "坂本", choumei: "窪野町", furigana: "くぼのまち" }, { bango: "01", chiku: "五明", choumei: "城山町", furigana: "じょうやまちょう" }, { bango: "01", chiku: "五明", choumei: "小屋町", furigana: "こやまち" }, { bango: "01", chiku: "五明", choumei: "恩地町", furigana: "おんじまち" }, { bango: "01", chiku: "五明", choumei: "柳谷町", furigana: "やないだにまち" }, { bango: "01", chiku: "五明", choumei: "正円寺", furigana: "しょうえんじ" }, { bango: "01", chiku: "五明", choumei: "神次郎町", furigana: "じんじろうまち" }, { bango: "01", chiku: "五明", choumei: "菅沢町", furigana: "すげさわまち" }, { bango: "02", chiku: "伊台", choumei: "下伊台町", furigana: "しもいだいまち" }, { bango: "02", chiku: "伊台", choumei: "上伊台町", furigana: "かみいだいまち" }, { bango: "02", chiku: "伊台", choumei: "白水台", furigana: "はくすいだい" }, { bango: "03", chiku: "湯山", choumei: "宿野町", furigana: "しゅくのまち" }, { bango: "03", chiku: "湯山", choumei: "杉立町", furigana: "すぎたてまち" }, { bango: "03", chiku: "湯山", choumei: "東野", furigana: "ひがしの" }, { bango: "03", chiku: "湯山", choumei: "末町", furigana: "すえまち" }, { bango: "03", chiku: "湯山", choumei: "河中町", furigana: "かわなかまち" }, { bango: "03", chiku: "湯山", choumei: "湯の山", furigana: "ゆのやま" }, { bango: "03", chiku: "湯山", choumei: "湯の山東", furigana: "ゆのやまひがし" }, { bango: "03", chiku: "湯山", choumei: "湯山柳", furigana: "ゆやまやなぎ" }, { bango: "03", chiku: "湯山", choumei: "溝辺町", furigana: "みぞのべまち" }, { bango: "03", chiku: "湯山", choumei: "高野町", furigana: "たかのまち" }, { bango: "03", chiku: "湯山", choumei: "食場町", furigana: "じきばまち" }, { bango: "04", chiku: "日浦", choumei: "中野町", furigana: "なかのまち" }, { bango: "04", chiku: "日浦", choumei: "大井野町", furigana: "おおいのまち" }, { bango: "04", chiku: "日浦", choumei: "安城寺町", furigana: "あんじょうじまち" }, { bango: "04", chiku: "日浦", choumei: "小川谷", furigana: "おがわだに" }, { bango: "04", chiku: "日浦", choumei: "川の郷町", furigana: "かわのごうまち" }, { bango: "04", chiku: "日浦", choumei: "東川町", furigana: "ひがしかわまち" }, { bango: "04", chiku: "日浦", choumei: "水口町", furigana: "みずぐちまち" }, { bango: "04", chiku: "日浦", choumei: "玉谷町", furigana: "たまたにまち" }, { bango: "04", chiku: "日浦", choumei: "米野町", furigana: "こめのまち" }, { bango: "04", chiku: "日浦", choumei: "総渕", furigana: "そうぶち" }, { bango: "04", chiku: "日浦", choumei: "藤野町", furigana: "ふじのまち" }, { bango: "04", chiku: "日浦", choumei: "福見川町", furigana: "ふくみがわまち" }, { bango: "04", chiku: "日浦", choumei: "青波町", furigana: "あおなみまち" }, { bango: "05　06", chiku: "久米", choumei: "久米窪田町", furigana: "くめくぼたまち" }, { bango: "05　06", chiku: "久米", choumei: "北久米町", furigana: "きたくめまち" }, { bango: "05　06", chiku: "久米", choumei: "南久米町", furigana: "みなみくめまち" }, { bango: "05　06", chiku: "久米", choumei: "平井町", furigana: "ひらいまち" }, { bango: "05　06", chiku: "久米", choumei: "来住町", furigana: "きしまち" }, { bango: "05　06", chiku: "久米", choumei: "福音寺町", furigana: "ふくおんじまち" }, { bango: "05　06", chiku: "久米", choumei: "芝山町", furigana: "しばやまちょう" }, { bango: "05　06", chiku: "久米", choumei: "鷹子町", furigana: "たかのこまち" }, { bango: "07", chiku: "小野", choumei: "北梅本町", furigana: "きたうめもとまち" }, { bango: "07", chiku: "小野", choumei: "南梅本町", furigana: "みなみうめもとまち" }, { bango: "07", chiku: "小野", choumei: "小野町", furigana: "おのまち" }, { bango: "07", chiku: "小野", choumei: "平井町", furigana: "ひらいまち" }, { bango: "07", chiku: "小野", choumei: "梅本町", furigana: "うめもとまち" }, { bango: "07", chiku: "小野", choumei: "水泥町", furigana: "みどろまち" }, { bango: "25", chiku: "余土", choumei: "余戸中", furigana: "ようごなか" }, { bango: "25", chiku: "余土", choumei: "余戸南", furigana: "ようごみなみ" }, { bango: "25", chiku: "余土", choumei: "余戸東", furigana: "ようごひがし" }, { bango: "25", chiku: "余土", choumei: "余戸西", furigana: "ようごにし" }, { bango: "25", chiku: "余土", choumei: "出合", furigana: "であい" }, { bango: "25", chiku: "余土", choumei: "保免上", furigana: "ほうめんかみ" }, { bango: "25", chiku: "余土", choumei: "保免中", furigana: "ほうめんなか" }, { bango: "25", chiku: "余土", choumei: "保免西", furigana: "ほうめんにし" }, { bango: "25", chiku: "余土", choumei: "市坪北", furigana: "いちつぼきた" }, { bango: "25", chiku: "余土", choumei: "市坪南", furigana: "いちつぼみなみ" }, { bango: "25", chiku: "余土", choumei: "市坪西町", furigana: "いちつぼにしまち" }, { bango: "26", chiku: "味生", choumei: "別府町", furigana: "べふちょう" }, { bango: "26", chiku: "味生", choumei: "北斎院町", furigana: "きたさやまち" }, { bango: "26", chiku: "味生", choumei: "南斎院町", furigana: "みなみさやまち" }, { bango: "26", chiku: "味生", choumei: "古三津", furigana: "ふるみつ" }, { bango: "26", chiku: "味生", choumei: "山西町", furigana: "やまにしちょう" }, { bango: "27", chiku: "垣生", choumei: "東垣生町", furigana: "ひがしはぶまち" }, { bango: "27", chiku: "垣生", choumei: "西垣生町", furigana: "にしはぶまち" }, { bango: "28", chiku: "生石", choumei: "久保田町", furigana: "くぼたまち" }, { bango: "28", chiku: "生石", choumei: "北吉田町", furigana: "きたよしだまち" }, { bango: "28", chiku: "生石", choumei: "南吉田町", furigana: "みなみよしだまち" }, { bango: "28", chiku: "生石", choumei: "富久町", furigana: "とみひさまち" }, { bango: "28", chiku: "生石", choumei: "空港通", furigana: "くうこうどおり" }, { bango: "28", chiku: "生石", choumei: "高岡町", furigana: "たかおかまち" }, { bango: "29", chiku: "三津浜", choumei: "三津", furigana: "みつ" }, { bango: "29", chiku: "三津浜", choumei: "三津ふ頭", furigana: "みつふとう" }, { bango: "29", chiku: "三津浜", choumei: "中須賀", furigana: "なかすが" }, { bango: "29", chiku: "三津浜", choumei: "住吉", furigana: "すみよし" }, { bango: "29", chiku: "三津浜", choumei: "元町", furigana: "もとまち" }, { bango: "29", chiku: "三津浜", choumei: "内宮町", furigana: "うちみやちょう" }, { bango: "29", chiku: "三津浜", choumei: "古三津", furigana: "ふるみつ" }, { bango: "29", chiku: "三津浜", choumei: "明神丘", furigana: "みょうじんがおか" }, { bango: "29", chiku: "三津浜", choumei: "会津町", furigana: "あいづまち" }, { bango: "29", chiku: "三津浜", choumei: "梅田町", furigana: "うめだまち" }, { bango: "29", chiku: "三津浜", choumei: "神田町", furigana: "かんだまち" }, { bango: "29", chiku: "三津浜", choumei: "辰巳町", furigana: "たつみちょう" }, { bango: "29", chiku: "三津浜", choumei: "須賀町", furigana: "すがまち" }, { bango: "29　30", chiku: "三津浜　宮前", choumei: "みどりケ丘", furigana: "みどりがおか" }, { bango: "30", chiku: "宮前", choumei: "三津", furigana: "みつ" }, { bango: "30", chiku: "宮前", choumei: "古三津", furigana: "ふるみつ" }, { bango: "30", chiku: "宮前", choumei: "古三津町", furigana: "ふるみつちょう" }, { bango: "30", chiku: "宮前", choumei: "山西町", furigana: "やまにしちょう" }, { bango: "30", chiku: "宮前", choumei: "新浜町", furigana: "しんはまちょう" }, { bango: "30", chiku: "宮前", choumei: "松ノ木", furigana: "まつのき" }, { bango: "30", chiku: "宮前", choumei: "神田町", furigana: "かんだまち" }, { bango: "30", chiku: "宮前", choumei: "須賀町", furigana: "すがまち" }, { bango: "30", chiku: "宮前", choumei: "高山町", furigana: "たかやまちょう" }, { bango: "31", chiku: "高浜", choumei: "梅津寺町", furigana: "ばいしんじまち" }, { bango: "31", chiku: "高浜", choumei: "港山町", furigana: "みなとやままち" }, { bango: "31", chiku: "高浜", choumei: "高浜町", furigana: "たかはまちょう" }, { bango: "38", chiku: "北条", choumei: "北条", furigana: "ほうじょう" }, { bango: "38", chiku: "北条", choumei: "北条辻", furigana: "ほうじょうつじ" }, { bango: "38", chiku: "北条", choumei: "土手内", furigana: "どてうち" }, { bango: "38　44", chiku: "北条　粟井", choumei: "安岡", furigana: "やすおか" }, { bango: "39", chiku: "河野", choumei: "九川", furigana: "くかわ" }, { bango: "39", chiku: "河野", choumei: "善応寺", furigana: "ぜんのうじ" }, { bango: "39", chiku: "河野", choumei: "大谷", furigana: "おおたに" }, { bango: "39", chiku: "河野", choumei: "宮内", furigana: "みやうち" }, { bango: "39", chiku: "河野", choumei: "平林", furigana: "ひらばやし" }, { bango: "39", chiku: "河野", choumei: "柳原", furigana: "やなぎはら" }, { bango: "39", chiku: "河野", choumei: "片山", furigana: "かたやま" }, { bango: "39", chiku: "河野", choumei: "磯浦", furigana: "いそうら" }, { bango: "39", chiku: "河野", choumei: "横谷", furigana: "よこたに" }, { bango: "39", chiku: "河野", choumei: "河野別府", furigana: "こうのべふ" }, { bango: "39", chiku: "河野", choumei": "河野高山", furigana: "こうのたかやま" }, { bango: "39　41", chiku: "河野　正岡", choumei: "中西外", furigana: "なかにしそと" }, { bango: "39　41", chiku: "河野　正岡", choumei: "八反地", furigana: "はったんじ" }, { bango: "40", chiku: "浅海", choumei: "浅海本谷", furigana: "あさなみほんだに" }, { bango: "40", chiku: "浅海", choumei: "浅海原", furigana: "あさなみはら" }, { bango: "41", chiku: "正岡", choumei: "中西内", furigana: "なかにしうち" }, { bango: "41", chiku: "正岡", choumei: "院内", furigana: "いんない" }, { bango: "41", chiku: "正岡", choumei: "正岡神田", furigana: "まさおかこうだ" }, { bango: "41", chiku: "正岡", choumei: "高田", furigana: "たかた" }, { bango: "42", chiku: "立岩", choumei: "儀式", furigana: "ぎしき" }, { bango: "42", chiku: "立岩", choumei: "小川", furigana: "おがわ" }, { bango: "42", chiku: "立岩", choumei: "小山田", furigana: "おやまだ" }, { bango: "42", chiku: "立岩", choumei: "尾儀原", furigana: "おぎはら" }, { bango: "42", chiku: "立岩", choumei: "滝本", furigana: "たきもと" }, { bango: "42", chiku: "立岩", choumei: "猪木", furigana: "いのき" }, { bango: "42", chiku: "立岩", choumei: "猿川", furigana: "さるかわ" }, { bango: "42", chiku: "立岩", choumei: "猿川原", furigana: "さるかわばら" }, { bango: "42", chiku: "立岩", choumei: "神田", furigana: "こうだ" }, { bango: "42", chiku: "立岩", choumei: "立岩中村", furigana: "たていわなかむら" }, { bango: "42", chiku: "立岩", choumei: "立岩米之野", furigana: "たていわこめのの" }, { bango: "42", chiku: "立岩", choumei: "萩原", furigana: "はぎわら" }, { bango: "43", chiku: "難波", choumei: "上難波", furigana: "かみなんば" }, { bango: "43", chiku: "難波", choumei: "下難波", furigana: "しもなんば" }, { bango: "43", chiku: "難波", choumei: "中通", furigana: "なかどおり" }, { bango: "43", chiku: "難波", choumei: "大浦", furigana: "おおうら" }, { bango: "43", chiku: "難波", choumei: "庄府", furigana: "しょうふ" }, { bango: "43", chiku: "難波", choumei: "萩原", furigana: "はぎわら" }, { bango: "44", chiku: "粟井", choumei: "光洋台", furigana: "こうようだい" }, { bango: "44", chiku: "粟井", choumei: "夏目", furigana: "なつめ" }, { bango: "44", chiku: "粟井", choumei: "大西谷", furigana: "おおにしだに" }, { bango: "44", chiku: "粟井", choumei: "常保免", furigana: "じょうほうめん" }, { bango: "44", chiku: "粟井", choumei: "平野", furigana: "ひらの" }, { bango: "44", chiku: "粟井", choumei: "星谷", furigana: "ほしたに" }, { bango: "44", chiku: "粟井", choumei: "磯之河", furigana: "いそのかわ" }, { bango: "44", chiku: "粟井", choumei: "苞木", furigana: "すぼき" }, { bango: "44", chiku: "粟井", choumei: "麓", furigana: "ふもと" }, { bango: "32", chiku: "興居島", choumei: "泊町", furigana: "とまりまち" }, { bango: "32", chiku: "興居島", choumei: "由良町", furigana: "ゆらまち" }, { bango: "45", chiku: "忽那諸島", choumei: "中島大浦", furigana: "なかじまおおうら" }, { bango: "45", chiku: "忽那諸島", choumei: "小浜", furigana: "こはま" }, { bango: "45", chiku: "忽那諸島", choumei: "長師", furigana: "ながし" }, { bango: "45", chiku: "忽那諸島", choumei: "宮野", furigana: "みやの" }, { bango: "45", chiku: "忽那諸島", choumei: "神浦", furigana: "こうのうら" }, { bango: "45", chiku: "忽那諸島", choumei: "宇和間", furigana: "うわま" }, { bango: "45", chiku: "忽那諸島", choumei: "吉木", furigana: "よしき" }, { bango: "45", chiku: "忽那諸島", choumei: "畑里", furigana: "はたさと" }, { bango: "45", chiku: "忽那諸島", choumei: "粟井", furigana: "あわい" }, { bango: "45", chiku: "忽那諸島", choumei: "熊田", furigana: "くまだ" }, { bango: "45", chiku: "忽那諸島", choumei: "饒", furigana: "にょう" }, { bango: "45", chiku: "忽那諸島", choumei: "上怒和", furigana: "かみぬわ" }, { bango: "45", chiku: "忽那諸島", "choumei": "二神", furigana: "ふたがみ" }, { bango: "45", chiku: "忽那諸島", "choumei": "元怒和", furigana: "もとぬわ" }, { bango: "45", chiku: "忽那諸島", "choumei": "津和地", furigana: "つわじ" }, { bango: "45", chiku: "忽那諸島", "choumei": "睦月", furigana: "むづき" }, { bango: "45", chiku: "忽那諸島", "choumei": "野忽那", furigana: "のくつな" }
+            { bango: "13", chiku: "道後", choumei: "上市", furigana: "かみいち" }, { bango: "13", chiku: "道後", choumei: "南町", furigana: "みなみまち" }, { bango: "13", chiku: "道後", choumei: "山田町", furigana: "やまだちょう" }, { bango: "13", chiku: "道後", choumei: "岩崎町", furigana: "いわさきまち" }, { bango: "13", chiku: "道後", choumei: "常光寺町", furigana: "じょうこうじちょう" }, { bango: "13", chiku: "道後", choumei: "新石手", furigana: "しんいして" }, { bango: "13", chiku: "道後", choumei: "桜谷町", furigana: "さくらだにちょう" }, { bango: "13", chiku: "道後", choumei: "石手", furigana: "いして" }, { bango: "13", chiku: "道後", choumei: "石手白石", furigana: "いしてしらいし" }, { bango: "13", chiku: "道後", choumei: "祝谷", furigana: "いわいだに" }, { bango: "13", chiku: "道後", choumei: "祝谷東町", furigana: "いわいだにひがしまち" }, { bango: "13", chiku: "道後", choumei: "祝谷町", furigana: "いわいだにまち" }, { bango: "13", chiku: "道後", choumei: "祝谷西町", furigana: "いわいだににしまち" }, { bango: "13", chiku: "道後", choumei: "紅葉町", furigana: "もみじまち" }, { bango: "13", chiku: "道後", choumei: "溝辺町", furigana: "みぞのべまち" }, { bango: "13", chiku: "道後", choumei: "道後一万", furigana: "どうごいちまん" }, { bango: "13", chiku: "道後", choumei: "道後今市", furigana: "どうごいまいち" }, { bango: "13", chiku: "道後", choumei: "道後北代", furigana: "どうごきたしろ" }, { bango: "13", chiku: "道後", choumei: "道後喜多町", furigana: "どうごきたまち" }, { bango: "13", chiku: "道後", choumei: "道後多幸町", furigana: "どうごたこうちょう" }, { bango: "13", chiku: "道後", choumei: "道後姫塚", furigana: "どうごひめづか" }, { bango: "13", chiku: "道後", choumei: "道後公園", furigana: "どうごこうえん" }, { bango: "13", chiku: "道後", choumei: "道後湯之町", furigana: "どうごゆのまち" }, { bango: "13", chiku: "道後", choumei: "道後湯月町", furigana: "どうごゆづきちょう" }, { bango: "13", chiku: "道後", choumei: "道後町", furigana: "どうごまち" }, { bango: "13", chiku: "道後", choumei: "道後緑台", furigana: "どうごみどりだい" }, { bango: "13", chiku: "道後", choumei: "道後鷺谷町", furigana: "どうごさぎだにちょう" }, { bango: "14", chiku: "東雲", choumei: "中一万町", furigana: "なかいちまんまち" }, { bango: "14", chiku: "東雲", choumei: "勝山町", furigana: "かつやまちょう" }, { bango: "14", chiku: "東雲", choumei: "北持田町", furigana: "きたもちだまち" }, { bango: "14", chiku: "東雲", choumei: "南持田町", furigana: "みなみもちだまち" }, { bango: "14", chiku: "東雲", choumei: "喜与町", furigana: "きよまち" }, { bango: "14", chiku: "東雲", choumei: "御宝町", furigana: "みたからまち" }, { bango: "14", chiku: "東雲", choumei: "文京町", furigana: "ぶんきょうちょう" }, { bango: "14", chiku: "東雲", choumei: "旭町", furigana: "あさひまち" }, { bango: "14", chiku: "東雲", choumei: "昭和町", furigana: "しょうわまち" }, { bango: "14", chiku: "東雲", choumei: "東一万町", furigana: "ひがしいちまんまち" }, { bango: "14", chiku: "東雲", choumei: "歩行町", furigana: "かちまち" }, { bango: "14", chiku: "東雲", choumei: "清町", furigana: "きよまち" }, { bango: "14", chiku: "東雲", choumei: "築山町", furigana: "つきやまちょう" }, { bango: "14", chiku: "東雲", choumei: "鉄砲町", furigana: "てっぽうちょう" }, { bango: "13　14", chiku: "東雲　道後", choumei: "持田町", furigana: "もちだまち" }, { bango: "14　16", chiku: "東雲　番町", choumei: "一番町", furigana: "いちばんちょう" }, { bango: "14　16", chiku: "東雲　番町", choumei: "大街道", furigana: "おおかいどう" }, { bango: "15", chiku: "八坂", choumei: "北立花町", furigana: "きたたちばなまち" }, { bango: "15", chiku: "八坂", choumei: "新立町", furigana: "しんたちまち" }, { bango: "15", chiku: "八坂", choumei: "永木町", furigana: "ながきまち" }, { bango: "15", chiku: "八坂", choumei: "河原町", furigana: "かわらまち" }, { bango: "15", chiku: "八坂", choumei: "湯渡町", furigana: "ゆわたりまち" }, { bango: "15", chiku: "八坂", choumei: "錦町", furigana: "にしきまち" }, { bango: "16", chiku: "番町", choumei: "二番町", furigana: "にばんちょう" }, { bango: "16", chiku: "番町", choumei: "南堀端町", furigana: "みなみほりばたちょう" }, { bango: "16", chiku: "番町", choumei: "堀之内", furigana: "ほりのうち" }, { bango: "16", chiku: "番町", choumei: "丸之内", furigana: "まるのうち" }, { bango: "16", chiku: "番町", choumei: "花園町", furigana: "はなぞのまち" }, { bango: "15　16　19", chiku: "八坂　新玉　番町", choumei: "三番町", furigana: "さんばんちょう" }, { bango: "15　16　19", chiku: "八坂　新玉　番町", choumei: "千舟町", furigana: "ちふねまち" }, { bango: "15　16　19", chiku: "八坂　新玉　番町", choumei: "湊町", furigana: "みなとまち" }, { bango: "16　17", chiku: "番町　素鵞", choumei: "中村", furigana: "なかむら" }, { bango: "16　17", chiku: "番町　素鵞", choumei: "小坂", furigana: "こさか" }, { bango: "15　16　17", chiku: "八坂　番町　素鵞", choumei: "祇園町", furigana: "ぎおんまち" }, { bango: "16　17　21　22", chiku: "番町　素鵞　雄郡", choumei: "柳井町", furigana: "やないまち" }, { bango: "15　16　17　21　22", chiku: "八坂　番町　素鵞　雄郡", choumei: "立花", furigana: "たちばな" }, { bango: "17", chiku: "素鵞", choumei: "上野町", furigana: "うえのまち" }, { bango: "17", chiku: "素鵞", choumei: "天山", furigana: "あまやま" }, { bango: "17", chiku: "素鵞", choumei: "拓川町", furigana: "たくせんちょう" }, { bango: "17", chiku: "素鵞", choumei: "日の出町", furigana: "ひのでまち" }, { bango: "17", chiku: "素鵞", choumei: "朝生田町", furigana: "あそだまち" }, { bango: "17", chiku: "素鵞", choumei: "東石井", furigana: "ひがしいしい" }, { bango: "17", chiku: "素鵞", choumei: "素鵞町", furigana: "そがまち" }, { bango: "18", chiku: "桑原", choumei: "三町", furigana: "さんちょう" }, { bango: "18", chiku: "桑原", choumei: "北久米町", furigana: "きたくめまち" }, { bango: "18", chiku: "桑原", choumei: "南久米町", furigana: "みなみくめまち" }, { bango: "18", chiku: "桑原", choumei: "束本", furigana: "つかもと" }, { bango: "18", chiku: "桑原", choumei: "東野", furigana: "ひがしの" }, { bango: "18", chiku: "桑原", choumei: "松末", furigana: "まつすえ" }, { bango: "18", chiku: "桑原", choumei: "枝松", furigana: "えだまつ" }, { bango: "18", chiku: "桑原", choumei: "桑原", furigana: "くわばら" }, { bango: "18", chiku: "桑原", choumei: "正円寺", furigana: "しょうえんじ" }, { bango: "18", chiku: "桑原", choumei: "樽味", furigana: "たるみ" }, { bango: "18", chiku: "桑原", choumei: "畑寺", furigana: "はたでら" }, { bango: "18", chiku: "桑原", choumei: "畑寺町", furigana: "はたでらまち" }, { bango: "14　20　23　24", chiku: "味酒　東雲　清水", choumei: "平和通", furigana: "へいわどおり" }, { bango: "19", chiku: "新玉", choumei: "南江戸", furigana: "みなみえど" }, { bango: "19", chiku: "新玉", choumei: "南江戸町", furigana: "みなみえどまち" }, { bango: "19", chiku: "新玉", choumei: "泉町", furigana: "いずみまち" }, { bango: "19", chiku: "新玉", choumei: "空港通", furigana: "くうこうどおり" }, { bango: "19", chiku: "新玉", choumei: "高岡町", furigana: "たかおかまち" }, { bango: "20", chiku: "味酒", choumei: "古町", furigana: "こまち" }, { bango: "20", chiku: "味酒", choumei: "味酒町", furigana: "みさけまち" }, { bango: "20", chiku: "味酒", choumei: "宮西", furigana: "みやにし" }, { bango: "20", chiku: "味酒", choumei: "大手町", furigana: "おおてまち" }, { bango: "20", chiku: "味酒", choumei: "愛光町", furigana: "あいこうちょう" }, { bango: "20", chiku: "味酒", choumei: "松前町", furigana: "まさきまち" }, { bango: "20", chiku: "味酒", choumei: "本町", furigana: "ほんまち" }, { bango: "20", chiku: "味酒", choumei: "萱町", furigana: "かやまち" }, { bango: "20", chiku: "味酒", choumei: "衣山", furigana: "きぬやま" }, { bango: "20", chiku: "味酒", choumei: "西一万町", furigana: "にしいちまんまち" }, { bango: "20", chiku: "味酒", choumei: "若草町", furigana: "わかくさちょう" }, { bango: "20", chiku: "味酒", choumei: "辻町", furigana: "つじまち" }, { bango: "20　23　24", chiku: "味酒　清水", choumei: "木屋町", furigana: "きやちょう" }, { bango: "20　23　24", chiku: "味酒　清水", choumei: "清水町", furigana: "しみずまち" }, { bango: "20　23　24", chiku: "味酒　清水", choumei: "高砂町", furigana: "たかさごまち" }, { bango: "20　21　22　23　24", chiku: "味酒　清水　雄郡", choumei: "竹原", furigana: "たけわら" }, { bango: "21　22", chiku: "雄郡", choumei: "土居田町", furigana: "どいだちょう" }, { bango: "21　22", chiku: "雄郡", choumei: "小栗", furigana: "おぐり" }, { bango: "21　22", chiku: "雄郡", choumei: "春日町", furigana: "かすがまち" }, { bango: "21　22", chiku: "雄郡", choumei: "竹原町", furigana: "たけわらまち" }, { bango: "21　22", chiku: "雄郡", choumei: "藤原", furigana: "ふじわら" }, { bango: "21　22", chiku: "雄郡", choumei: "藤原町", furigana: "ふじわらまち" }, { bango: "21　22", chiku: "雄郡", choumei: "雄郡", furigana: "ゆうぐん" }, { bango: "23　24", chiku: "清水", choumei: "中央", furigana: "ちゅうおう" }, { bango: "23　24", chiku: "清水", choumei: "姫原", furigana: "ひめばら" }, { bango: "23　24", chiku: "清水", choumei: "山越", furigana: "やまごえ" }, { bango: "23　24", chiku: "清水", choumei: "山越町", furigana: "やまごえまち" }, { bango: "23　24", chiku: "清水", choumei: "御幸", furigana: "みゆき" }, { bango: "23　24", chiku: "清水", choumei: "美沢", furigana: "みさわ" }, { bango: "23　24", chiku: "清水", choumei: "道後樋又", furigana: "どうごひまた" }, { bango: "34", chiku: "潮見", choumei: "吉藤", furigana: "よしふじ" }, { bango: "34", chiku: "潮見", choumei: "志津川町", furigana: "しつかわまち" }, { bango: "34", chiku: "潮見", choumei: "平田町", furigana: "ひらたまち" }, { bango: "34", chiku: "潮見", choumei: "谷町", furigana: "たにまち" }, { bango: "34　37", chiku: "久枝　潮見", choumei: "鴨川", furigana: "かもがわ" }, { bango: "35", chiku: "和気", choumei: "勝岡町", furigana: "かつおかちょう" }, { bango: "35", chiku: "和気", choumei: "太山寺町", furigana: "たいさんじちょう" }, { bango: "35", chiku: "和気", choumei: "和気町", furigana: "わけちょう" }, { bango: "35", chiku: "和気", choumei: "馬木町", furigana: "うまきちょう" }, { bango: "36", chiku: "堀江", choumei: "内宮町", furigana: "うちみやちょう" }, { bango: "36", chiku: "堀江", choumei: "堀江町", furigana: "ほりえちょう" }, { bango: "36", chiku: "堀江", choumei: "権現町", furigana: "ごんげんちょう" }, { bango: "36", chiku: "堀江", choumei: "福角町", furigana: "ふくずみちょう" }, { bango: "37", chiku: "久枝", choumei: "久万ノ台", furigana: "くまのだい" }, { bango: "37", chiku: "久枝", choumei: "南白水", furigana: "みなみしらみず" }, { bango: "37", chiku: "久枝", choumei: "安城寺町", furigana: "あんじょうじまち" }, { bango: "37", chiku: "久枝", choumei: "東長戸", furigana: "ひがしながと" }, { bango: "37", chiku: "久枝", choumei: "西長戸町", furigana: "にしながとちょう" }, { bango: "37", chiku: "久枝", choumei: "高木町", furigana: "たかぎちょう" }, { bango: "20　37", chiku: "久枝", choumei: "朝日ケ丘", furigana: "あさひがおか" }, { bango: "20　37", chiku: "久枝", choumei: "問屋町", furigana: "といやちょう" }, { bango: "08　09", chiku: "石井", choumei: "今在家", furigana: "いまざいけ" }, { bango: "08　09", chiku: "石井", choumei: "北土居", furigana: "きたどい" }, { bango: "08　09", chiku: "石井", choumei: "古川北", furigana: "ふるかわきた" }, { bango: "08　09", chiku: "石井", choumei: "古川南", furigana: "ふるかわみなみ" }, { bango: "08　09", chiku: "石井", choumei: "古川西", furigana: "ふるかわにし" }, { bango: "08　09", chiku: "石井", choumei: "和泉北", furigana: "いづみきた" }, { bango: "08　09", chiku: "石井", choumei: "和泉南", furigana: "いづみみなみ" }, { bango: "08　09", chiku: "石井", choumei: "土居田町", furigana: "どいだちょう" }, { bango: "08　09", chiku: "石井", choumei: "土居町", furigana: "どいまち" }, { bango: "08　09", chiku: "石井", choumei: "天山", furigana: "あまやま" }, { bango: "08　09", chiku: "石井", choumei: "居相", furigana: "いあい" }, { bango: "08　09", chiku: "石井", choumei: "星岡", furigana: "ほしおか" }, { bango: "08　09", chiku: "石井", choumei: "星岡町", furigana: "ほしおかまち" }, { bango: "08　09", chiku: "石井", choumei: "朝生田町", furigana: "あそだまち" }, { bango: "08　09", chiku: "石井", choumei: "東石井", furigana: "ひがしいしい" }, { bango: "08　09", chiku: "石井", choumei: "東石井町", furigana: "ひがしいしい" }, { bango: "08　09", chiku: "石井", choumei: "西石井", furigana: "にしいしい" }, { bango: "08　09", chiku: "石井", choumei: "越智", furigana: "おち" }, { bango: "10", chiku: "浮穴", choumei: "井門町", furigana: "いどまち" }, { bango: "10", chiku: "浮穴", choumei: "北井門", furigana: "きたいど" }, { bango: "10", chiku: "浮穴", choumei: "南高井町", furigana: "みなみたかいまち" }, { bango: "10", chiku: "浮穴", choumei: "森松町", furigana: "もりまつまち" }, { bango: "11", chiku: "荏原", choumei: "上野町", furigana: "うえのまち" }, { bango: "11", chiku: "荏原", choumei: "中野町", furigana: "なかのまち" }, { bango: "11", chiku: "荏原", choumei: "大橋町", furigana: "おおはしまち" }, { bango: "11", chiku: "荏原", choumei: "恵原町", furigana: "えばらまち" }, { bango: "11", chiku: "荏原", choumei: "東方町", furigana: "ひがしかたまち" }, { bango: "11", chiku: "荏原", choumei: "津吉町", furigana: "つよしまち" }, { bango: "12", chiku: "坂本", choumei: "久谷町", furigana: "くたにまち" }, { bango: "12", chiku: "坂本", choumei: "小村町", furigana: "こむらまち" }, { bango: "12", chiku: "坂本", choumei: "浄瑠璃町", furigana: "じょうるりまち" }, { bango: "12", chiku: "坂本", choumei: "窪野町", furigana: "くぼのまち" }, { bango: "01", chiku: "五明", choumei: "城山町", furigana: "じょうやまちょう" }, { bango: "01", chiku: "五明", choumei: "小屋町", furigana: "こやまち" }, { bango: "01", chiku: "五明", choumei: "恩地町", furigana: "おんじまち" }, { bango: "01", chiku: "五明", choumei: "柳谷町", furigana: "やないだにまち" }, { bango: "01", chiku: "五明", choumei: "正円寺", furigana: "しょうえんじ" }, { bango: "01", chiku: "五明", choumei: "神次郎町", furigana: "じんじろうまち" }, { bango: "01", chiku: "五明", choumei: "菅沢町", furigana: "すげさわまち" }, { bango: "02", chiku: "伊台", choumei: "下伊台町", furigana: "しもいだいまち" }, { bango: "02", chiku: "伊台", choumei: "上伊台町", furigana: "かみいだいまち" }, { bango: "02", chiku: "伊台", choumei: "白水台", furigana: "はくすいだい" }, { bango: "03", chiku: "湯山", choumei: "宿野町", furigana: "しゅくのまち" }, { bango: "03", chiku: "湯山", choumei: "杉立町", furigana: "すぎたてまち" }, { bango: "03", chiku: "湯山", choumei: "東野", furigana: "ひがしの" }, { bango: "03", chiku: "湯山", choumei: "末町", furigana: "すえまち" }, { bango: "03", chiku: "湯山", choumei: "河中町", furigana: "かわなかまち" }, { bango: "03", chiku: "湯山", choumei: "湯の山", furigana: "ゆのやま" }, { bango: "03", chiku: "湯山", choumei: "湯の山東", furigana: "ゆのやまひがし" }, { bango: "03", chiku: "湯山", choumei: "湯山柳", furigana: "ゆやまやなぎ" }, { bango: "03", chiku: "湯山", choumei: "溝辺町", furigana: "みぞのべまち" }, { bango: "03", chiku: "湯山", choumei: "高野町", furigana: "たかのまち" }, { bango: "03", chiku: "湯山", choumei: "食場町", furigana: "じきばまち" }, { bango: "04", chiku: "日浦", choumei: "中野町", furigana: "なかのまち" }, { bango: "04", chiku: "日浦", choumei: "大井野町", furigana: "おおいのまち" }, { bango: "04", chiku: "日浦", choumei: "安城寺町", furigana: "あんじょうじまち" }, { bango: "04", chiku: "日浦", choumei: "小川谷", furigana: "おがわだに" }, { bango: "04", chiku: "日浦", choumei: "川の郷町", furigana: "かわのごうまち" }, { bango: "04", chiku: "日浦", choumei: "東川町", furigana: "ひがしかわまち" }, { bango: "04", chiku: "日浦", choumei: "水口町", furigana: "みずぐちまち" }, { bango: "04", chiku: "日浦", choumei: "玉谷町", furigana: "たまたにまち" }, { bango: "04", chiku: "日浦", choumei: "米野町", furigana: "こめのまち" }, { bango: "04", chiku: "日浦", choumei: "総渕", furigana: "そうぶち" }, { bango: "04", chiku: "日浦", choumei: "藤野町", furigana: "ふじのまち" }, { bango: "04", chiku: "日浦", choumei: "福見川町", furigana: "ふくみがわまち" }, { bango: "04", chiku: "日浦", choumei: "青波町", furigana: "あおなみまち" }, { bango: "05　06", chiku: "久米", choumei: "久米窪田町", furigana: "くめくぼたまち" }, { bango: "05　06", chiku: "久米", choumei: "北久米町", furigana: "きたくめまち" }, { bango: "05　06", chiku: "久米", choumei: "南久米町", furigana: "みなみくめまち" }, { bango: "05　06", chiku: "久米", choumei: "平井町", furigana: "ひらいまち" }, { bango: "05　06", chiku: "久米", choumei: "来住町", furigana: "きしまち" }, { bango: "05　06", chiku: "久米", choumei: "福音寺町", furigana: "ふくおんじまち" }, { bango: "05　06", chiku: "久米", choumei: "芝山町", furigana: "しばやまちょう" }, { bango: "05　06", chiku: "久米", choumei: "鷹子町", furigana: "たかのこまち" }, { bango: "07", chiku: "小野", choumei: "北梅本町", furigana: "きたうめもとまち" }, { bango: "07", chiku: "小野", choumei: "南梅本町", furigana: "みなみうめもとまち" }, { bango: "07", chiku: "小野", choumei: "小野町", furigana: "おのまち" }, { bango: "07", chiku: "小野", choumei: "平井町", furigana: "ひらいまち" }, { bango: "07", chiku: "小野", choumei: "梅本町", furigana: "うめもとまち" }, { bango: "07", chiku: "小野", choumei: "水泥町", furigana: "みどろまち" }, { bango: "25", chiku: "余土", choumei: "余戸中", furigana: "ようごなか" }, { bango: "25", chiku: "余土", choumei: "余戸南", furigana: "ようごみなみ" }, { bango: "25", chiku: "余土", choumei: "余戸東", furigana: "ようごひがし" }, { bango: "25", chiku: "余土", choumei: "余戸西", furigana: "ようごにし" }, { bango: "25", chiku: "余土", choumei: "出合", furigana: "であい" }, { bango: "25", chiku: "余土", choumei: "保免上", furigana: "ほうめんかみ" }, { bango: "25", chiku: "余土", choumei: "保免中", furigana: "ほうめんなか" }, { bango: "25", chiku: "余土", choumei: "保免西", furigana: "ほうめんにし" }, { bango: "25", chiku: "余土", choumei: "市坪北", furigana: "いちつぼきた" }, { bango: "25", chiku: "余土", choumei: "市坪南", furigana: "いちつぼみなみ" }, { bango: "25", chiku: "余土", choumei: "市坪西町", furigana: "いちつぼにしまち" }, { bango: "26", chiku: "味生", choumei: "別府町", furigana: "べふちょう" }, { bango: "26", chiku: "味生", choumei: "北斎院町", furigana: "きたさやまち" }, { bango: "26", chiku: "味生", choumei: "南斎院町", furigana: "みなみさやまち" }, { bango: "26", chiku: "味生", choumei: "古三津", furigana: "ふるみつ" }, { bango: "26", chiku: "味生", choumei: "山西町", furigana: "やまにしちょう" }, { bango: "27", chiku: "垣生", choumei: "東垣生町", furigana: "ひがしはぶまち" }, { bango: "27", chiku: "垣生", choumei: "西垣生町", furigana: "にしはぶまち" }, { bango: "28", chiku: "生石", choumei: "久保田町", furigana: "くぼたまち" }, { bango: "28", chiku: "生石", choumei: "北吉田町", furigana: "きたよしだまち" }, { bango: "28", chiku: "生石", choumei: "南吉田町", furigana: "みなみよしだまち" }, { bango: "28", chiku: "生石", choumei: "富久町", furigana: "とみひさまち" }, { bango: "28", chiku: "生石", choumei: "空港通", furigana: "くうこうどおり" }, { bango: "28", chiku: "生石", choumei: "高岡町", furigana: "たかおかまち" }, { bango: "29", chiku: "三津浜", choumei: "三津", furigana: "みつ" }, { bango: "29", chiku: "三津浜", choumei: "三津ふ頭", furigana: "みつふとう" }, { bango: "29", chiku: "三津浜", choumei: "中須賀", furigana: "なかすが" }, { bango: "29", chiku: "三津浜", choumei: "住吉", furigana: "すみよし" }, { bango: "29", chiku: "三津浜", choumei: "元町", furigana: "もとまち" }, { bango: "29", chiku: "三津浜", choumei: "内宮町", furigana: "うちみやちょう" }, { bango: "29", chiku: "三津浜", choumei: "古三津", furigana: "ふるみつ" }, { bango: "29", chiku: "三津浜", choumei: "明神丘", furigana: "みょうじんがおか" }, { bango: "29", chiku: "三津浜", choumei: "会津町", furigana: "あいづまち" }, { bango: "29", chiku: "三津浜", choumei: "梅田町", furigana: "うめだまち" }, { bango: "29", chiku: "三津浜", choumei: "神田町", furigana: "かんだまち" }, { bango: "29", chiku: "三津浜", choumei: "辰巳町", furigana: "たつみちょう" }, { bango: "29", chiku: "三津浜", choumei: "須賀町", furigana: "すがまち" }, { bango: "29　30", chiku: "三津浜　宮前", choumei: "みどりケ丘", furigana: "みどりがおか" }, { bango: "30", chiku: "宮前", choumei: "三津", furigana: "みつ" }, { bango: "30", chiku: "宮前", choumei: "古三津", furigana: "ふるみつ" }, { bango: "30", chiku: "宮前", choumei: "古三津町", furigana: "ふるみつちょう" }, { bango: "30", chiku: "宮前", choumei: "山西町", furigana: "やまにしちょう" }, { bango: "30", chiku: "宮前", choumei: "新浜町", furigana: "しんはまちょう" }, { bango: "30", chiku: "宮前", choumei: "松ノ木", furigana: "まつのき" }, { bango: "30", chiku: "宮前", choumei: "神田町", furigana: "かんだまち" }, { bango: "30", chiku: "宮前", choumei: "須賀町", furigana: "すがまち" }, { bango: "30", chiku: "宮前", choumei: "高山町", furigana: "たかやまちょう" }, { bango: "31", chiku: "高浜", choumei: "梅津寺町", furigana: "ばいしんじまち" }, { bango: "31", chiku: "高浜", choumei: "港山町", furigana: "みなとやままち" }, { bango: "31", chiku: "高浜", choumei: "高浜町", furigana: "たかはまちょう" }, { bango: "38", chiku: "北条", choumei: "北条", furigana: "ほうじょう" }, { bango: "38", chiku: "北条", choumei: "北条辻", furigana: "ほうじょうつじ" }, { bango: "38", chiku: "北条", choumei: "土手内", furigana: "どてうち" }, { bango: "38　44", chiku: "北条　粟井", choumei: "安岡", furigana: "やすおか" }, { bango: "39", chiku: "河野", choumei: "九川", furigana: "くかわ" }, { bango: "39", chiku: "河野", choumei: "善応寺", furigana: "ぜんのうじ" }, { bango: "39", chiku: "河野", choumei: "大谷", furigana: "おおたに" }, { bango: "39", chiku: "河野", choumei: "宮内", furigana: "みやうち" }, { bango: "39", chiku: "河野", choumei: "平林", furigana: "ひらばやし" }, { bango: "39", chiku: "河野", choumei: "柳原", furigana: "やなぎはら" }, { bango: "39", chiku: "河野", choumei: "片山", furigana: "かたやま" }, { bango: "39", chiku: "河野", choumei: "磯浦", furigana: "いそうら" }, { bango: "39", chiku: "河野", choumei: "横谷", furigana: "よこたに" }, { bango: "39", chiku: "河野", choumei: "河野別府", furigana: "こうのべふ" }, { bango: "39", chiku: "河野", choumei": "河野高山", furigana: "こうのたかやま" }, { bango: "39　41", chiku: "河野　正岡", choumei: "中西外", furigana: "なかにしそと" }, { bango: "39　41", chiku: "河野　正岡", choumei: "八反地", furigana: "はったんじ" }, { bango: "40", chiku: "浅海", choumei: "浅海本谷", furigana: "あさなみほんだに" }, { bango: "40", chiku: "浅海", choumei: "浅海原", furigana: "あさなみはら" }, { bango: "41", chiku: "正岡", choumei: "中西内", furigana: "なかにしうち" }, { bango: "41", chiku: "正岡", choumei: "院内", furigana: "いんない" }, { bango: "41", chiku: "正岡", choumei: "正岡神田", furigana: "まさおかこうだ" }, { bango: "41", chiku: "正岡", choumei: "高田", furigana: "たかた" }, { bango: "42", chiku: "立岩", choumei: "儀式", furigana: "ぎしき" }, { bango: "42", chiku: "立岩", choumei: "小川", furigana: "おがわ" }, { bango: "42", chiku: "立岩", choumei: "小山田", furigana: "おやまだ" }, { bango: "42", chiku: "立岩", choumei: "尾儀原", furigana: "おぎはら" }, { bango: "42", chiku: "立岩", choumei: "滝本", furigana: "たきもと" }, { bango: "42", chiku: "立岩", choumei: "猪木", furigana: "いのき" }, { bango: "42", chiku: "立岩", choumei: "猿川", furigana: "さるかわ" }, { bango: "42", chiku: "立岩", choumei: "猿川原", furigana: "さるかわばら" }, { bango: "42", chiku: "立岩", choumei: "神田", furigana: "こうだ" }, { bango: "42", chiku: "立岩", choumei: "立岩中村", furigana: "たていわなかむら" }, { bango: "42", chiku: "立岩", choumei: "立岩米之野", furigana: "たていわこめのの" }, { bango: "42", chiku: "立岩", choumei: "萩原", furigana: "はぎわら" }, { bango: "43", chiku: "難波", choumei: "上難波", furigana: "かみなんば" }, { bango: "43", chiku: "難波", choumei: "下難波", furigana: "しもなんば" }, { bango: "43", chiku: "難波", choumei: "中通", furigana: "なかどおり" }, { bango: "43", chiku: "難波", choumei: "大浦", furigana: "おおうら" }, { bango: "43", chiku: "難波", choumei: "庄府", furigana: "しょうふ" }, { bango: "43", chiku: "難波", choumei: "萩原", furigana: "はぎわら" }, { bango: "44", chiku: "粟井", choumei: "光洋台", furigana: "こうようだい" }, { bango: "44", chiku: "粟井", choumei: "夏目", furigana: "なつめ" }, { bango: "44", chiku: "粟井", choumei: "大西谷", furigana: "おおにしだに" }, { bango: "44", chiku: "粟井", choumei: "常保免", furigana: "じょうほうめん" }, { bango: "44", chiku: "粟井", choumei: "平野", furigana: "ひらの" }, { bango: "44", chiku: "粟井", choumei: "星谷", furigana: "ほしたに" }, { bango: "44", chiku: "粟井", choumei: "磯之河", furigana: "いそのかわ" }, { bango: "44", chiku: "粟井", choumei: "苞木", furigana: "すぼき" }, { bango: "44", chiku: "粟井", choumei: "麓", furigana: "ふもと" }, { bango: "32", chiku: "興居島", choumei: "泊町", furigana: "とまりまち" }, { bango: "32", chiku: "興居島", choumei: "由良町", furigana: "ゆらまち" }, { bango: "45", chiku: "忽那諸島", choumei: "中島大浦", furigana: "なかじまおおうら" }, { bango: "45", chiku: "忽那諸島", choumei: "小浜", furigana: "こはま" }, { bango: "45", chiku: "忽那諸島", choumei: "長師", furigana: "ながし" }, { bango: "45", chiku: "忽那諸島", choumei: "宮野", furigana: "みやの" }, { bango: "45", chiku: "忽那諸島", choumei: "神浦", furigana: "こうのうら" }, { bango: "45", chiku: "忽那諸島", choumei: "宇和間", furigana: "うわま" }, { bango: "45", chiku: "忽那諸島", choumei: "吉木", furigana: "よしき" }, { bango: "45", chiku: "忽那諸島", choumei: "畑里", furigana: "はたさと" }, { bango: "45", chiku: "忽那諸島", choumei: "粟井", furigana: "あわい" }, { bango: "45", chiku: "忽那諸島", choumei: "熊田", furigana: "くまだ" }, { bango: "45", chiku: "忽那諸島", "choumei": "饒", furigana: "にょう" }, { bango: "45", chiku: "忽那諸島", "choumei": "上怒和", furigana: "かみぬわ" }, { bango: "45", chiku: "忽那諸島", "choumei": "二神", furigana: "ふたがみ" }, { bango: "45", chiku: "忽那諸島", "choumei": "元怒和", furigana: "もとぬわ" }, { bango: "45", chiku: "忽那諸島", "choumei": "津和地", furigana: "つわじ" }, { bango: "45", chiku: "忽那諸島", "choumei": "睦月", furigana: "むづき" }, { bango: "45", chiku: "忽那諸島", "choumei": "野忽那", furigana: "のくつな" }
         ];
 
-        var map;
-        var currentHighlightLayer = null;
-        try {
-            map = L.map('real-map').setView([33.8392, 132.7653], 12);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
-        } catch(e) { console.log(e); }
-
+        // ブロック図のエリア定義
         var blocks = [
             { title: "【 北条エリア 】", items: [{id:"40", name:"浅海"}, {id:"42", name:"立岩"}, {id:"43", name:"難波"}, {id:"41", name:"正岡"}, {id:"38", name:"北条"}, {id:"39", name:"河野"}, {id:"44", name:"粟井"}] },
             { title: "【 城北 】", items: [{id:"36", name:"堀江"}, {id:"35", name:"和気"}, {id:"37", name:"久枝"}, {id:"34", name:"潮見"}] },
@@ -102,6 +89,7 @@
             { title: "【 忽那・島しょ部 】", items: [{id:"45", name:"忽那諸島"}] }
         ];
         
+        // 画面左側のブロック図を生成
         var blockMap = document.getElementById('block-map');
         for (var i = 0; i < blocks.length; i++) {
             var block = blocks[i];
@@ -114,150 +102,145 @@
             blockMap.innerHTML += html;
         }
 
+        // 余分な文字を消す関数
         function cleanName(str) { return str.replace(/[0-9\s　\[\]]+/g, '').replace(/^\s+|\s+$/g, ''); }
 
+        // 検索時の処理（うまき -> 馬木町 -> 勝岡町などを探す）
         document.getElementById('search-input').addEventListener('input', function(e) {
             var keyword = e.target.value;
             if (keyword) keyword = keyword.replace(/^\s+|\s+$/g, ''); 
             else keyword = '';
 
             var districts = document.querySelectorAll('.district');
+            var resultArea = document.getElementById('result-area');
             var gmapBtn = document.getElementById('gmap-btn');
-            var hwCopyArea = document.getElementById('hw-copy-area');
+            var gmapText = document.getElementById('gmap-text');
             var hwCopyText = document.getElementById('hw-copy-text');
-            
-            if (currentHighlightLayer && map) {
-                map.removeLayer(currentHighlightLayer);
-            }
 
             if (keyword === "") {
                 for (var d1 = 0; d1 < districts.length; d1++) {
                     districts[d1].className = districts[d1].className.replace(' highlight', '');
                 }
-                gmapBtn.style.display = "none";
-                hwCopyArea.style.display = "none";
+                resultArea.style.display = "none";
                 hwCopyText.value = "";
                 return;
             }
 
-            var matchedNumbers = {};
-            var matchedTowns = [];
-            var matchedDistricts = {};
-            var matchedDistrictName = "";
-            var primaryTownName = "";
+            var targetTown = "";
+            var targetDistrict = "";
+            var targetNumber = "";
 
+            // 1. 入力キーワードに一致する「町名」をピンポイントで探す
             for (var m = 0; m < masterData.length; m++) {
-                var itemInfo = masterData[m];
-                var isMatch = (itemInfo.chiku.indexOf(keyword) !== -1) || 
-                              (itemInfo.choumei.indexOf(keyword) !== -1) || 
-                              (itemInfo.furigana.indexOf(keyword) !== -1);
-                
-                if (isMatch) {
-                    var nums = itemInfo.bango.match(/\d+/g);
-                    if (nums) {
-                        for (var n = 0; n < nums.length; n++) { matchedNumbers[nums[n]] = true; }
+                var item = masterData[m];
+                // 完全一致または部分一致
+                if (item.choumei === keyword || item.furigana === keyword || 
+                    item.choumei.indexOf(keyword) !== -1 || item.furigana.indexOf(keyword) !== -1) {
+                    targetTown = item.choumei;
+                    targetDistrict = item.chiku;
+                    targetNumber = item.bango;
+                    break;
+                }
+            }
+
+            // もし町名で見つからなければ、地区名でも探す
+            if (!targetTown) {
+                for (var m = 0; m < masterData.length; m++) {
+                    if (masterData[m].chiku.indexOf(keyword) !== -1) {
+                        targetTown = masterData[m].choumei; // その地区の代表町名
+                        targetDistrict = masterData[m].chiku;
+                        targetNumber = masterData[m].bango;
+                        break;
                     }
-                    matchedTowns.push(itemInfo.choumei);
-                    matchedDistricts[itemInfo.chiku] = true;
-                    if (!primaryTownName) primaryTownName = itemInfo.choumei;
-                    if (!matchedDistrictName) matchedDistrictName = itemInfo.chiku; 
                 }
             }
 
-            for (var d2 = 0; d2 < districts.length; d2++) {
-                var el = districts[d2];
-                var elIds = el.getAttribute('data-id').match(/\d+/g) || [];
-                var matchFound = false;
-                for(var idIdx = 0; idIdx < elIds.length; idIdx++) {
-                    if (matchedNumbers[elIds[idIdx]]) { matchFound = true; break; }
-                }
-                if (matchFound) {
-                    if (el.className.indexOf('highlight') === -1) el.className += ' highlight';
-                } else {
-                    el.className = el.className.replace(' highlight', '');
-                }
-            }
-
-            var hasDistrictMatch = false;
-            for(var key in matchedDistricts) { hasDistrictMatch = true; break; }
-
-            if (matchedTowns.length > 0 || hasDistrictMatch) {
-                gmapBtn.style.display = "inline-block";
-                hwCopyArea.style.display = "block";
-                gmapBtn.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent("愛媛県松山市 " + primaryTownName);
+            if (targetTown) {
+                resultArea.style.display = "block";
                 
-                var relatedDistricts = {};
-                for (var dist in matchedDistricts) {
-                    var parts = dist.split(/[　\s]+/);
-                    for (var p1 = 0; p1 < parts.length; p1++) {
-                        var part = parts[p1];
-                        if (!part) continue;
-                        for (var b = 0; b < blocks.length; b++) {
-                            var blockGrp = blocks[b];
-                            var inBlock = false;
-                            for(var bi=0; bi < blockGrp.items.length; bi++){
-                                if (blockGrp.items[bi].name === part || part.indexOf(blockGrp.items[bi].name) !== -1) {
-                                    inBlock = true; break;
-                                }
-                            }
-                            if(inBlock){
-                                for(var bi2=0; bi2 < blockGrp.items.length; bi2++){
-                                    relatedDistricts[cleanName(blockGrp.items[bi2].name)] = true;
-                                }
-                            }
+                // --- Googleマップボタンの更新 ---
+                gmapText.innerText = "「" + targetTown + "」をGoogleマップで確認する";
+                gmapBtn.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent("愛媛県松山市 " + targetTown);
+
+                // --- ブロック図を光らせる ---
+                var nums = targetNumber.match(/\d+/g) || [];
+                for (var d2 = 0; d2 < districts.length; d2++) {
+                    var el = districts[d2];
+                    var elIds = el.getAttribute('data-id').match(/\d+/g) || [];
+                    var matchFound = false;
+                    for(var idIdx = 0; idIdx < elIds.length; idIdx++) {
+                        for(var nIdx = 0; nIdx < nums.length; nIdx++) {
+                            if (elIds[idIdx] === nums[nIdx]) { matchFound = true; break; }
                         }
                     }
-                }
-
-                var hwTerms = [];
-                var exactTownMatch = null;
-                for(var ti=0; ti<matchedTowns.length; ti++){
-                    if(matchedTowns[ti] === keyword || matchedTowns[ti].indexOf(keyword) !== -1){
-                        exactTownMatch = matchedTowns[ti]; break;
+                    if (matchFound) {
+                        if (el.className.indexOf('highlight') === -1) el.className += ' highlight';
+                    } else {
+                        el.className = el.className.replace(' highlight', '');
                     }
                 }
-                if (!exactTownMatch && matchedTowns.length > 0) exactTownMatch = matchedTowns[0];
-                if (exactTownMatch) hwTerms.push(exactTownMatch);
+
+                // --- 同じエリアの「町名」をすべて集める ---
+                var relatedDistricts = [];
+                // まずターゲット地区がどのエリアにあるかを探す
+                for (var b = 0; b < blocks.length; b++) {
+                    var blockGrp = blocks[b];
+                    var isMatch = false;
+                    for (var j = 0; j < blockGrp.items.length; j++) {
+                        if (targetDistrict.indexOf(blockGrp.items[j].name) !== -1 || blockGrp.items[j].name.indexOf(targetDistrict) !== -1) {
+                            isMatch = true; break;
+                        }
+                    }
+                    // そのエリアの全地区名を配列に入れる（例：和気、堀江、久枝、潮見）
+                    if (isMatch) {
+                        for (var j = 0; j < blockGrp.items.length; j++) {
+                            relatedDistricts.push(cleanName(blockGrp.items[j].name));
+                        }
+                        break;
+                    }
+                }
+
+                // マスタデータから、該当する地区の「町名」を抽出
+                var townList = [targetTown]; // 最初に検索した町名を先頭にする
+                for (var i = 0; i < masterData.length; i++) {
+                    var mdItem = masterData[i];
+                    var isRelated = false;
+                    for (var r = 0; r < relatedDistricts.length; r++) {
+                        if (mdItem.chiku.indexOf(relatedDistricts[r]) !== -1) {
+                            isRelated = true; break;
+                        }
+                    }
+                    if (isRelated && mdItem.choumei !== targetTown) {
+                        townList.push(mdItem.choumei);
+                    }
+                }
+
+                // 重複を削除して、50文字以内に収める（全角スペース区切り）
+                var uniqueTowns = [];
+                var townDict = {};
+                for (var t = 0; t < townList.length; t++) {
+                    if (!townDict[townList[t]]) {
+                        townDict[townList[t]] = true;
+                        uniqueTowns.push(townList[t]);
+                    }
+                }
+
+                var finalTerms = [];
+                for (var u = 0; u < uniqueTowns.length; u++) {
+                    var termStr = uniqueTowns[u];
+                    var nextStr = finalTerms.length === 0 ? termStr : finalTerms.join("　") + "　" + termStr;
+                    if (nextStr.length > 50) break; // 50文字を超えたらそこでストップ
+                    finalTerms.push(termStr);
+                }
                 
-                for(var dist2 in matchedDistricts){
-                    var parts2 = dist2.split(/[　\s]+/);
-                    for(var p2=0; p2<parts2.length; p2++){ if(parts2[p2]) hwTerms.push(parts2[p2]); }
-                }
-                for(var rd in relatedDistricts){ hwTerms.push(rd); }
+                hwCopyText.value = finalTerms.join("　");
 
-                var uniqueTerms = [];
-                var termDict = {};
-                for(var t=0; t<hwTerms.length; t++){
-                    if(!termDict[hwTerms[t]]){
-                        termDict[hwTerms[t]] = true;
-                        uniqueTerms.push(hwTerms[t]);
-                    }
-                }
-
-                var currentTerms = [];
-                for (var u=0; u<uniqueTerms.length; u++) {
-                    var termStr = uniqueTerms[u];
-                    var nextStr = currentTerms.length === 0 ? termStr : currentTerms.join("　") + "　" + termStr;
-                    if (nextStr.length > 50) break;
-                    currentTerms.push(termStr);
-                }
-                
-                hwCopyText.value = currentTerms.join("　");
-
-                if (map && matchedDistrictName) {
-                    var cleanedKey = cleanName(matchedDistrictName.split(/[　\s]+/)[0]);
-                    if (districtCoords[cleanedKey]) {
-                        var coords = districtCoords[cleanedKey];
-                        map.flyTo(coords, 13, { duration: 1.5 });
-                        currentHighlightLayer = L.circle(coords, { color: 'red', fillColor: '#ff3333', fillOpacity: 0.4, weight: 2, radius: 2000 }).addTo(map);
-                    }
-                }
             } else {
-                gmapBtn.style.display = "none";
-                hwCopyArea.style.display = "none";
+                resultArea.style.display = "none";
             }
         });
 
+        // コピーボタン処理
         document.getElementById('copy-btn').addEventListener('click', function() {
             var copyText = document.getElementById('hw-copy-text');
             if (!copyText.value) return;
