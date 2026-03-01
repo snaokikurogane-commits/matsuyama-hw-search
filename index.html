@@ -39,6 +39,11 @@
   /* UI要素 */
   .section { margin-top: 2.5em; font-weight: bold; border-bottom: 2px solid #008000; padding-bottom: 5px; margin-bottom: 15px; color: #333; font-size: 1.1em; }
   .sub-section { font-size: 1em; color: #555; margin-bottom: 8px; }
+  
+  /* ▼ 補助セクション用CSS（給与選択用） */
+  .aux-section { background-color: #f0f7f0; border-left: 4px solid #008000; padding: 12px 15px; margin-top: 5px; margin-bottom: 20px; border-radius: 4px; display: none; }
+  .aux-title { font-size: 0.9em; font-weight: bold; color: #008000; margin-bottom: 10px; }
+
   .grid-container { display: flex; flex-wrap: wrap; gap: 8px; }
   .grid-item-2 { flex: 1 1 calc(50% - 8px); }
   .grid-item-full { flex: 1 1 100%; }
@@ -75,6 +80,7 @@
   input.num-input { padding: 12px; margin: 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-size: 18px; text-align: center; }
   
   .searchbutton { display: block; width: 100%; padding: 20px; background: #008000; color: #fff !important; text-align: center; font-size: 24px; font-weight: bold; border-radius: 12px; margin-top: 15px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; }
+  .jobnum-searchbtn { display: block; width: 100%; padding: 15px; background: #e6006b; color: #fff !important; text-align: center; font-size: 18px; font-weight: bold; border-radius: 8px; margin-top: 10px; text-decoration: none; box-shadow: 0 3px 5px rgba(0,0,0,0.1); box-sizing: border-box; }
   
   /* 条件見える化と保存ボタンのデザイン（トーンダウン済） */
   .condition-summary { background: #fafafa; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-top: 35px; font-size: 14px; color: #444; line-height: 1.6; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
@@ -128,7 +134,6 @@
 
   // ▼ 初期設定・イベントリスナー
   document.addEventListener('DOMContentLoaded', function() {
-      // 全てのラジオボタンとチェックボックスにイベントを付与
       var inputs = document.querySelectorAll('input[type="radio"], input[type="checkbox"]');
       inputs.forEach(function(input) {
           input.addEventListener('change', function() {
@@ -138,8 +143,6 @@
               updateConditionText();
           });
       });
-      
-      // 自動読み込み（保存された条件があれば復元）
       loadConditionsAuto();
   });
 
@@ -191,33 +194,29 @@
     }
   }
 
-  // ▼ 給与セクションの動的表示制御
+  // ▼ 給与セクション（補助メニュー）の動的表示制御
   function updateSalaryVisibility() {
     var isFullTime = document.getElementById('s1').checked || document.getElementById('s2').checked;
     var isPartTime = document.getElementById('s3').checked;
     var isAny = document.getElementById('s4').checked;
 
-    var secTitle = document.getElementById('salary-section-title');
-    var secForm = document.getElementById('salary-form');
+    var auxSec = document.getElementById('salary-aux-section');
     var monthlies = document.getElementsByClassName('sal-monthly');
     var hourlies = document.getElementsByClassName('sal-hourly');
 
     if (isAny) {
-      // 限定なしの場合：給与エリア全体を非表示
-      secTitle.style.display = 'none';
-      secForm.style.display = 'none';
+      // 限定なしの場合：給与エリアを隠す
+      auxSec.style.display = 'none';
       document.getElementById('sal0').checked = true;
     } else {
-      // 区分が選択されている場合：給与エリアを表示
-      secTitle.style.display = 'block';
-      secForm.style.display = 'flex';
+      // 区分選択中：給与補助エリアを表示
+      auxSec.style.display = 'block';
       
       if (isFullTime) {
         // 正社員・フルタイム：月給の選択肢を表示
         for(var i=0; i<monthlies.length; i++) monthlies[i].style.display = 'block';
         for(var i=0; i<hourlies.length; i++) hourlies[i].style.display = 'none';
         
-        // もし時給が選ばれていた場合は「指定なし」にリセット
         var current = document.querySelector('input[name="radioSalary"]:checked');
         if (current && current.id.startsWith('salH')) document.getElementById('sal0').checked = true;
       } else if (isPartTime) {
@@ -225,7 +224,6 @@
         for(var i=0; i<monthlies.length; i++) monthlies[i].style.display = 'none';
         for(var i=0; i<hourlies.length; i++) hourlies[i].style.display = 'block';
         
-        // もし月給が選ばれていた場合は「指定なし」にリセット
         var current = document.querySelector('input[name="radioSalary"]:checked');
         if (current && current.id.startsWith('salM')) document.getElementById('sal0').checked = true;
       }
@@ -380,15 +378,15 @@
         document.getElementById('f1').value = "";
         document.getElementById('FreeW').value = "";
         
-        localStorage.removeItem('hw_search_conditions'); // 保存データもクリア
+        localStorage.removeItem('hw_search_conditions'); 
         updateConditionText();
         closeHelp();
     });
   }
 
-  // ▼ 追加機能①：求人番号のコピペ対応（自動分割）
+  // ▼ 求人番号のコピペ対応（自動分割）
   function formatJobNumber(el) {
-    var val = el.value.replace(/[^0-9]/g, ''); // 数字以外（ハイフンなど）を除去
+    var val = el.value.replace(/[^0-9]/g, ''); 
     if (val.length > 5) {
       document.getElementById('f0').value = val.substring(0, 5);
       document.getElementById('f1').value = val.substring(5, 13);
@@ -398,7 +396,7 @@
     }
   }
 
-  // ▼ 追加機能②：現在の条件テキスト更新（トーンダウン・絵文字削除版）
+  // ▼ 現在の条件テキスト更新
   function updateConditionText() {
     var text = "";
     
@@ -429,7 +427,7 @@
     
     // 給与が「指定なし」以外かつ表示中なら追加
     var salary = document.querySelector('input[name="radioSalary"]:checked');
-    if(salary && salary.id !== 'sal0' && document.getElementById('salary-form').style.display !== 'none') {
+    if(salary && salary.id !== 'sal0' && document.getElementById('salary-aux-section').style.display !== 'none') {
         conds.push(document.querySelector('label[for="' + salary.id + '"]').innerText);
     }
 
@@ -446,18 +444,15 @@
     document.getElementById('current-conditions-text').innerText = text;
   }
 
-  // ▼ 追加機能③：検索条件の保存と復元（LocalStorage）
+  // ▼ 検索条件の保存と復元（LocalStorage）
   function saveConditions() {
     var state = {
         areaKeys: selectedAreaKeys,
         radios: {},
         checkboxes: {}
     };
-    // 全ラジオボタンの状態保存
     var radios = document.querySelectorAll('input[type="radio"]');
     radios.forEach(function(r) { if(r.checked) state.radios[r.name] = r.id; });
-    
-    // 全チェックボックスの状態保存
     var checks = document.querySelectorAll('input[type="checkbox"]');
     checks.forEach(function(c) { state.checkboxes[c.id] = c.checked; });
 
@@ -470,7 +465,6 @@
     if(saved) {
         var state = JSON.parse(saved);
         
-        // エリア復元
         selectedAreaKeys = state.areaKeys || [];
         var allBtns = document.getElementsByClassName('area-btn');
         for(var i=0; i<allBtns.length; i++) allBtns[i].classList.remove('active');
@@ -480,27 +474,42 @@
         });
         updateAreaDisplay();
 
-        // ラジオボタン復元
         for(var name in state.radios) {
             var el = document.getElementById(state.radios[name]);
             if(el) el.checked = true;
         }
-
-        // チェックボックス復元
         for(var id in state.checkboxes) {
             var el = document.getElementById(id);
             if(el) el.checked = state.checkboxes[id];
         }
         
-        onRadioClick(); // 排他制御などの反映
-        updateSalaryVisibility(); // 給与欄の表示更新を追加
-        updateConditionText(); // テキスト更新
+        onRadioClick(); 
+        updateSalaryVisibility(); 
+        updateConditionText(); 
     } else {
-        updateConditionText(); // 初回時のテキスト更新
+        updateConditionText(); 
     }
   }
 
-  // ▼ 検索実行処理
+  // ▼ 求人番号・専用検索ボタンのアクション
+  function SearchByJobNumber() {
+    var ksjo = document.getElementById('f0').value;
+    var ksge = document.getElementById('f1').value;
+    if(!ksjo || !ksge) {
+        showMyModal("エラー", "求人番号が正しく入力されていません。\n（例: 38010-12345678）", false);
+        return;
+    }
+    
+    // ハローワークの「求人番号を指定して検索」アクション用パラメータ
+    // ※ action=kyujinBangoBtn はハローワークの番号検索専用の内部アクションです
+    var finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=kyujinBangoBtn&screenId=GECA110010&kJNoJo1=" + ksjo + "&kJNoGe1=" + ksge;
+    
+    showMyModal("検索確認", "入力された求人番号で検索しますか？\n（他の条件は無視されます）", true, function(result){
+        if(result) window.open(finalUrl, '_blank');
+    });
+  }
+
+  // ▼ 通常の検索実行処理
   function Search() {
     var uniqueCodes = [];
     if (selectedAreaKeys.length === 0) {
@@ -536,19 +545,12 @@
       return str;
     };
     
-    // 基本パラメータ ＋ 給与パラメータを追加
     params += collect('ippan') + collect('newArri') + collect('jyouken') + collect('JobIndustry') + collect('JobType') + collect('salary');
     
     var fw = document.getElementById("FreeW").value;
     
-    var ksjo = document.getElementById('f0').value;
-    var ksge = document.getElementById('f1').value;
-    if(ksjo && ksge) {
-        // 求人番号（kJNoJo1, kJNoGe1）にパラメータを修正
-        params += amp + "kJNoJo1=" + ksjo + amp + "kJNoGe1=" + ksge;
-    }
-    
     var executeSearch = function() {
+        // 通常の検索ボタン用アクション（action=searchBtn）
         var finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchBtn" + amp + "screenId=GECA110010" + amp + "kjKbnRadioBtn=1" + amp + "searchClear=0" + params;
         window.open(finalUrl, '_blank');
     };
@@ -560,12 +562,12 @@
        var encodedFW = encodeURIComponent(fw);
        params += amp + "freeWordInput=" + encodedFW + amp + "freeWordRadioBtn=0"; // OR検索
        
-       showMyModal("検索確認", "下に表示されている条件で\nハローワークの検索を開きますか？", true, function(result){
+       showMyModal("検索確認", "上に表示されている条件で\nハローワークの検索を開きますか？", true, function(result){
            if(result) executeSearch();
        });
     } else { 
        params += collect('Free'); 
-       showMyModal("検索確認", "下に表示されている条件で\nハローワークの検索を開きますか？", true, function(result){
+       showMyModal("検索確認", "上に表示されている条件で\nハローワークの検索を開きますか？", true, function(result){
            if(result) executeSearch();
        });
     }
@@ -669,6 +671,22 @@
     <div class="grid-item-2"><input id="s3" name="radio1" type="radio" value="&ippanCKBox=2"/><label for="s3" class="btn-base chkLabel">パート</label></div>
   </form>
 
+  <div id="salary-aux-section" class="aux-section">
+    <div class="aux-title">↳ 【給与の希望】※任意</div>
+    <form name="salary" id="salary-form" class="grid-container">
+      <div class="grid-item-2"><input checked id="sal0" name="radioSalary" type="radio" value=""/><label for="sal0" class="btn-base chkLabel" style="background:#fff; border-color:#aaa; color:#333;">指定なし</label></div>
+      
+      <div class="grid-item-2 sal-monthly"><input id="salM1" name="radioSalary" type="radio" value="&tngnKigenKagenInput=200000"/><label for="salM1" class="btn-base chkLabel">月給 20万円以上</label></div>
+      <div class="grid-item-2 sal-monthly"><input id="salM2" name="radioSalary" type="radio" value="&tngnKigenKagenInput=250000"/><label for="salM2" class="btn-base chkLabel">月給 25万円以上</label></div>
+      <div class="grid-item-2 sal-monthly"><input id="salM3" name="radioSalary" type="radio" value="&tngnKigenKagenInput=300000"/><label for="salM3" class="btn-base chkLabel">月給 30万円以上</label></div>
+      
+      <div class="grid-item-2 sal-hourly"><input id="salH1" name="radioSalary" type="radio" value="&tngnKigenKagenInput=1100"/><label for="salH1" class="btn-base chkLabel">時給 1,100円以上</label></div>
+      <div class="grid-item-2 sal-hourly"><input id="salH2" name="radioSalary" type="radio" value="&tngnKigenKagenInput=1200"/><label for="salH2" class="btn-base chkLabel">時給 1,200円以上</label></div>
+      <div class="grid-item-2 sal-hourly"><input id="salH3" name="radioSalary" type="radio" value="&tngnKigenKagenInput=1500"/><label for="salH3" class="btn-base chkLabel">時給 1,500円以上</label></div>
+      <div class="grid-item-2 sal-hourly"><input id="salH4" name="radioSalary" type="radio" value="&tngnKigenKagenInput=2000"/><label for="salH4" class="btn-base chkLabel">時給 2,000円以上</label></div>
+    </form>
+  </div>
+
   <div class="section">3. 新着区分</div>
   <form name="newArri" class="grid-container">
     <div class="grid-item-2"><input checked id="t3" name="radio2" type="radio" value=""/><label for="t3" class="btn-base chkLabel">指定なし</label></div>
@@ -684,7 +702,6 @@
     <div class="details-content">
       <form name="JobIndustry" class="grid-container">
         <div class="grid-item-full"><input checked id="ind0" name="radioIndustry" type="radio" value="" onclick="clearJobType()"/><label for="ind0" class="btn-base industry-btn-label" style="background:#eee; border-color:#aaa; color:#333;">限定なし</label></div>
-        
         <div class="grid-item-2"><input id="ind16" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=83&kiboSuruSngBrui2In=84&kiboSuruSngBrui3In=85" onclick="clearJobType()"/><label for="ind16" class="btn-base industry-btn-label">医療,福祉</label></div>
         <div class="grid-item-2"><input id="ind18" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=88&kiboSuruSngBrui2In=91&kiboSuruSngBrui3In=92" onclick="clearJobType()"/><label for="ind18" class="btn-base industry-btn-label">サービス業・警備</label></div>
         <div class="grid-item-2"><input id="ind9" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=50&kiboSuruSngBrui2In=56&kiboSuruSngBrui3In=61" onclick="clearJobType()"/><label for="ind9" class="btn-base industry-btn-label">卸売業・小売業</label></div>
@@ -746,21 +763,7 @@
     <div class="grid-item-2"><input id="w13" name="j1" type="checkbox" value="&ktaiSeiNashiCKBox=1"/><label for="w13" class="btn-base chkLabel">日勤のみ(交替無)</label></div>
   </form>
 
-  <div class="section" id="salary-section-title" style="display:none;">6. 給与（賃金）</div>
-  <form name="salary" id="salary-form" class="grid-container" style="display:none;">
-    <div class="grid-item-2"><input checked id="sal0" name="radioSalary" type="radio" value=""/><label for="sal0" class="btn-base chkLabel" style="background:#eee; border-color:#aaa; color:#333;">指定なし</label></div>
-    
-    <div class="grid-item-2 sal-monthly"><input id="salM1" name="radioSalary" type="radio" value="&tngnKigenKagenInput=200000"/><label for="salM1" class="btn-base chkLabel">月給 20万円以上</label></div>
-    <div class="grid-item-2 sal-monthly"><input id="salM2" name="radioSalary" type="radio" value="&tngnKigenKagenInput=250000"/><label for="salM2" class="btn-base chkLabel">月給 25万円以上</label></div>
-    <div class="grid-item-2 sal-monthly"><input id="salM3" name="radioSalary" type="radio" value="&tngnKigenKagenInput=300000"/><label for="salM3" class="btn-base chkLabel">月給 30万円以上</label></div>
-    
-    <div class="grid-item-2 sal-hourly"><input id="salH1" name="radioSalary" type="radio" value="&tngnKigenKagenInput=1100"/><label for="salH1" class="btn-base chkLabel">時給 1,100円以上</label></div>
-    <div class="grid-item-2 sal-hourly"><input id="salH2" name="radioSalary" type="radio" value="&tngnKigenKagenInput=1200"/><label for="salH2" class="btn-base chkLabel">時給 1,200円以上</label></div>
-    <div class="grid-item-2 sal-hourly"><input id="salH3" name="radioSalary" type="radio" value="&tngnKigenKagenInput=1500"/><label for="salH3" class="btn-base chkLabel">時給 1,500円以上</label></div>
-    <div class="grid-item-2 sal-hourly"><input id="salH4" name="radioSalary" type="radio" value="&tngnKigenKagenInput=2000"/><label for="salH4" class="btn-base chkLabel">時給 2,000円以上</label></div>
-  </form>
-
-  <div class="section">7. キーワード・その他</div>
+  <div class="section">6. キーワード・その他</div>
   <form name="Free" class="grid-container">
     <div class="grid-item-2"><input checked id="u4" name="radio3" type="radio" value="" onclick="onRadioClick()"/><label for="u4" class="btn-base chkLabel">限定なし</label></div>
     <div class="grid-item-2"><input id="u2" name="radio3" type="radio" value="&freeWordInput=%E5%AD%90%E8%82%B2%E3%81%A6%E6%94%AF%E6%8F%B4%E6%B1%82%E4%BA%BA" onclick="onRadioClick()"/><label for="u2" class="btn-base chkLabel">子育て支援</label></div>
@@ -778,19 +781,8 @@
     <input class="textarea" id="FreeW" placeholder="全角スペースで区切って入力" type="text" />
   </div>
 
-  <div class="section" style="border:none;">8. 求人番号（お持ちの方）</div>
-  <p style="font-size:0.9em; color:#666; margin-top:0; margin-bottom:10px; line-height:1.4;">
-    ※ハイフン（-）を含めたままコピー＆ペーストできます。求人番号を指定すると他の条件は無視されます。
-  </p>
-  
-  <div>
-    <input id="f_num" type="tel" class="num-input" placeholder="例: 38010-12345678" style="width:100%; letter-spacing: 1px;" oninput="formatJobNumber(this)"/>
-    <input type="hidden" id="f0" />
-    <input type="hidden" id="f1" />
-  </div>
-
   <div class="condition-summary">
-    <div class="condition-summary-title">現在の検索条件</div>
+    <div class="condition-summary-title">現在の検索条件（1〜6）</div>
     <div id="current-conditions-text" style="white-space: pre-wrap; margin-top: 8px;"></div>
     
     <div class="save-btn-container">
@@ -799,7 +791,19 @@
     </div>
   </div>
 
-  <a class="searchbutton" href="javascript:void(0);" onclick="Search()">この条件で検索する</a>
+  <a class="searchbutton" href="javascript:void(0);" onclick="Search()">1〜6の条件で検索する</a>
+
+  <div class="section" style="border-bottom:2px solid #e6006b; color:#e6006b;">7. 求人番号検索（お持ちの方）</div>
+  <p style="font-size:0.9em; color:#666; margin-top:0; margin-bottom:10px; line-height:1.4;">
+    ※ハイフン（-）を含めたままコピー＆ペーストできます。求人番号を指定する場合は、以下の専用ボタンを押してください。
+  </p>
+  
+  <div style="background:#fff0f5; border: 1px solid #ffccd9; padding:15px; border-radius:8px;">
+    <input id="f_num" type="tel" class="num-input" placeholder="例: 38010-12345678" style="width:100%; letter-spacing: 1px; margin-bottom:10px;" oninput="formatJobNumber(this)"/>
+    <input type="hidden" id="f0" />
+    <input type="hidden" id="f1" />
+    <a class="jobnum-searchbtn" href="javascript:void(0);" onclick="SearchByJobNumber()">求人番号でズバリ検索する</a>
+  </div>
 
   <div class="app-guide">
     <h3>▼ 求人への応募方法</h3>
