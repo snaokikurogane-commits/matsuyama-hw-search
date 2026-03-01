@@ -76,13 +76,9 @@
   
   select, input[type="text"] { width: 100%; padding: 14px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; font-size: 17px; }
   
-  /* 番号入力用スタイル */
-  input.num-input { padding: 12px; margin: 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-size: 18px; text-align: center; }
-  
   .searchbutton { display: block; width: 100%; padding: 20px; background: #008000; color: #fff !important; text-align: center; font-size: 24px; font-weight: bold; border-radius: 12px; margin-top: 15px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; }
-  .jobnum-searchbtn { display: block; width: 100%; padding: 15px; background: #e6006b; color: #fff !important; text-align: center; font-size: 18px; font-weight: bold; border-radius: 8px; margin-top: 10px; text-decoration: none; box-shadow: 0 3px 5px rgba(0,0,0,0.1); box-sizing: border-box; }
   
-  /* 条件見える化と保存ボタンのデザイン（トーンダウン済） */
+  /* 条件見える化と保存ボタンのデザイン */
   .condition-summary { background: #fafafa; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-top: 35px; font-size: 14px; color: #444; line-height: 1.6; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
   .condition-summary-title { color: #555; margin-bottom: 5px; font-size: 15px; font-weight: bold; border-bottom: 1px solid #eaeaea; padding-bottom: 5px; }
   .save-btn-container { display: flex; justify-content: space-between; gap: 10px; margin-top: 10px; }
@@ -373,27 +369,12 @@
         var checks = document.getElementsByName('j1');
         for(var i=0; checks.length > i; i++) checks[i].checked = false;
         
-        document.getElementById('f_num').value = "";
-        document.getElementById('f0').value = "";
-        document.getElementById('f1').value = "";
         document.getElementById('FreeW').value = "";
         
         localStorage.removeItem('hw_search_conditions'); 
         updateConditionText();
         closeHelp();
     });
-  }
-
-  // ▼ 求人番号のコピペ対応（自動分割）
-  function formatJobNumber(el) {
-    var val = el.value.replace(/[^0-9]/g, ''); 
-    if (val.length > 5) {
-      document.getElementById('f0').value = val.substring(0, 5);
-      document.getElementById('f1').value = val.substring(5, 13);
-    } else {
-      document.getElementById('f0').value = val;
-      document.getElementById('f1').value = "";
-    }
   }
 
   // ▼ 現在の条件テキスト更新
@@ -491,24 +472,6 @@
     }
   }
 
-  // ▼ 求人番号・専用検索ボタンのアクション
-  function SearchByJobNumber() {
-    var ksjo = document.getElementById('f0').value;
-    var ksge = document.getElementById('f1').value;
-    if(!ksjo || !ksge) {
-        showMyModal("エラー", "求人番号が正しく入力されていません。\n（例: 38010-12345678）", false);
-        return;
-    }
-    
-    // ハローワークの「求人番号を指定して検索」アクション用パラメータ
-    // ※ action=kyujinBangoBtn はハローワークの番号検索専用の内部アクションです
-    var finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=kyujinBangoBtn&screenId=GECA110010&kJNoJo1=" + ksjo + "&kJNoGe1=" + ksge;
-    
-    showMyModal("検索確認", "入力された求人番号で検索しますか？\n（他の条件は無視されます）", true, function(result){
-        if(result) window.open(finalUrl, '_blank');
-    });
-  }
-
   // ▼ 通常の検索実行処理
   function Search() {
     var uniqueCodes = [];
@@ -588,7 +551,7 @@
       <div class="help-warning">
         <h4 class="help-warning-title">【重要】抜け漏れ防止について</h4>
         <p class="help-text"><strong>【エリア】</strong><br>松山市内の地区指定は、主要な町名を抽出しています。確実に見つけたい場合は<strong>「松山市内全域」</strong>をお勧めします。</p>
-        <p class="help-text"><strong>【職種】</strong><br>各ボタンは需要の高い主要な職種（最大3つ）を抽出しています。希望の求人が見つからない場合は<strong>「限定なし」</strong>を選択するか、<strong>検索先の画面を上にスクロールして職種を再選択</strong>してください。</p>
+        <p class="help-text"><strong>【職種】</strong><br>各ボタンは大分類を指定しています。より細かく小分類で指定したい場合は、<strong>検索先の画面を上にスクロールして職種を再選択</strong>してください。</p>
       </div>
       
       <div class="help-warning">
@@ -599,7 +562,6 @@
       <div class="help-section-title">操作方法</div>
       <ul class="help-list">
         <li><strong>条件の保存：</strong>一番下の「この条件を保存」ボタンを押すと、次回開いた時にいつもの検索条件が自動でセットされます。</li>
-        <li><strong>求人番号のコピペ：</strong>窓口やLINEで送られた「12345-12345678」という番号をそのまま貼り付けて検索できます。</li>
       </ul>
       <div style="text-align:center; margin-top:20px;">
         <button onclick="closeHelp()" style="padding:10px 20px; background:#008000; color:#fff; border:none; border-radius:5px; cursor:pointer;">閉じる</button>
@@ -683,7 +645,6 @@
       <div class="grid-item-2 sal-hourly"><input id="salH1" name="radioSalary" type="radio" value="&tngnKigenKagenInput=1100"/><label for="salH1" class="btn-base chkLabel">時給 1,100円以上</label></div>
       <div class="grid-item-2 sal-hourly"><input id="salH2" name="radioSalary" type="radio" value="&tngnKigenKagenInput=1200"/><label for="salH2" class="btn-base chkLabel">時給 1,200円以上</label></div>
       <div class="grid-item-2 sal-hourly"><input id="salH3" name="radioSalary" type="radio" value="&tngnKigenKagenInput=1500"/><label for="salH3" class="btn-base chkLabel">時給 1,500円以上</label></div>
-      <div class="grid-item-2 sal-hourly"><input id="salH4" name="radioSalary" type="radio" value="&tngnKigenKagenInput=2000"/><label for="salH4" class="btn-base chkLabel">時給 2,000円以上</label></div>
     </form>
   </div>
 
@@ -721,7 +682,7 @@
     <div class="details-content">
       <div class="notice-box" style="margin-top: 5px;">
         <strong>【職種選択時のご注意】</strong><br>
-        各ボタンは需要の高い主要な職種（最大3つ）を抽出しています。抜け漏れなく探したい場合は一番上の<strong>「限定なし」</strong>を選択するか、<strong>検索先の画面を上にスクロールして職種を再選択</strong>してください。
+        各ボタンは大分類を指定しています。より細かく小分類で指定したい場合は、<strong>検索先の画面を上にスクロールして職種を再選択</strong>してください。
       </div>
 
       <form name="JobType" class="grid-container">
@@ -758,7 +719,6 @@
     <div class="grid-item-2"><input id="w5" name="j1" type="checkbox" value="&kurumaTuukinCKBox=1"/><label for="w5" class="btn-base chkLabel">マイカー通勤</label></div>
     
     <div class="grid-item-2"><input id="w4" name="j1" type="checkbox" value="&holidayCKBox=6,7,8"/><label for="w4" class="btn-base chkLabel">土日祝休み</label></div>
-    <div class="grid-item-2"><input id="w11" name="j1" type="checkbox" value="&nknKyuujitu120ijoCKBox=1"/><label for="w11" class="btn-base chkLabel">年間休日120日〜</label></div>
     <div class="grid-item-2"><input id="w12" name="j1" type="checkbox" value="&kznSyukyuNikaCKBox=1"/><label for="w12" class="btn-base chkLabel">完全週休2日制</label></div>
     <div class="grid-item-2"><input id="w13" name="j1" type="checkbox" value="&ktaiSeiNashiCKBox=1"/><label for="w13" class="btn-base chkLabel">日勤のみ(交替無)</label></div>
   </form>
@@ -782,7 +742,8 @@
   </div>
 
   <div class="condition-summary">
-    <div class="condition-summary-title">現在の検索条件（1〜6）</div>
+    <div class="condition-summary-title">現在の検索条件</div>
+    <p style="font-size:0.85em; color:#666; margin:0 0 5px 0;">※「この条件を保存」ボタンを押すと、次回開いた時にも同じ条件が自動でセットされます。</p>
     <div id="current-conditions-text" style="white-space: pre-wrap; margin-top: 8px;"></div>
     
     <div class="save-btn-container">
@@ -791,19 +752,7 @@
     </div>
   </div>
 
-  <a class="searchbutton" href="javascript:void(0);" onclick="Search()">1〜6の条件で検索する</a>
-
-  <div class="section" style="border-bottom:2px solid #e6006b; color:#e6006b;">7. 求人番号検索（お持ちの方）</div>
-  <p style="font-size:0.9em; color:#666; margin-top:0; margin-bottom:10px; line-height:1.4;">
-    ※ハイフン（-）を含めたままコピー＆ペーストできます。求人番号を指定する場合は、以下の専用ボタンを押してください。
-  </p>
-  
-  <div style="background:#fff0f5; border: 1px solid #ffccd9; padding:15px; border-radius:8px;">
-    <input id="f_num" type="tel" class="num-input" placeholder="例: 38010-12345678" style="width:100%; letter-spacing: 1px; margin-bottom:10px;" oninput="formatJobNumber(this)"/>
-    <input type="hidden" id="f0" />
-    <input type="hidden" id="f1" />
-    <a class="jobnum-searchbtn" href="javascript:void(0);" onclick="SearchByJobNumber()">求人番号でズバリ検索する</a>
-  </div>
+  <a class="searchbutton" href="javascript:void(0);" onclick="Search()">この条件で検索する</a>
 
   <div class="app-guide">
     <h3>▼ 求人への応募方法</h3>
