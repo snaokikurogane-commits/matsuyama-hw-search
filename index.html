@@ -75,14 +75,13 @@
   input.num-input { padding: 12px; margin: 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-size: 18px; text-align: center; }
   
   .searchbutton { display: block; width: 100%; padding: 20px; background: #008000; color: #fff !important; text-align: center; font-size: 24px; font-weight: bold; border-radius: 12px; margin-top: 15px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; }
-  .reset-btn { display: block; width: 100%; margin-top: 20px; padding: 14px; background-color: #ccc; color: #333; text-align: center; border-radius: 8px; font-size: 15px; text-decoration: none; border: none; cursor: pointer; box-sizing: border-box; }
   
-  /* 追加：条件見える化と保存ボタンのデザイン */
-  .condition-summary { background: #e8f5e9; border: 2px dashed #008000; padding: 15px; border-radius: 8px; margin-top: 35px; font-size: 14px; font-weight: bold; color: #333; line-height: 1.6; }
-  .condition-summary-title { color: #008000; margin-bottom: 5px; font-size: 16px; border-bottom: 1px solid #008000; padding-bottom: 3px; }
+  /* 条件見える化と保存ボタンのデザイン（トーンダウン済） */
+  .condition-summary { background: #fafafa; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-top: 35px; font-size: 14px; color: #444; line-height: 1.6; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  .condition-summary-title { color: #555; margin-bottom: 5px; font-size: 15px; font-weight: bold; border-bottom: 1px solid #eaeaea; padding-bottom: 5px; }
   .save-btn-container { display: flex; justify-content: space-between; gap: 10px; margin-top: 10px; }
-  .save-btn { flex: 1; padding: 12px; background: #fff; color: #008000; border: 2px solid #008000; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; }
-  .save-btn:active { background: #e8f5e9; }
+  .save-btn { flex: 1; padding: 12px; background: #fff; color: #555; border: 1px solid #bbb; border-radius: 6px; cursor: pointer; font-size: 14px; }
+  .save-btn:active { background: #eee; }
 
   .app-guide { margin-top: 40px; border: 2px solid #008000; border-radius: 8px; overflow: hidden; background-color: #fff; }
   .app-guide h3 { margin: 0; padding: 12px 15px; background-color: #008000; color: #fff !important; font-size: 18px; font-weight: bold; }
@@ -129,10 +128,15 @@
 
   // ▼ 初期設定・イベントリスナー
   document.addEventListener('DOMContentLoaded', function() {
-      // 全てのラジオボタンとチェックボックスに「テキスト更新」のイベントを付与
+      // 全てのラジオボタンとチェックボックスにイベントを付与
       var inputs = document.querySelectorAll('input[type="radio"], input[type="checkbox"]');
       inputs.forEach(function(input) {
-          input.addEventListener('change', updateConditionText);
+          input.addEventListener('change', function() {
+              if (this.name === 'radio1') {
+                  updateSalaryVisibility(); // 給与欄の動的表示切替
+              }
+              updateConditionText();
+          });
       });
       
       // 自動読み込み（保存された条件があれば復元）
@@ -184,6 +188,47 @@
         document.getElementById('FreeWord').style.display = 'block';
     } else {
         document.getElementById('FreeWord').style.display = 'none';
+    }
+  }
+
+  // ▼ 給与セクションの動的表示制御
+  function updateSalaryVisibility() {
+    var isFullTime = document.getElementById('s1').checked || document.getElementById('s2').checked;
+    var isPartTime = document.getElementById('s3').checked;
+    var isAny = document.getElementById('s4').checked;
+
+    var secTitle = document.getElementById('salary-section-title');
+    var secForm = document.getElementById('salary-form');
+    var monthlies = document.getElementsByClassName('sal-monthly');
+    var hourlies = document.getElementsByClassName('sal-hourly');
+
+    if (isAny) {
+      // 限定なしの場合：給与エリア全体を非表示
+      secTitle.style.display = 'none';
+      secForm.style.display = 'none';
+      document.getElementById('sal0').checked = true;
+    } else {
+      // 区分が選択されている場合：給与エリアを表示
+      secTitle.style.display = 'block';
+      secForm.style.display = 'flex';
+      
+      if (isFullTime) {
+        // 正社員・フルタイム：月給の選択肢を表示
+        for(var i=0; i<monthlies.length; i++) monthlies[i].style.display = 'block';
+        for(var i=0; i<hourlies.length; i++) hourlies[i].style.display = 'none';
+        
+        // もし時給が選ばれていた場合は「指定なし」にリセット
+        var current = document.querySelector('input[name="radioSalary"]:checked');
+        if (current && current.id.startsWith('salH')) document.getElementById('sal0').checked = true;
+      } else if (isPartTime) {
+        // パート：時給の選択肢を表示
+        for(var i=0; i<monthlies.length; i++) monthlies[i].style.display = 'none';
+        for(var i=0; i<hourlies.length; i++) hourlies[i].style.display = 'block';
+        
+        // もし月給が選ばれていた場合は「指定なし」にリセット
+        var current = document.querySelector('input[name="radioSalary"]:checked');
+        if (current && current.id.startsWith('salM')) document.getElementById('sal0').checked = true;
+      }
     }
   }
 
@@ -264,7 +309,7 @@
 
     updateAreaDisplay();
     updateExclusion(); 
-    updateConditionText(); // リアルタイム表示を更新
+    updateConditionText();
   }
 
   function updateAreaDisplay() {
@@ -325,6 +370,7 @@
         
         updateAreaDisplay();
         onRadioClick();
+        updateSalaryVisibility(); // リセット時に給与エリアの表示も初期化
 
         var checks = document.getElementsByName('j1');
         for(var i=0; checks.length > i; i++) checks[i].checked = false;
@@ -352,13 +398,13 @@
     }
   }
 
-  // ▼ 追加機能②：現在の条件テキスト更新
+  // ▼ 追加機能②：現在の条件テキスト更新（トーンダウン・絵文字削除版）
   function updateConditionText() {
     var text = "";
     
     // エリア
     var area = document.getElementById('selectedAreaDisplay').innerText.replace("選択中: ", "");
-    text += "📍" + area + "\n";
+    text += "【エリア】 " + area + "\n";
 
     // 区分
     var ippan = document.querySelector('input[name="radio1"]:checked');
@@ -370,9 +416,9 @@
     if(ind && ind.id !== 'ind0') jobText = document.querySelector('label[for="' + ind.id + '"]').innerText;
     var job = document.querySelector('input[name="radioJobType"]:checked');
     if(job && job.id !== 'job0') jobText = document.querySelector('label[for="' + job.id + '"]').innerText;
-    if(!jobText) jobText = "職種指定なし";
+    if(!jobText) jobText = "指定なし";
 
-    text += "💼" + ippanText + " / " + jobText + "\n";
+    text += "【職種・区分】 " + ippanText + " / " + jobText + "\n";
 
     // チェックボックスと給与
     var conds = [];
@@ -381,17 +427,20 @@
         conds.push(document.querySelector('label[for="' + c.id + '"]').innerText);
     });
     
+    // 給与が「指定なし」以外かつ表示中なら追加
     var salary = document.querySelector('input[name="radioSalary"]:checked');
-    if(salary && salary.id !== 'sal0') conds.push(document.querySelector('label[for="' + salary.id + '"]').innerText);
+    if(salary && salary.id !== 'sal0' && document.getElementById('salary-form').style.display !== 'none') {
+        conds.push(document.querySelector('label[for="' + salary.id + '"]').innerText);
+    }
 
     // シニア等の特殊キーワード
     var kw = document.querySelector('input[name="radio3"]:checked');
     if(kw && kw.id !== 'u4' && kw.id !== 'u5') conds.push(document.querySelector('label[for="' + kw.id + '"]').innerText);
 
     if(conds.length > 0) {
-        text += "✨" + conds.join("、") + "\n";
+        text += "【その他条件】 " + conds.join("、");
     } else {
-        text += "✨条件指定なし\n";
+        text += "【その他条件】 指定なし";
     }
 
     document.getElementById('current-conditions-text').innerText = text;
@@ -444,6 +493,7 @@
         }
         
         onRadioClick(); // 排他制御などの反映
+        updateSalaryVisibility(); // 給与欄の表示更新を追加
         updateConditionText(); // テキスト更新
     } else {
         updateConditionText(); // 初回時のテキスト更新
@@ -481,7 +531,7 @@
 
     var collect = function(fname) {
       var str = "";
-      var el = document.forms[fname].elements;
+      var el = document.forms[fname] ? document.forms[fname].elements : [];
       for(var i=0; el.length > i; i++) { if(el[i].checked) str += el[i].value; }
       return str;
     };
@@ -494,7 +544,8 @@
     var ksjo = document.getElementById('f0').value;
     var ksge = document.getElementById('f1').value;
     if(ksjo && ksge) {
-        params += amp + "kSNoJo=" + ksjo + amp + "kSNoGe=" + ksge;
+        // 求人番号（kJNoJo1, kJNoGe1）にパラメータを修正
+        params += amp + "kJNoJo1=" + ksjo + amp + "kJNoGe1=" + ksge;
     }
     
     var executeSearch = function() {
@@ -535,7 +586,7 @@
       <div class="help-warning">
         <h4 class="help-warning-title">【重要】抜け漏れ防止について</h4>
         <p class="help-text"><strong>【エリア】</strong><br>松山市内の地区指定は、主要な町名を抽出しています。確実に見つけたい場合は<strong>「松山市内全域」</strong>をお勧めします。</p>
-        <p class="help-text"><strong>【職種】</strong><br>各ボタンは需要の高い主要な職種（最大3つ）を抽出しています。希望の求人が見つからない場合は<strong>「職種 限定なし」</strong>を選択するか、<strong>検索先の画面を上にスクロールして職種を再選択</strong>してください。</p>
+        <p class="help-text"><strong>【職種】</strong><br>各ボタンは需要の高い主要な職種（最大3つ）を抽出しています。希望の求人が見つからない場合は<strong>「限定なし」</strong>を選択するか、<strong>検索先の画面を上にスクロールして職種を再選択</strong>してください。</p>
       </div>
       
       <div class="help-warning">
@@ -545,7 +596,7 @@
 
       <div class="help-section-title">操作方法</div>
       <ul class="help-list">
-        <li><strong>条件の保存：</strong>一番下の「条件を保存」ボタンを押すと、次回開いた時にいつもの検索条件が自動でセットされます。</li>
+        <li><strong>条件の保存：</strong>一番下の「この条件を保存」ボタンを押すと、次回開いた時にいつもの検索条件が自動でセットされます。</li>
         <li><strong>求人番号のコピペ：</strong>窓口やLINEで送られた「12345-12345678」という番号をそのまま貼り付けて検索できます。</li>
       </ul>
       <div style="text-align:center; margin-top:20px;">
@@ -632,7 +683,8 @@
     <summary>▼ 業界から探す</summary>
     <div class="details-content">
       <form name="JobIndustry" class="grid-container">
-        <div class="grid-item-2"><input checked id="ind0" name="radioIndustry" type="radio" value="" onclick="clearJobType()"/><label for="ind0" class="btn-base industry-btn-label" style="background:#eee; border-color:#aaa; color:#333;">限定なし</label></div>
+        <div class="grid-item-full"><input checked id="ind0" name="radioIndustry" type="radio" value="" onclick="clearJobType()"/><label for="ind0" class="btn-base industry-btn-label" style="background:#eee; border-color:#aaa; color:#333;">限定なし</label></div>
+        
         <div class="grid-item-2"><input id="ind16" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=83&kiboSuruSngBrui2In=84&kiboSuruSngBrui3In=85" onclick="clearJobType()"/><label for="ind16" class="btn-base industry-btn-label">医療,福祉</label></div>
         <div class="grid-item-2"><input id="ind18" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=88&kiboSuruSngBrui2In=91&kiboSuruSngBrui3In=92" onclick="clearJobType()"/><label for="ind18" class="btn-base industry-btn-label">サービス業・警備</label></div>
         <div class="grid-item-2"><input id="ind9" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=50&kiboSuruSngBrui2In=56&kiboSuruSngBrui3In=61" onclick="clearJobType()"/><label for="ind9" class="btn-base industry-btn-label">卸売業・小売業</label></div>
@@ -640,7 +692,6 @@
         <div class="grid-item-2"><input id="ind8" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=42&kiboSuruSngBrui2In=44&kiboSuruSngBrui3In=49" onclick="clearJobType()"/><label for="ind8" class="btn-base industry-btn-label">運送・郵便</label></div>
         <div class="grid-item-2"><input id="ind13" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=75&kiboSuruSngBrui2In=76&kiboSuruSngBrui3In=77" onclick="clearJobType()"/><label for="ind13" class="btn-base industry-btn-label">宿泊・飲食サービス</label></div>
         <div class="grid-item-2"><input id="ind5" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=09&kiboSuruSngBrui2In=26&kiboSuruSngBrui3In=16" onclick="clearJobType()"/><label for="ind5" class="btn-base industry-btn-label">製造業</label></div>
-        <div class="grid-item-2"><input id="ind19" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=97&kiboSuruSngBrui2In=98" onclick="clearJobType()"/><label for="ind19" class="btn-base industry-btn-label">公務(他を除く)</label></div>
         <div class="grid-item-2"><input id="ind1" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=01&kiboSuruSngBrui2In=02&kiboSuruSngBrui3In=03&kiboSuruSngBrui4In=04" onclick="clearJobType()"/><label for="ind1" class="btn-base industry-btn-label">農林漁業</label></div>
         <div class="grid-item-2"><input id="ind7" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=39&kiboSuruSngBrui2In=40&kiboSuruSngBrui3In=41" onclick="clearJobType()"/><label for="ind7" class="btn-base industry-btn-label">情報通信業</label></div>
         <div class="grid-item-2"><input id="ind15" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=81&kiboSuruSngBrui2In=82" onclick="clearJobType()"/><label for="ind15" class="btn-base industry-btn-label">教育,学習支援業</label></div>
@@ -653,11 +704,11 @@
     <div class="details-content">
       <div class="notice-box" style="margin-top: 5px;">
         <strong>【職種選択時のご注意】</strong><br>
-        各ボタンは需要の高い主要な職種（最大3つ）を抽出しています。抜け漏れなく探したい場合は一番上の<strong>「職種 限定なし」</strong>を選択するか、<strong>検索先の画面を上にスクロールして職種を再選択</strong>してください。
+        各ボタンは需要の高い主要な職種（最大3つ）を抽出しています。抜け漏れなく探したい場合は一番上の<strong>「限定なし」</strong>を選択するか、<strong>検索先の画面を上にスクロールして職種を再選択</strong>してください。
       </div>
 
       <form name="JobType" class="grid-container">
-        <div class="grid-item-full"><input checked id="job0" name="radioJobType" type="radio" value="" onclick="clearIndustry()"/><label for="job0" class="btn-base job-btn-label" style="background:#eee; border-color:#aaa; color:#333;">職種 限定なし</label></div>
+        <div class="grid-item-full"><input checked id="job0" name="radioJobType" type="radio" value="" onclick="clearIndustry()"/><label for="job0" class="btn-base job-btn-label" style="background:#eee; border-color:#aaa; color:#333;">限定なし</label></div>
         
         <div class="grid-item-2"><input id="job1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=01,00" onclick="clearIndustry()"/><label for="job1" class="btn-base job-btn-label">事務・管理職</label></div>
         <div class="grid-item-2"><input id="job2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=02,00" onclick="clearIndustry()"/><label for="job2" class="btn-base job-btn-label">営業</label></div>
@@ -695,12 +746,18 @@
     <div class="grid-item-2"><input id="w13" name="j1" type="checkbox" value="&ktaiSeiNashiCKBox=1"/><label for="w13" class="btn-base chkLabel">日勤のみ(交替無)</label></div>
   </form>
 
-  <div class="section">6. 給与（賃金）</div>
-  <form name="salary" class="grid-container">
+  <div class="section" id="salary-section-title" style="display:none;">6. 給与（賃金）</div>
+  <form name="salary" id="salary-form" class="grid-container" style="display:none;">
     <div class="grid-item-2"><input checked id="sal0" name="radioSalary" type="radio" value=""/><label for="sal0" class="btn-base chkLabel" style="background:#eee; border-color:#aaa; color:#333;">指定なし</label></div>
-    <div class="grid-item-2"><input id="sal1" name="radioSalary" type="radio" value="&tngnKigenKagenInput=1100"/><label for="sal1" class="btn-base chkLabel">時給 1,100円以上</label></div>
-    <div class="grid-item-2"><input id="sal2" name="radioSalary" type="radio" value="&tngnKigenKagenInput=200000"/><label for="sal2" class="btn-base chkLabel">月給 20万円以上</label></div>
-    <div class="grid-item-2"><input id="sal3" name="radioSalary" type="radio" value="&tngnKigenKagenInput=250000"/><label for="sal3" class="btn-base chkLabel">月給 25万円以上</label></div>
+    
+    <div class="grid-item-2 sal-monthly"><input id="salM1" name="radioSalary" type="radio" value="&tngnKigenKagenInput=200000"/><label for="salM1" class="btn-base chkLabel">月給 20万円以上</label></div>
+    <div class="grid-item-2 sal-monthly"><input id="salM2" name="radioSalary" type="radio" value="&tngnKigenKagenInput=250000"/><label for="salM2" class="btn-base chkLabel">月給 25万円以上</label></div>
+    <div class="grid-item-2 sal-monthly"><input id="salM3" name="radioSalary" type="radio" value="&tngnKigenKagenInput=300000"/><label for="salM3" class="btn-base chkLabel">月給 30万円以上</label></div>
+    
+    <div class="grid-item-2 sal-hourly"><input id="salH1" name="radioSalary" type="radio" value="&tngnKigenKagenInput=1100"/><label for="salH1" class="btn-base chkLabel">時給 1,100円以上</label></div>
+    <div class="grid-item-2 sal-hourly"><input id="salH2" name="radioSalary" type="radio" value="&tngnKigenKagenInput=1200"/><label for="salH2" class="btn-base chkLabel">時給 1,200円以上</label></div>
+    <div class="grid-item-2 sal-hourly"><input id="salH3" name="radioSalary" type="radio" value="&tngnKigenKagenInput=1500"/><label for="salH3" class="btn-base chkLabel">時給 1,500円以上</label></div>
+    <div class="grid-item-2 sal-hourly"><input id="salH4" name="radioSalary" type="radio" value="&tngnKigenKagenInput=2000"/><label for="salH4" class="btn-base chkLabel">時給 2,000円以上</label></div>
   </form>
 
   <div class="section">7. キーワード・その他</div>
@@ -733,12 +790,12 @@
   </div>
 
   <div class="condition-summary">
-    <div class="condition-summary-title">🔍 現在の検索条件</div>
-    <div id="current-conditions-text" style="white-space: pre-wrap; font-weight: normal; margin-top: 8px;"></div>
+    <div class="condition-summary-title">現在の検索条件</div>
+    <div id="current-conditions-text" style="white-space: pre-wrap; margin-top: 8px;"></div>
     
     <div class="save-btn-container">
       <button class="save-btn" onclick="saveConditions()">この条件を保存</button>
-      <button class="save-btn" style="color: #666; border-color: #ccc;" onclick="resetAll()">リセット</button>
+      <button class="save-btn" onclick="resetAll()">リセット</button>
     </div>
   </div>
 
