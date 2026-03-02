@@ -85,22 +85,89 @@
   .save-btn { flex: 1; padding: 12px; background: #fff; color: #555; border: 1px solid #bbb; border-radius: 6px; cursor: pointer; font-size: 14px; }
   .save-btn:active { background: #eee; }
 
-  .app-guide { margin-top: 40px; border: 2px solid #008000; border-radius: 8px; overflow: hidden; background-color: #fff; }
-  .app-guide h3 { margin: 0; padding: 12px 15px; background-color: #008000; color: #fff !important; font-size: 18px; font-weight: bold; }
-  .app-guide .guide-body { padding: 20px; background-color: #f9fff9; }
-  .app-guide ul { padding-left: 20px; margin-top: 0; }
-  .app-guide li { margin-bottom: 8px; line-height: 1.6; font-size: 15px; }
-  
   .warning-box { margin-top: 15px; padding: 15px; background-color: #faf3f3; border: 1px solid #cc9999; border-radius: 5px; color: #8c2f2f; font-size: 0.95em; font-weight: bold; line-height: 1.6; }
   .notice-box { background-color: #fff4f4; border: 1px solid #d32f2f; padding: 12px; border-radius: 5px; margin-bottom: 15px; font-size: 0.9em; color: #333; line-height: 1.5; }
   .notice-box strong { color: #d32f2f; }
+
+  /* ▼ マイページ誘導エリア用のおしゃれシンプルデザイン ▼ */
+  .mypage-cta {
+    margin-top: 40px;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 30px 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+  }
+  .mypage-cta-title {
+    font-size: 18px;
+    color: #333;
+    font-weight: bold;
+    text-align: center;
+    margin: 0 0 12px 0;
+    letter-spacing: 0.05em;
+  }
+  .mypage-cta-desc {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+    text-align: center;
+    margin-bottom: 25px;
+  }
+  .mypage-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto 25px auto;
+    max-width: 280px;
+  }
+  .mypage-benefits li {
+    font-size: 14px;
+    color: #444;
+    margin-bottom: 12px;
+    padding-left: 20px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .mypage-benefits li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 6px;
+    height: 6px;
+    background-color: #008000;
+    border-radius: 50%;
+  }
+  .mypage-btn {
+    display: block;
+    width: 100%;
+    max-width: 280px;
+    margin: 0 auto;
+    background-color: #333;
+    color: #fff !important;
+    text-align: center;
+    padding: 15px 0;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .mypage-btn:active {
+    opacity: 0.8;
+  }
+  .mypage-note {
+    font-size: 12px;
+    color: #999;
+    text-align: center;
+    margin-top: 20px;
+    line-height: 1.5;
+  }
 
   @media screen and (max-width: 600px) {
     #wrapper { padding: 10px 5px; width: 100%; padding-bottom: 140px; }
     .btn-base { font-size: 14px; padding: 5px; min-height: 55px; }
     .searchbutton { position: fixed; bottom: 0; left: 0; width: 100%; margin: 0; border-radius: 0; z-index: 999; padding: 20px 20px; box-shadow: 0 -5px 15px rgba(0,0,0,0.2); }
-    .app-guide { margin-top: 30px; }
-    .app-guide .guide-body { padding: 15px; }
+    .mypage-cta { margin-top: 30px; padding: 20px 15px; }
     .floating-help-btn { top: 20px; font-size: 12px; padding: 8px 12px; }
   }
 </style>
@@ -754,23 +821,22 @@
 
   <a class="searchbutton" href="javascript:void(0);" onclick="Search()">この条件で検索する</a>
 
-  <div class="app-guide">
-    <h3>▼ 求人への応募方法</h3>
-    <div class="guide-body">
-      <ul>
-        <li>求人に応募するには、ハローワークの<strong>「紹介状」</strong>が必要です。</li>
-        <li>お近くのハローワーク窓口、またはオンラインで紹介状の発行を依頼してください。</li>
-        <li>一部の求人は、マイページから直接応募できる<strong>「オンライン自主応募」</strong>に対応しています。</li>
-      </ul>
-      
-      <div class="warning-box">
-        【注意】<br>
-        オンライン自主応募は、応募者ご自身の直接応募となり、ハローワーク紹介にはなりません。<br>
-        （ハローワークの職業紹介を要件とする給付金等は対象外となる場合があります）
-      </div>
-
-      <p style="margin-top:15px; font-weight:bold; color:#008000;">お問い合わせ先：<br>ハローワーク松山（TEL: 089-917-8609）</p>
-    </div>
+  <div class="mypage-cta">
+    <h3 class="mypage-cta-title">もっと便利に求人を探すなら</h3>
+    <p class="mypage-cta-desc">かんたん検索で見つけた求人を管理するために、<br>公式「マイページ」の開設をおすすめします。</p>
+    
+    <ul class="mypage-benefits">
+      <li>気になる求人や検索条件を保存できる</li>
+      <li>希望に合ったおすすめ求人が届く</li>
+      <li>スマホからオンラインで直接応募できる</li>
+    </ul>
+    
+    <a href="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=initDisp&screenId=GECA110010" target="_blank" class="mypage-btn">マイページを開設する（無料）</a>
+    
+    <p class="mypage-note">
+      すでにハローワークをご利用中の方は、窓口でも開設可能です。<br>
+      お問い合わせ：ハローワーク松山（089-917-8609）
+    </p>
   </div>
 </div>
 </body>
