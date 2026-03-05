@@ -12,7 +12,7 @@
   .intro-text { font-size: 15px; color: #333; background: #f4f4f4; padding: 15px; border-radius: 5px; margin-bottom: 20px; line-height: 1.6; }
   .caution-text { color: #d32f2f; font-weight: bold; font-size: 0.95em; display: block; margin-bottom: 10px; }
   
-  /* HWIS誘導ボタン（コンパクト化） */
+  /* HWIS誘導ボタン */
   .hwis-link-btn { display: inline-block; background: #ffffff; color: #0066cc; border: 2px solid #0066cc; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; transition: all 0.2s; }
   .hwis-link-btn:active { background: #e6f0fa; }
 
@@ -220,7 +220,7 @@
     background: #fff;
     border: 1px solid #e0e0e0;
     border-radius: 12px;
-    padding: 20px 30px 25px 30px; /* 左右の矢印用にpaddingを確保 */
+    padding: 20px 30px 25px 30px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
     display: flex;
     flex-direction: column;
@@ -232,17 +232,17 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 22px;
+    font-size: 24px;
     color: #C85A32;
-    opacity: 0.25;
-    pointer-events: none; /* タップの邪魔にならないようにする */
+    opacity: 0.35;
+    pointer-events: none;
   }
-  .card-arrow-left { left: 8px; }
-  .card-arrow-right { right: 8px; }
+  .card-arrow-left { left: 10px; }
+  .card-arrow-right { right: 10px; }
 
   .card-header-row {
     display: flex;
-    justify-content: center; /* 中央に配置 */
+    justify-content: center;
     align-items: center;
     margin-bottom: 12px;
   }
@@ -283,7 +283,7 @@
     line-height: 1.5;
   }
   
-  /* カード内ボタン（すべて同じオレンジの塗りつぶしに統一） */
+  /* カード内ボタン */
   .card-btn {
     display: block;
     width: 100%;
@@ -722,10 +722,12 @@
     var params = "";
     for(var i=0; i < 3; i++) {
         var num = i + 1;
-        var val = (uniqueCodes.length > i) ? uniqueCodes[i] : "";
-        params += amp + "siku" + num + "Hidden=" + val;
+        if (uniqueCodes.length > i) {
+            params += amp + "tDFK" + num + "CmbBox=38" + amp + "siku" + num + "Hidden=" + uniqueCodes[i];
+        } else {
+            params += amp + "siku" + num + "Hidden=";
+        }
     }
-    params += amp + "tDFK1CmbBox=38";
 
     var collect = function(fname) {
       var str = "";
@@ -825,7 +827,7 @@
     <span class="caution-text">※本機能は簡易検索システムのため、条件によっては全ての求人が表示されない場合があります。</span>
     
     <div style="margin-top:15px; padding-top:15px; border-top:1px dashed #ccc; text-align:center;">
-      <span style="font-size:0.85em; color:#444; display:block; margin-bottom:8px;">より詳細な条件で検索したい場合は、以下のサービスをご利用ください。</span>
+      <p style="font-size:0.85em; color:#444; margin: 0 0 10px 0;">より詳細な条件で検索したい場合は、以下のサービスをご利用ください。</p>
       <a href="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=initDisp&screenId=GECA110010" target="_blank" class="hwis-link-btn">ハローワークインターネットサービスへ</a>
     </div>
   </div>
@@ -949,21 +951,21 @@
     <div class="grid-item-2"><input id="w1" name="j1" type="checkbox" value="&grkiFumonCKBox=1"/><label for="w1" class="btn-base chkLabel">学歴不問</label></div>
     <div class="grid-item-2"><input id="w2" name="j1" type="checkbox" value="&hynaKikntFumonCKBox=1"/><label for="w2" class="btn-base chkLabel">経験不問</label></div>
     <div class="grid-item-2"><input id="w3" name="j1" type="checkbox" value="&hynaMenkyoSkkuFumonCKBox=1"/><label for="w3" class="btn-base chkLabel">資格不問</label></div>
-    <div class="grid-item-2"><input id="w6" name="j1" type="checkbox" value="&tenkinNashiCKBox=1"/><label for="w6" class="btn-base chkLabel">転勤なし</label></div>
-    <div class="grid-item-2"><input id="w7" name="j1" type="checkbox" value="&zangyoNashiCKBox=1"/><label for="w7" class="btn-base chkLabel">残業なし</label></div>
+    <div class="grid-item-2"><input id="w6" name="j1" type="checkbox" value="&sonotaCKBox=4"/><label for="w6" class="btn-base chkLabel">転勤なし</label></div>
+    <div class="grid-item-2"><input id="w7" name="j1" type="checkbox" value="&jkgiRadioBtn=2"/><label for="w7" class="btn-base chkLabel">残業なし</label></div>
     <div class="grid-item-2"><input id="w8" name="j1" type="checkbox" value="&shoyoAriCKBox=1"/><label for="w8" class="btn-base chkLabel">賞与あり</label></div>
-    <div class="grid-item-2"><input id="w9" name="j1" type="checkbox" value="&nyukyoKanoJutakuCKBox=1"/><label for="w9" class="btn-base chkLabel">単身住宅有</label></div>
-    <div class="grid-item-2"><input id="w10" name="j1" type="checkbox" value="&takujiShoCKBox=1"/><label for="w10" class="btn-base chkLabel">託児施設有</label></div>
-    <div class="grid-item-2"><input id="w5" name="j1" type="checkbox" value="&kurumaTuukinCKBox=1"/><label for="w5" class="btn-base chkLabel">マイカー通勤</label></div>
+    <div class="grid-item-2"><input id="w9" name="j1" type="checkbox" value="&nyukyoKaCKBox=1"/><label for="w9" class="btn-base chkLabel">単身住宅有</label></div>
+    <div class="grid-item-2"><input id="w10" name="j1" type="checkbox" value="&riyoKanoNaTjsAriCKBox=1"/><label for="w10" class="btn-base chkLabel">託児施設有</label></div>
+    <div class="grid-item-2"><input id="w5" name="j1" type="checkbox" value="&sonotaCKBox=3"/><label for="w5" class="btn-base chkLabel">マイカー通勤</label></div>
     
     <div class="grid-item-2"><input id="w4" name="j1" type="checkbox" value="&holidayCKBox=6,7,8"/><label for="w4" class="btn-base chkLabel">土日祝休み</label></div>
     <div class="grid-item-2"><input id="w12" name="j1" type="checkbox" value="&kznSyukyuNikaCKBox=1"/><label for="w12" class="btn-base chkLabel">完全週休2日制</label></div>
     <div class="grid-item-2"><input id="w13" name="j1" type="checkbox" value="&ktaiSeiNashiCKBox=1"/><label for="w13" class="btn-base chkLabel">日勤のみ(交替無)</label></div>
     
-    <div class="grid-item-2"><input id="w14" name="j1" type="checkbox" value="&knyHknKoyoCKBox=1&knyHknRosaiCKBox=1&knyHknKenkoCKBox=1&knyHknKouseiCKBox=1"/><label for="w14" class="btn-base chkLabel">社会保険完備</label></div>
-    <div class="grid-item-2"><input id="w15" name="j1" type="checkbox" value="&shoruiSenkoNashiCKBox=1"/><label for="w15" class="btn-base chkLabel">書類選考なし</label></div>
-    <div class="grid-item-2"><input id="w16" name="j1" type="checkbox" value="&zaitakuKinmuCKBox=1"/><label for="w16" class="btn-base chkLabel">在宅勤務</label></div>
-    <div class="grid-item-2"><input id="w17" name="j1" type="checkbox" value="&ekichikaCKBox=1"/><label for="w17" class="btn-base chkLabel">駅近(徒歩10分以内)</label></div>
+    <div class="grid-item-2"><input id="w14" name="j1" type="checkbox" value="&kanyuHknCKBox=1,3,4"/><label for="w14" class="btn-base chkLabel">社会保険完備</label></div>
+    <div class="grid-item-2"><input id="w15" name="j1" type="checkbox" value="&sonotaCKBox=1"/><label for="w15" class="btn-base chkLabel">書類選考なし</label></div>
+    <div class="grid-item-2"><input id="w16" name="j1" type="checkbox" value="&sonotaCKBox=5"/><label for="w16" class="btn-base chkLabel">在宅勤務</label></div>
+    <div class="grid-item-2"><input id="w17" name="j1" type="checkbox" value="&sonotaCKBox=6"/><label for="w17" class="btn-base chkLabel">駅近(徒歩10分以内)</label></div>
   </form>
 
   <div class="section">6. キーワード・その他</div>
