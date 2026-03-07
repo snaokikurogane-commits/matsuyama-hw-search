@@ -12,7 +12,9 @@
   .intro-text { font-size: 15px; color: #333; background: #f4f4f4; padding: 15px; border-radius: 5px; margin-bottom: 20px; line-height: 1.6; }
   .caution-text { color: #d32f2f; font-weight: bold; font-size: 0.95em; display: block; margin-bottom: 10px; }
   
-  /* HWIS誘導ボタン */
+  /* HWIS誘導ボタン（ご指定のレイアウト） */
+  .hwis-guide-box { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ccc; text-align: center; }
+  .hwis-guide-text { font-size: 14px; color: #444; margin-bottom: 10px; line-height: 1.5; }
   .hwis-link-btn { display: inline-block; background: #ffffff; color: #0066cc; border: 2px solid #0066cc; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; transition: all 0.2s; }
   .hwis-link-btn:active { background: #e6f0fa; }
 
@@ -826,7 +828,8 @@
     ハローワーク松山管轄の求人情報を、簡単な操作で検索することができます。<br>
     <span class="caution-text">※本機能は簡易検索システムのため、条件によっては全ての求人が表示されない場合があります。</span>
     
-    <div style="margin-top:15px; padding-top:15px; border-top:1px dashed #ccc; text-align:center;">
+    <div class="hwis-guide-box">
+      <div class="hwis-guide-text">より詳細な条件で検索したい場合は、以下のサービスをご利用ください。</div>
       <a href="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=initDisp&screenId=GECA110010" target="_blank" class="hwis-link-btn">ハローワークインターネットサービスへ</a>
     </div>
   </div>
