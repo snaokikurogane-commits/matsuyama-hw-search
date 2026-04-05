@@ -299,8 +299,8 @@
     }
 
     if (nextSelectedKeys.length > selectedAreaKeys.length) { 
-        if (countUniqueCodes(nextSelectedKeys) > 3) {
-            showMyModal("選択できません", "ハローワークの仕様上、同時に選択できる地域は3つまでです。\n（松山市内は全域で1つとカウントされます）", false);
+        if (countUniqueCodes(nextSelectedKeys) > 5) {
+            showMyModal("選択できません", "ハローワークの仕様上、同時に選択できる地域は5つまでです。\n（松山市内は全域で1つとカウントされます）", false);
             return;
         }
     }
@@ -491,8 +491,8 @@
       });
     }
 
-    if(uniqueCodes.length > 3) {
-        showMyModal("エラー", "地域コードが3つを超えています。\n選択を減らしてください。", false);
+    if(uniqueCodes.length > 5) {
+        showMyModal("エラー", "地域コードが5つを超えています。\n選択を減らしてください。", false);
         return;
     }
 
@@ -502,7 +502,7 @@
 
     var params = "";
     
-    // 【修正箇所①】都道府県コードを「38」で固定し、siku1Hiddenに選択したすべての地域コードをカンマ区切りで集約して代入
+    // 都道府県コードを「38」で固定し、siku1Hiddenに選択したすべての地域コードをカンマ区切りで集約して代入
     params += amp + "tDFK1CmbBox=38" + amp + "siku1Hidden=" + uniqueCodes.join(",");
 
     var collect = function(fname) {
@@ -517,7 +517,7 @@
     var fw = document.getElementById("FreeW").value;
     
     var executeSearch = function() {
-        // 【修正箇所②】tatZngyCKBox=1（手当・固定残業代を含むフラグ）を追加。searchClear=1に変更。
+        // tatZngyCKBox=1（手当・固定残業代を含むフラグ）を追加。searchClear=1に変更。
         var finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchBtn" + amp + "screenId=GECA110010" + amp + "searchClear=1" + amp + "kjKbnRadioBtn=1" + amp + "tatZngyCKBox=1" + params;
         window.open(finalUrl, '_blank');
     };
@@ -613,7 +613,7 @@
   
   <div class="notice-box">
     <strong>【エリア選択時のご注意】</strong><br>
-    ・ハローワークの仕様上、同時に選択できる地域は<strong>3つまで</strong>です。<br>
+    ・ハローワークの仕様上、同時に選択できる地域は<strong>5つまで</strong>です。<br>
     ・松山市内の地区指定は、主要なエリア（町名）を抽出します。抜け漏れなく探したい場合は<strong>「松山市内全域（限定なし）」</strong>を推奨します。
   </div>
   
@@ -632,7 +632,7 @@
     <div class="grid-item-2"><a href="javascript:void(0);" id="btn-josai" onclick="selectArea('josai');" class="btn-base area-btn">三津・垣生</a></div>
     <div class="grid-item-2"><a href="javascript:void(0);" id="btn-hojo" onclick="selectArea('hojo');" class="btn-base area-btn">北条・島しょ</a></div>
   </div>
-  <div class="sub-section" style="margin-top:10px;">▼周辺地域（複数選択可・合計3地域まで）</div>
+  <div class="sub-section" style="margin-top:10px;">▼周辺地域（複数選択可・合計5地域まで）</div>
   <div class="grid-container">
     <div class="grid-item-2"><a href="javascript:void(0);" id="btn-iyo" onclick="selectArea('iyo');" class="btn-base area-btn">伊予市</a></div>
     <div class="grid-item-2"><a href="javascript:void(0);" id="btn-toon" onclick="selectArea('toon');" class="btn-base area-btn">東温市</a></div>
@@ -655,13 +655,13 @@
     <form name="salary" id="salary-form" class="grid-container">
       <div class="grid-item-2"><input checked id="sal0" name="radioSalary" type="radio" value=""/><label for="sal0" class="btn-base chkLabel" style="background:#fff; border-color:#aaa; color:#333;">指定なし</label></div>
       
-      <div class="grid-item-2 sal-monthly"><input id="salM1" name="radioSalary" type="radio" value="&tngnKigenKagenInput=200000"/><label for="salM1" class="btn-base chkLabel">月給 20万円以上</label></div>
-      <div class="grid-item-2 sal-monthly"><input id="salM2" name="radioSalary" type="radio" value="&tngnKigenKagenInput=250000"/><label for="salM2" class="btn-base chkLabel">月給 25万円以上</label></div>
-      <div class="grid-item-2 sal-monthly"><input id="salM3" name="radioSalary" type="radio" value="&tngnKigenKagenInput=300000"/><label for="salM3" class="btn-base chkLabel">月給 30万円以上</label></div>
+      <div class="grid-item-2 sal-monthly"><input id="salM1" name="radioSalary" type="radio" value="&gkkyln=200000"/><label for="salM1" class="btn-base chkLabel">月給 20万円以上</label></div>
+      <div class="grid-item-2 sal-monthly"><input id="salM2" name="radioSalary" type="radio" value="&gkkyln=250000"/><label for="salM2" class="btn-base chkLabel">月給 25万円以上</label></div>
+      <div class="grid-item-2 sal-monthly"><input id="salM3" name="radioSalary" type="radio" value="&gkkyln=300000"/><label for="salM3" class="btn-base chkLabel">月給 30万円以上</label></div>
       
-      <div class="grid-item-2 sal-hourly"><input id="salH1" name="radioSalary" type="radio" value="&tngnKigenKagenInput=1100"/><label for="salH1" class="btn-base chkLabel">時給 1,100円以上</label></div>
-      <div class="grid-item-2 sal-hourly"><input id="salH2" name="radioSalary" type="radio" value="&tngnKigenKagenInput=1200"/><label for="salH2" class="btn-base chkLabel">時給 1,200円以上</label></div>
-      <div class="grid-item-2 sal-hourly"><input id="salH3" name="radioSalary" type="radio" value="&tngnKigenKagenInput=1500"/><label for="salH3" class="btn-base chkLabel">時給 1,500円以上</label></div>
+      <div class="grid-item-2 sal-hourly"><input id="salH1" name="radioSalary" type="radio" value="&jikyln=1100"/><label for="salH1" class="btn-base chkLabel">時給 1,100円以上</label></div>
+      <div class="grid-item-2 sal-hourly"><input id="salH2" name="radioSalary" type="radio" value="&jikyln=1200"/><label for="salH2" class="btn-base chkLabel">時給 1,200円以上</label></div>
+      <div class="grid-item-2 sal-hourly"><input id="salH3" name="radioSalary" type="radio" value="&jikyln=1500"/><label for="salH3" class="btn-base chkLabel">時給 1,500円以上</label></div>
     </form>
   </div>
 
