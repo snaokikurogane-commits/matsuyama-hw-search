@@ -17,11 +17,27 @@
   .intro-text { font-size: 15px; color: #333; background: #f4f4f4; padding: 15px; border-radius: 5px; margin-bottom: 20px; line-height: 1.6; }
   .caution-text { color: #d32f2f; font-weight: bold; font-size: 0.95em; display: block; margin-bottom: 10px; }
   
-  /* HWIS誘導ボタン */
+  /* HWIS誘導ボタン（強調版） */
   .hwis-guide-box { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ccc; text-align: center; }
   .hwis-guide-text { font-size: 14px; color: #444; margin-bottom: 10px; line-height: 1.5; }
-  .hwis-link-btn { display: inline-block; background: #ffffff; color: #0066cc; border: 2px solid #0066cc; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; transition: all 0.2s; }
-  .hwis-link-btn:active { background: #e6f0fa; }
+  .hwis-link-btn { 
+    display: inline-block; 
+    background: #f0f7ff; 
+    color: #0055b3; 
+    border: 3px solid #0066cc; 
+    padding: 12px 25px; 
+    border-radius: 8px; 
+    text-decoration: none; 
+    font-weight: bold; 
+    font-size: 16px; 
+    box-shadow: 0 4px 8px rgba(0, 102, 204, 0.15);
+    transition: all 0.2s; 
+  }
+  .hwis-link-btn:active { 
+    background: #e6f0fa; 
+    transform: translateY(2px);
+    box-shadow: 0 2px 4px rgba(0, 102, 204, 0.15);
+  }
 
   .floating-help-btn { position: fixed; top: 15px; right: 15px; z-index: 9999; background-color: #ff9800; color: #ffffff !important; font-weight: bold; font-size: 13px; padding: 10px 16px; border-radius: 25px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.3); opacity: 0.95; cursor: pointer; }
   
@@ -819,16 +835,16 @@
   
   <div class="line-warning">
     <div class="line-warning-title">ご利用時のご注意</div>
-    LINE等のアプリ内ブラウザからご覧の場合、検索結果の<strong>「2ページ目」以降に移動するとエラーが発生する</strong>ことがあります。<br>
-    もしエラー画面が表示された場合は、すぐ下にある「ハローワークインターネットサービスへ」のボタンから公式サイトを開き、そちらで条件を指定して検索してください。
+    LINEなどのアプリからご覧の場合、検索結果の「2ページ目」へ進もうとすると、<strong>入力した条件がリセットされる</strong>場合があります。<br>
+    もし条件が消えてしまった場合は、お手数ですが下にある<strong>「ハローワークインターネットサービスへ」</strong>ボタンから公式サイトを開き、再度条件を入力して検索をお願いいたします。
   </div>
   <div class="intro-text">
     ハローワーク松山管轄の求人情報を、簡単な操作で検索することができます。<br>
     <span class="caution-text">※本機能は簡易検索システムのため、条件によっては全ての求人が表示されない場合があります。</span>
     
-    <div style="margin-top:15px; padding-top:15px; border-top:1px dashed #ccc; text-align:center;">
-      <p style="font-size:0.85em; color:#444; margin: 0 0 10px 0;">より詳細な条件で検索したい場合は、以下のサービスをご利用ください。</p>
-      <a href="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=initDisp&screenId=GECA110010" target="_blank" class="hwis-link-btn">ハローワークインターネットサービスへ</a>
+    <div class="hwis-guide-box">
+      <p class="hwis-guide-text">より詳細な条件で検索したい場合は、以下のサービスをご利用ください。</p>
+      <a href="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchShosaiBtn&amp;screenId=GECA110010&amp;kjKbnRadioBtn=1&amp;ippanCKBox=1&amp;ippanCKBox=2" target="_blank" class="hwis-link-btn">ハローワークインターネットサービスへ</a>
     </div>
   </div>
 
