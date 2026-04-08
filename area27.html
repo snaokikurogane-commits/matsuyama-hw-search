@@ -5,9 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>かんたん求人検索（松山版）</title>
 <style type="text/css">
-  body { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 0; background-color: #f9f9f9; padding-bottom: 120px; /* 固定フッター用の余白 */ }
-  #wrapper { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding-bottom: 40px; box-sizing: border-box; position: relative; overflow-x: hidden; }
+  body { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 0; background-color: #f9f9f9; }
+  #wrapper { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding-bottom: 80px; box-sizing: border-box; position: relative; overflow-x: hidden; }
   
+  /* ▼ ご利用時の注意メッセージ用デザイン（色をマイルドに変更・矢印追加） ▼ */
+  .line-warning { background-color: #fffcf2; border: 2px solid #ffb74d; padding: 15px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; color: #444; line-height: 1.6; }
+  .line-warning-title { color: #e65100; font-weight: bold; font-size: 16px; margin-bottom: 8px; display: flex; align-items: center; }
+  .line-warning-title::before { content: "💡"; margin-right: 5px; font-size: 18px; }
+  .line-warning strong { color: #d32f2f; background: linear-gradient(transparent 60%, rgba(255, 183, 77, 0.3) 60%); padding: 0 2px; }
+  
+  .arrow-pointer { text-align: center; color: #e65100; font-size: 18px; margin-top: 12px; font-weight: bold; animation: bounce 1.5s infinite; }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+  }
+  /* ▲ ここまで ▲ */
+
   .intro-text { font-size: 15px; color: #333; background: #f4f4f4; padding: 15px; border-radius: 5px; margin-bottom: 20px; line-height: 1.6; }
   .caution-text { color: #d32f2f; font-weight: bold; font-size: 0.95em; display: block; margin-bottom: 10px; }
   
@@ -28,9 +41,11 @@
   .modal-header { font-size: 19px; font-weight: bold; color: #008000; border-bottom: 2px solid #008000; padding-bottom: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
   .modal-close-btn { background: #eee; border: none; padding: 8px 15px; cursor: pointer; border-radius: 20px; font-size: 15px; color: #333; font-weight: bold; }
   
+  /* ヘルプ内 */
   .help-section-title { color: #008000; border-left: 6px solid #008000; padding-left: 10px; margin: 15px 0 8px 0; font-size: 17px; font-weight: bold; }
   .help-text { font-size: 14.5px; line-height: 1.6; margin-bottom: 10px; color: #333; }
   .help-list { padding-left: 20px; margin-top: 5px; font-size: 14.5px; color: #333; line-height: 1.6; }
+  .help-list li { margin-bottom: 8px; }
   .help-warning { background:#ffffff; border:1px solid #d32f2f; padding:15px; border-radius:5px; margin-bottom:15px; }
   .help-warning-title { color:#d32f2f; margin-top:0; font-size:16px; font-weight:bold; margin-bottom: 10px; }
 
@@ -44,17 +59,21 @@
   /* UI要素 */
   .section { margin-top: 2.5em; font-weight: bold; border-bottom: 2px solid #008000; padding-bottom: 5px; margin-bottom: 15px; color: #333; font-size: 1.1em; }
   .sub-section { font-size: 1em; color: #555; margin-bottom: 8px; }
+  
+  /* 補助セクション用CSS */
   .aux-section { background-color: #f0f7f0; border-left: 4px solid #008000; padding: 12px 15px; margin-top: 5px; margin-bottom: 20px; border-radius: 4px; display: none; }
   .aux-title { font-size: 0.9em; font-weight: bold; color: #008000; margin-bottom: 10px; }
 
   .grid-container { display: flex; flex-wrap: wrap; gap: 8px; }
-  .grid-item-2 { flex: 1 1 calc(50% - 4px); }
+  .grid-item-2 { flex: 1 1 calc(50% - 8px); }
   .grid-item-full { flex: 1 1 100%; }
 
   .btn-base { display: flex; align-items: center; justify-content: center; padding: 5px; text-align: center; cursor: pointer; box-sizing: border-box; font-size: 15px; font-weight: bold; border-radius: 8px; text-decoration: none; min-height: 60px; line-height: 1.3; width: 100%; border: 2px solid transparent; transition: all 0.2s; }
+  
   .area-btn { background: #fff; color: #008000; border: 2px solid #008000; }
   .area-btn.active { background: #008000; color: #fff; box-shadow: 0 0 5px rgba(0,128,0,0.5); }
   
+  /* 排他制御用 */
   .btn-base.disabled { background-color: #e0e0e0 !important; color: #999 !important; border-color: #ccc !important; pointer-events: none; opacity: 0.7; }
   .area-btn.disabled { background-color: #e0e0e0 !important; color: #999 !important; border-color: #ccc !important; }
   .exclusion-msg { display: none; color: #d32f2f; font-size: 0.9em; font-weight: bold; margin-bottom: 10px; background: #fff0f0; padding: 8px; border-radius: 4px; border-left: 4px solid #d32f2f; }
@@ -63,82 +82,298 @@
   input:checked + .chkLabel { background: #d0f0c0; border: 2px solid #008000; }
   input[type="checkbox"], input[type="radio"] { display: none; }
   
-  .industry-btn-label { background: #fff; color: #0066cc; border: 1px solid #0066cc; }
+  .industry-btn-label { background: #fff; color: #0066cc; border: 2px solid #0066cc; }
   input:checked + .industry-btn-label { background: #0066cc; color: #fff; }
-  .job-btn-label { background: #fff; color: #e6006b; border: 1px solid #e6006b; }
+  
+  .job-btn-label { background: #fff; color: #e6006b; border: 2px solid #e6006b; }
   input:checked + .job-btn-label { background: #e6006b; color: #fff; }
-
+  
   details { margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; overflow: hidden; background: #fff; width: 100%; }
   summary { cursor: pointer; padding: 15px; font-weight: bold; background-color: #f0f0f0; list-style: none; position: relative; font-size: 16px; }
   summary::after { content: "▼"; position: absolute; right: 20px; transition: transform 0.3s; color: #666; }
   details[open] summary::after { transform: rotate(180deg); }
   .details-content { padding: 10px; background: #fafafa; border-top: 1px solid #ccc; }
   
-  .notice-box { background-color: #ffffff; border: 1px solid #d32f2f; padding: 12px; border-radius: 5px; margin-bottom: 15px; font-size: 0.9em; color: #333; line-height: 1.5; }
-  .notice-box strong { color: #d32f2f; }
-
-  .job-notice-box { background-color: #fff5f5; border: 1px solid #c62828; padding: 12px; border-radius: 6px; margin-bottom: 15px; font-size: 14px; color: #333; line-height: 1.6; }
-  .job-notice-title { color: #c62828; font-weight: bold; margin-bottom: 5px; }
-  .job-notice-highlight { color: #c62828; font-weight: bold; }
-
-  .fixed-footer { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; background: #ffffff; box-shadow: 0 -3px 15px rgba(0,0,0,0.15); z-index: 9999; display: flex; flex-direction: column; padding-bottom: env(safe-area-inset-bottom); }
-  .fixed-conditions-text { padding: 10px 15px; font-size: 13px; color: #008000; font-weight: bold; white-space: nowrap; overflow-x: auto; background: #f0f7f0; border-top: 1px solid #d0f0c0; border-bottom: 1px solid #eee; }
-  .fixed-conditions-text::-webkit-scrollbar { display: none; }
-  .searchbutton-fixed { display: block; width: 100%; padding: 18px; background: #008000; color: #fff !important; text-align: center; font-size: 20px; font-weight: bold; text-decoration: none; box-sizing: border-box; }
-
-  .condition-summary { background: #fafafa; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-top: 35px; font-size: 14px; color: #444; line-height: 1.6; }
+  select, input[type="text"] { width: 100%; padding: 14px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; font-size: 17px; }
+  
+  .searchbutton { display: block; width: 100%; padding: 20px; background: #008000; color: #fff !important; text-align: center; font-size: 24px; font-weight: bold; border-radius: 12px; margin-top: 15px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; }
+  
+  /* 条件見える化と保存ボタンのデザイン */
+  .condition-summary { background: #fafafa; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-top: 35px; font-size: 14px; color: #444; line-height: 1.6; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
   .condition-summary-title { color: #555; margin-bottom: 5px; font-size: 15px; font-weight: bold; border-bottom: 1px solid #eaeaea; padding-bottom: 5px; }
-  .save-btn-container { display: flex; justify-content: space-between; gap: 10px; margin-top: 15px; }
-  .save-btn { flex: 1; padding: 12px; background: #fff; color: #555; border: 1px solid #bbb; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight:bold; }
+  .save-btn-container { display: flex; justify-content: space-between; gap: 10px; margin-top: 10px; }
+  .save-btn { flex: 1; padding: 12px; background: #fff; color: #555; border: 1px solid #bbb; border-radius: 6px; cursor: pointer; font-size: 14px; }
   .save-btn:active { background: #eee; }
 
-  .bottom-info-container { margin-top: 40px; background: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; }
-  .mypage-cta-section { padding: 30px 0 20px 0; background-color: #fafafa; }
-  .mypage-cta-header { padding: 0 20px; text-align: center; }
-  .mypage-cta-title { font-size: 19px; color: #333; font-weight: bold; margin: 0 0 15px 0; letter-spacing: 0.05em; }
-  .mypage-cta-title span { background: linear-gradient(transparent 60%, rgba(200, 90, 50, 0.3) 60%); display: inline-block; padding: 0 2px; }
-  .mypage-cta-intro { font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 20px; text-align: center; }
-  .mypage-features { background-color: #fff9f6; border-radius: 8px; padding: 22px 20px; margin: 0 20px 25px 20px; border: 1px solid #f2e3dd; }
-  .mypage-features-title { font-size: 15px; font-weight: bold; color: #C85A32; margin: 0 0 15px 0; text-align: center; }
-  .mypage-features ul.large-benefits { list-style: none; padding: 0; margin: 0; }
-  .mypage-features ul.large-benefits li { font-size: 15px; font-weight: bold; color: #333; margin-bottom: 14px; padding-left: 26px; position: relative; line-height: 1.5; }
-  .mypage-features ul.large-benefits li::before { content: ''; position: absolute; left: 8px; top: 5px; width: 6px; height: 12px; border-right: 3px solid #C85A32; border-bottom: 3px solid #C85A32; transform: rotate(45deg); }
-  .mypage-cta-desc { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 10px; }
-  .swipe-hint { font-size: 15px; color: #C85A32; font-weight: bold; margin-bottom: 15px; }
+  .notice-box { background-color: #fff4f4; border: 1px solid #d32f2f; padding: 12px; border-radius: 5px; margin-bottom: 15px; font-size: 0.9em; color: #333; line-height: 1.5; }
+  .notice-box strong { color: #d32f2f; }
 
-  .card-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 10px 20px 20px 20px; scrollbar-width: thin; scrollbar-color: #E29E85 #f4f4f4; }
-  .card-carousel::-webkit-scrollbar { height: 6px; }
-  .card-carousel::-webkit-scrollbar-track { background: #f4f4f4; border-radius: 4px; }
-  .card-carousel::-webkit-scrollbar-thumb { background: #E29E85; border-radius: 4px; }
-  
-  .card-item { flex: 0 0 85%; max-width: 320px; scroll-snap-align: center; background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 20px 40px 25px 40px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: flex; flex-direction: column; position: relative; }
-  
-  .card-arrow-left, .card-arrow-right { position: absolute; top: 50%; transform: translateY(-50%); font-size: 24px; color: #C85A32; opacity: 0.35; pointer-events: none; }
-  .card-arrow-left { left: 10px; } .card-arrow-right { right: 10px; }
-  
-  .card-header-row { display: flex; justify-content: center; align-items: center; margin-bottom: 12px; }
-  .card-badge { display: inline-block; background-color: #fcece6; color: #C85A32; font-size: 11.5px; font-weight: bold; padding: 4px 10px; border-radius: 20px; }
-  .card-title { font-size: 16px; font-weight: bold; color: #333; margin: 0 0 15px 0; text-align: center; }
-  .card-desc { font-size: 13.5px; color: #555; line-height: 1.6; flex-grow: 1; margin-bottom: 20px; }
-  .card-caution { font-size: 12px; color: #d32f2f; background: #fff4f4; padding: 10px; border-radius: 6px; margin-top: 5px; margin-bottom: 15px; line-height: 1.5; }
-  .card-btn { display: block; width: 100%; background-color: #C85A32; color: #fff !important; text-align: center; padding: 14px 0; border-radius: 8px; font-size: 14px; font-weight: bold; text-decoration: none; box-sizing: border-box; }
+  /* =========================================
+     ▼ 応募方法・マイページ案内エリア ▼ 
+     ========================================= */
+  .bottom-info-container {
+    margin-top: 40px;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    overflow: hidden;
+  }
 
-  .apply-guide-section { padding: 25px 20px; background-color: #fff; border-top: 1px dashed #ddd; }
-  .apply-guide-title { font-size: 16px; color: #333; font-weight: bold; margin: 0 0 15px 0; border-left: 4px solid #008000; padding-left: 10px; }
-  .apply-guide-text { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 15px; }
-  .warning-box { background-color: #fcf8f8; border: 1px solid #d9a0a0; padding: 15px; border-radius: 6px; color: #b33939; font-size: 13px; line-height: 1.6; }
-  .contact-section { background-color: #fff; text-align: center; padding: 25px 20px; font-size: 16px; font-weight: bold; color: #333; border-top: 1px dashed #ddd; line-height: 1.6; }
+  /* 1. マイページ案内セクション全体 */
+  .mypage-cta-section {
+    padding: 30px 0 20px 0; 
+    background-color: #fafafa;
+  }
+  .mypage-cta-header {
+    padding: 0 20px;
+    text-align: center;
+  }
+  
+  /* タイトルのマーカー（蛍光ペン）風デザイン */
+  .mypage-cta-title {
+    font-size: 19px;
+    color: #333;
+    font-weight: bold;
+    margin: 0 0 15px 0;
+    letter-spacing: 0.05em;
+  }
+  .mypage-cta-title span {
+    background: linear-gradient(transparent 60%, rgba(200, 90, 50, 0.3) 60%);
+    display: inline-block;
+    padding: 0 2px;
+  }
 
-  .textarea { width: 100%; box-sizing: border-box; padding: 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; margin-top: 10px; }
+  /* 導入文 */
+  .mypage-cta-intro {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  /* ▼ メリット一覧 ▼ */
+  .mypage-features {
+    background-color: #fff9f6;
+    border-radius: 8px;
+    padding: 22px 20px;
+    margin: 0 20px 25px 20px;
+    border: 1px solid #f2e3dd;
+  }
+  .mypage-features-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #C85A32;
+    margin: 0 0 15px 0;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+  .mypage-features ul.large-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .mypage-features ul.large-benefits li {
+    font-size: 15px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 14px;
+    padding-left: 26px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .mypage-features ul.large-benefits li::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 5px;
+    width: 6px;
+    height: 12px;
+    border-right: 3px solid #C85A32;
+    border-bottom: 3px solid #C85A32;
+    transform: rotate(45deg);
+  }
+  .mypage-features ul.large-benefits li:last-child {
+    margin-bottom: 0;
+  }
+
+  /* スワイプ案内のテキスト */
+  .mypage-cta-desc {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+  .swipe-hint {
+    font-size: 15px; 
+    color: #C85A32;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+
+  /* カルーセル（スワイプ）コンテナ */
+  .card-carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 15px;
+    padding: 10px 20px 15px 20px; 
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .card-carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* カード本体のデザイン */
+  .card-item {
+    flex: 0 0 85%;
+    max-width: 320px;
+    scroll-snap-align: center;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px 30px 25px 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  
+  /* カード両脇の透かし矢印アイコン */
+  .card-arrow-left, .card-arrow-right {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 24px;
+    color: #C85A32;
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  .card-arrow-left { left: 10px; }
+  .card-arrow-right { right: 10px; }
+
+  .card-header-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .card-badge {
+    display: inline-block;
+    background-color: #fcece6;
+    color: #C85A32;
+    font-size: 11.5px;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+  
+  .card-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin: 0 0 15px 0;
+    line-height: 1.4;
+    text-align: center;
+  }
+  
+  .card-desc {
+    font-size: 13.5px;
+    color: #555;
+    line-height: 1.6;
+    flex-grow: 1;
+    margin-bottom: 20px;
+  }
+  .card-caution {
+    font-size: 12px;
+    color: #d32f2f;
+    background: #fff4f4;
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    line-height: 1.5;
+  }
+  
+  /* カード内ボタン */
+  .card-btn {
+    display: block;
+    width: 100%;
+    background-color: #C85A32;
+    color: #fff !important;
+    text-align: center;
+    padding: 14px 0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: opacity 0.2s;
+    box-sizing: border-box;
+  }
+  .card-btn:active {
+    opacity: 0.8;
+  }
+
+  /* 2. 応募方法セクション */
+  .apply-guide-section {
+    padding: 25px 20px;
+    background-color: #fff;
+    border-top: 1px dashed #ddd;
+  }
+  .apply-guide-title {
+    font-size: 16px;
+    color: #333;
+    font-weight: bold;
+    margin: 0 0 15px 0;
+    border-left: 4px solid #008000;
+    padding-left: 10px;
+  }
+  .apply-guide-text {
+    font-size: 14px;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 15px;
+  }
+  .warning-box {
+    background-color: #fcf8f8;
+    border: 1px solid #d9a0a0;
+    padding: 15px;
+    border-radius: 6px;
+    color: #b33939;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .warning-box strong {
+    color: #a02020;
+  }
+
+  /* 3. お問い合わせセクション */
+  .contact-section {
+    background-color: #fff;
+    text-align: center;
+    padding: 25px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    border-top: 1px dashed #ddd;
+    line-height: 1.6;
+    letter-spacing: 0.05em;
+  }
 
   @media screen and (max-width: 600px) {
-    #wrapper { padding: 15px 12px; } 
+    #wrapper { padding: 10px 5px; width: 100%; padding-bottom: 140px; }
     .btn-base { font-size: 14px; padding: 5px; min-height: 55px; }
+    .searchbutton { position: fixed; bottom: 0; left: 0; width: 100%; margin: 0; border-radius: 0; z-index: 999; padding: 20px 20px; box-shadow: 0 -5px 15px rgba(0,0,0,0.2); }
+    .bottom-info-container { margin-top: 30px; }
+    .apply-guide-section { padding: 20px 15px; }
+    .floating-help-btn { top: 20px; font-size: 12px; padding: 8px 12px; }
   }
 </style>
 
 <script type="text/javascript">
-  var amp = String.fromCharCode(38);
+  var amp = String.fromCharCode(38); // 記号回避用
   
   var areaData = {
     "matsuyama_all": { name: "松山市内全域", code: "38201", words: "" },
@@ -163,7 +398,9 @@
       var inputs = document.querySelectorAll('input[type="radio"], input[type="checkbox"]');
       inputs.forEach(function(input) {
           input.addEventListener('change', function() {
-              if (this.name === 'radio1') updateSalaryVisibility();
+              if (this.name === 'radio1') {
+                  updateSalaryVisibility();
+              }
               updateConditionText();
           });
       });
@@ -215,7 +452,6 @@
     } else {
         document.getElementById('FreeWord').style.display = 'none';
     }
-    updateConditionText();
   }
 
   function updateSalaryVisibility() {
@@ -343,7 +579,7 @@
       document.getElementById('FreeW').value = combinedWords.trim();
     }
   }
-  
+
   function openHelp() { document.getElementById('help-modal').style.display = 'flex'; }
   function closeHelp() { document.getElementById('help-modal').style.display = 'none'; }
   
@@ -391,9 +627,10 @@
     var ippan = document.querySelector('input[name="radio1"]:checked');
     var ippanText = ippan ? document.querySelector('label[for="' + ippan.id + '"]').innerText : "";
     
-    // 業界・職種の重複出力を許可
+    // 業界と職種の両方のテキストを取得し、結合する
     var ind = document.querySelector('input[name="radioIndustry"]:checked');
     var indText = (ind && ind.id !== 'ind0') ? document.querySelector('label[for="' + ind.id + '"]').innerText : "";
+    
     var job = document.querySelector('input[name="radioJobType"]:checked');
     var jobText = (job && job.id !== 'job0') ? document.querySelector('label[for="' + job.id + '"]').innerText : "";
     
@@ -402,7 +639,7 @@
     if(jobText) jobIndCombined.push(jobText);
     if(jobIndCombined.length === 0) jobIndCombined.push("指定なし");
 
-    text += "【職種・業界】 " + ippanText + " / " + jobIndCombined.join("・") + "\n";
+    text += "【職種・区分】 " + ippanText + " / " + jobIndCombined.join("・") + "\n";
 
     var conds = [];
     var checks = document.querySelectorAll('input[name="j1"]:checked');
@@ -425,16 +662,6 @@
     }
 
     document.getElementById('current-conditions-text').innerText = text;
-
-    // フローティングバー用のテキスト生成
-    var summaryArr = [];
-    if(area !== "指定なし（松山市全域）") summaryArr.push(area);
-    if(ippanText && ippanText !== "限定なし") summaryArr.push(ippanText);
-    jobIndCombined.forEach(function(ji){ if(ji !== "指定なし") summaryArr.push(ji); });
-    conds.forEach(function(c){ summaryArr.push(c); });
-
-    var summaryText = summaryArr.length > 0 ? summaryArr.join(" / ") : "条件の指定はありません";
-    document.getElementById('fixed-conditions').innerText = "🔍 選択中： " + summaryText;
   }
 
   function saveConditions() {
@@ -500,8 +727,8 @@
 
     var params = "";
     
-    // 修正箇所：都道府県コードを「38」で固定し、siku1HiddenにURLエンコードしたカンマ(%2C)で集約
-    params += amp + "tDFK1CmbBox=38" + amp + "siku1Hidden=" + uniqueCodes.join("%2C");
+    // 都道府県コードを「38」で固定し、siku1HiddenにURLエンコードしたカンマ(%2C)で集約
+    params += amp + "tDFK1CmbBox=38" + amp + "siku1Hidden=" + uniqueCodes.join("%2C") + amp + "siku2Hidden=" + amp + "siku3Hidden=";
 
     var collect = function(fname) {
       var str = "";
@@ -515,8 +742,8 @@
     var fw = document.getElementById("FreeW").value;
     
     var executeSearch = function() {
-        // tatZngyCKBox=1（手当・固定残業代を含むフラグ）を追加。searchClear=1に変更。
-        var finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchBtn" + amp + "screenId=GECA110010" + amp + "searchClear=1" + amp + "kjKbnRadioBtn=1" + amp + "tatZngyCKBox=1" + params;
+        // tatZngyCKBox=1（手当・固定残業代を含むフラグ）を追加。searchClear=1, initDispに変更。
+        var finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchBtn" + amp + "initDisp" + amp + "screenId=GECA110010" + amp + "searchClear=1" + amp + "kjKbnRadioBtn=1" + amp + "tatZngyCKBox=1" + params;
         window.open(finalUrl, '_blank');
     };
 
@@ -549,9 +776,10 @@
       <button class="modal-close-btn" onclick="closeHelp()">閉じる ×</button>
     </div>
     <div class="modal-body">
+      
       <div class="help-section-title" style="margin-top: 0;">操作方法について</div>
       <ul class="help-list" style="margin-bottom: 20px;">
-        <li><strong>条件の選択：</strong>各項目からご希望の条件をタップして選択してください。選択した条件は画面下部のバーや「現在の検索条件」に表示されます。</li>
+        <li><strong>条件の選択：</strong>各項目からご希望の条件をタップして選択してください。選択した条件は画面下部の「現在の検索条件」に表示されます。</li>
         <li><strong>検索の実行：</strong>「この条件で検索する」ボタンを押すと、ハローワークインターネットサービスの検索結果画面が新しいタブで開きます。</li>
         <li><strong>条件の保存：</strong>「この条件を保存」ボタンを押すと、お使いのスマートフォン（ブラウザ）に条件が記憶され、次回開いた際に自動でセットされます。</li>
         <li><strong>条件のリセット：</strong>選択を最初からやり直したい場合は「リセット」ボタンを押してください。</li>
@@ -595,12 +823,18 @@
 </div>
 
 <div id="wrapper">
+  
   <div class="intro-text">
     ハローワーク松山管轄の求人情報を、簡単な操作で検索することができます。<br>
     <span class="caution-text">※本機能は簡易検索システムのため、条件によっては全ての求人が表示されない場合があります。</span>
     
-    <div style="margin-top:15px; padding-top:15px; border-top:1px dashed #ccc; text-align:center;">
-      <p style="font-size:0.85em; color:#444; margin: 0 0 10px 0;">より詳細な条件で検索したい場合は、以下のサービスをご利用ください。</p>
+    <div class="line-warning" style="margin-top: 15px; margin-bottom: 5px;">
+      <div class="line-warning-title">ご利用時のご注意（LINEからご覧の方へ）</div>
+      LINE等のアプリから検索した場合、ハローワークのシステム仕様により、<strong>「2ページ目」以降に移動するとエラーが発生する</strong>ことがあります。<br>
+      うまく検索できない場合は、すぐ下のボタンから公式サイト（詳しい条件で検索）を開き、そちらをご利用ください。
+      <div class="arrow-pointer">▼ ▼ ▼</div>
+    </div>
+    <div style="padding-top:10px; text-align:center;">
       <a href="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do" target="_blank" class="hwis-link-btn">ハローワークインターネットサービスへ</a>
     </div>
   </div>
@@ -669,6 +903,8 @@
   </form>
 
   <div class="section">4. 業界・職種</div>
+  <p style="font-size:0.9em; color:#008000; font-weight:bold;">※「業界」と「職種」を両方選んで絞り込むことも可能です。</p>
+  
   <details>
     <summary>▼ 業界から探す</summary>
     <div class="details-content">
@@ -691,9 +927,9 @@
   <details>
     <summary>▼ 職種から探す</summary>
     <div class="details-content">
-      <div class="job-notice-box">
-        <div class="job-notice-title">【職種選択時のご注意】</div>
-        各ボタンは大分類を指定しています。より細かく小分類で指定したい場合は、<span class="job-notice-highlight">検索先の画面を上にスクロールして職種を再選択</span>してください。
+      <div class="notice-box" style="margin-top: 5px;">
+        <strong>【職種選択時のご注意】</strong><br>
+        各ボタンは大分類を指定しています。より細かく小分類で指定したい場合は、<strong>検索先の画面を上にスクロールして職種を再選択</strong>してください。
       </div>
 
       <form name="JobType" class="grid-container">
@@ -728,7 +964,7 @@
     <div class="grid-item-2"><input id="w9" name="j1" type="checkbox" value="&nyukyoKaCKBox=1"/><label for="w9" class="btn-base chkLabel">単身住宅有</label></div>
     <div class="grid-item-2"><input id="w10" name="j1" type="checkbox" value="&riyoKanoNaTjsAriCKBox=1"/><label for="w10" class="btn-base chkLabel">託児施設有</label></div>
     <div class="grid-item-2"><input id="w5" name="j1" type="checkbox" value="&sonotaCKBox=3"/><label for="w5" class="btn-base chkLabel">マイカー通勤</label></div>
-    <div class="grid-item-2"><input id="holidayCKBox_all" name="j1" type="checkbox" value="&holidayCKBox=6,7,8"/><label for="holidayCKBox_all" class="btn-base chkLabel">土日祝休み</label></div>
+    <div class="grid-item-2"><input id="w4" name="j1" type="checkbox" value="&holidayCKBox=6,7,8"/><label for="w4" class="btn-base chkLabel">土日祝休み</label></div>
     <div class="grid-item-2"><input id="w15" name="j1" type="checkbox" value="&sonotaCKBox=1"/><label for="w15" class="btn-base chkLabel">書類選考なし</label></div>
     <div class="grid-item-2"><input id="w16" name="j1" type="checkbox" value="&sonotaCKBox=5"/><label for="w16" class="btn-base chkLabel">在宅勤務</label></div>
     <div class="grid-item-2"><input id="w17" name="j1" type="checkbox" value="&sonotaCKBox=6"/><label for="w17" class="btn-base chkLabel">駅近(徒歩10分以内)</label></div>
@@ -749,7 +985,7 @@
     
     <div class="grid-item-2" style="flex:100%;"><input id="u5" name="radio3" type="radio" value="" onclick="onRadioClick()"/><label for="u5" class="btn-base chkLabel">入力する</label></div>
   </form>
-  <div id="FreeWord" style="display:none; width:100%;">
+  <div id="FreeWord" style="display:none;">
     <input class="textarea" id="FreeW" placeholder="全角スペースで区切って入力" type="text" />
   </div>
 
@@ -764,7 +1000,10 @@
     </div>
   </div>
 
+  <a class="searchbutton" href="javascript:void(0);" onclick="Search()">この条件で検索する</a>
+
   <div class="bottom-info-container">
+    
     <div class="mypage-cta-section" style="padding-bottom: 10px;">
       <div class="mypage-cta-header">
         <h3 class="mypage-cta-title"><span>マイページでもっと便利に</span></h3>
@@ -776,7 +1015,7 @@
         <ul class="large-benefits">
           <li>検索条件を保存できる</li>
           <li>気になる求人をお気に入り登録</li>
-          <li>ハローワークからおすすめ求 সিদ্ধান্তে届く</li>
+          <li>ハローワークからおすすめ求人が届く</li>
           <li>ハローワークへの登録内容を確認・変更</li>
           <li>紹介状や選考結果、応募履歴を確認できる</li>
         </ul>
@@ -790,26 +1029,34 @@
       <div class="card-carousel">
         <div class="card-item">
           <span class="card-arrow-right">▶︎</span>
-          <div class="card-header-row"><span class="card-badge">初めてご利用の方</span></div>
+          <div class="card-header-row">
+            <span class="card-badge">初めてご利用の方</span>
+          </div>
           <h4 class="card-title">新規マイページ開設</h4>
           <p class="card-desc">ハローワークのご利用が初めての方はこちら。スマホから「求職登録」と「マイページ開設」が同時に完了します。</p>
           <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA020020.do?screenId=GEAA020020&action=execRedirect&nextScreenId=GEAA010010" target="_blank" class="card-btn">新規登録・開設はこちら</a>
         </div>
-        
-        <div class="card-item">
-          <span class="card-arrow-left">◀︎</span><span class="card-arrow-right">▶︎</span>
-          <div class="card-header-row"><span class="card-badge">窓口で手続きがお済みの方</span></div>
-          <h4 class="card-title">アカウント作成コードで開設</h4>
-          <p class="card-desc" style="margin-bottom: 20px;">
-            ハローワークの窓口で求職登録と「アカウント作成コード」発行の手続きを完了している方は、こちらからマイページを開設（連携）できます。<br>
-            <span style="font-size: 0.85em; color: #d32f2f; display:block; margin-top:5px;">※同一メールアドレスでの重複登録はできません。</span>
-          </p>
-          <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA530040.do?action=initDisp&screenId=GEAA530040" target="_blank" class="card-btn">開設ページへ進む</a>
-        </div>
-        
+
         <div class="card-item">
           <span class="card-arrow-left">◀︎</span>
-          <div class="card-header-row"><span class="card-badge">すでに登録済みの方</span></div>
+          <span class="card-arrow-right">▶︎</span>
+          <div class="card-header-row">
+            <span class="card-badge">過去にハローワークを利用した方</span>
+          </div>
+          <h4 class="card-title">窓口でのアカウント連携</h4>
+          <p class="card-desc" style="margin-bottom: 10px;">過去（5年以内）にハローワークを利用・求職登録された方は、これまでの情報と連携させるため、お近くの窓口での手続きが必要です。<br>
+          <span style="font-size: 0.9em; color: #a02020;">※同一のメールアドレスで重複して新規登録することはできません。</span></p>
+          <div class="card-caution" style="text-align: left;">
+            <strong>【登録の手順】</strong><br>
+            窓口で<strong>「アカウント作成コード」</strong>を発行します。その後、ご自身のスマートフォン等でコードを入力し、登録を完了させてください。
+          </div>
+        </div>
+
+        <div class="card-item">
+          <span class="card-arrow-left">◀︎</span>
+          <div class="card-header-row">
+            <span class="card-badge">すでに登録済みの方</span>
+          </div>
           <h4 class="card-title">マイページにログイン</h4>
           <p class="card-desc">すでにマイページをお持ちの方はこちら。ご登録のメールアドレスとパスワードでログインしてご利用ください。</p>
           <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA040010.do?action=initDisp&screenId=GEAA040010" target="_blank" class="card-btn">ログイン画面へ</a>
@@ -822,6 +1069,7 @@
       <p class="apply-guide-text">
         原則として、求人へご応募いただく際はハローワークが発行する<strong>「紹介状」</strong>が必要となります。
       </p>
+      
       <p class="apply-guide-text" style="margin-bottom:8px; font-weight:bold;">オンライン自主応募をご利用の方へ</p>
       <div class="warning-box">
         <strong>【給付金等に関するご注意】</strong><br>
@@ -834,13 +1082,8 @@
       お問い合わせ：ハローワーク松山<br>
       <span class="tel">TEL: 089-917-8609</span>
     </div>
+
   </div>
 </div>
-
-<div class="fixed-footer">
-  <div id="fixed-conditions" class="fixed-conditions-text">🔍 選択中： 条件の指定はありません</div>
-  <a class="searchbutton-fixed" href="javascript:void(0);" onclick="Search()">この条件で検索する</a>
-</div>
-
 </body>
 </html>
