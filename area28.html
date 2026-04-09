@@ -8,17 +8,12 @@
   body { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 0; background-color: #f9f9f9; }
   #wrapper { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding-bottom: 80px; box-sizing: border-box; position: relative; overflow-x: hidden; }
   
-  /* ご利用時の注意メッセージ用デザイン */
-  .line-warning { background-color: #fff4f4; border: 2px solid #d32f2f; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; color: #333; line-height: 1.6; }
-  .line-warning-title { color: #d32f2f; font-weight: bold; font-size: 16px; margin-bottom: 8px; display: flex; align-items: center; }
-  .line-warning-title::before { content: "⚠️"; margin-right: 5px; }
-  .line-warning strong { color: #d32f2f; background: linear-gradient(transparent 60%, rgba(211, 47, 47, 0.2) 60%); padding: 0 2px; }
-
-  .intro-text { font-size: 15px; color: #333; background: #f4f4f4; padding: 15px; border-radius: 5px; margin-bottom: 20px; line-height: 1.6; }
-  .caution-text { color: #d32f2f; font-weight: bold; font-size: 0.95em; display: block; margin-bottom: 10px; }
+  /* 上部案内文の余白を調整 */
+  .intro-text { font-size: 15px; color: #333; background: #f4f4f4; padding: 15px; border-radius: 5px; margin-bottom: 20px; line-height: 1.6; margin-top: 45px; }
+  .caution-text { color: #d32f2f; font-weight: bold; font-size: 0.95em; display: block; margin-bottom: 5px; }
   
-  /* HWIS誘導ボタン（強調版） */
-  .hwis-guide-box { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ccc; text-align: center; }
+  /* HWIS誘導ボタン（点線と余分な空白を削除） */
+  .hwis-guide-box { margin-top: 5px; text-align: center; }
   .hwis-guide-text { font-size: 14px; color: #444; margin-bottom: 10px; line-height: 1.5; }
   .hwis-link-btn { 
     display: inline-block; 
@@ -50,13 +45,15 @@
   .modal-header { font-size: 19px; font-weight: bold; color: #008000; border-bottom: 2px solid #008000; padding-bottom: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
   .modal-close-btn { background: #eee; border: none; padding: 8px 15px; cursor: pointer; border-radius: 20px; font-size: 15px; color: #333; font-weight: bold; }
   
-  /* ヘルプ内 */
-  .help-section-title { color: #008000; border-left: 6px solid #008000; padding-left: 10px; margin: 15px 0 8px 0; font-size: 17px; font-weight: bold; }
-  .help-text { font-size: 14.5px; line-height: 1.6; margin-bottom: 10px; color: #333; }
+  /* ヘルプ内（白背景の統一デザイン） */
+  .help-section-title { color: #008000; border-left: 6px solid #008000; padding-left: 10px; margin: 25px 0 10px 0; font-size: 17px; font-weight: bold; }
   .help-list { padding-left: 20px; margin-top: 5px; font-size: 14.5px; color: #333; line-height: 1.6; }
   .help-list li { margin-bottom: 8px; }
-  .help-warning { background:#ffffff; border:1px solid #d32f2f; padding:15px; border-radius:5px; margin-bottom:15px; }
-  .help-warning-title { color:#d32f2f; margin-top:0; font-size:16px; font-weight:bold; margin-bottom: 10px; }
+  
+  .help-notes { background: #ffffff; padding: 5px 10px; }
+  .help-note-item { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #ccc; }
+  .help-note-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .help-note-item strong { color: #d32f2f; }
 
   /* メッセージモーダル */
   .msg-title { font-size: 1.2em; font-weight: bold; color: #333; margin-bottom: 12px; }
@@ -80,22 +77,23 @@
   .btn-base { display: flex; align-items: center; justify-content: center; padding: 5px; text-align: center; cursor: pointer; box-sizing: border-box; font-size: 15px; font-weight: bold; border-radius: 8px; text-decoration: none; min-height: 60px; line-height: 1.3; width: 100%; border: 2px solid transparent; transition: all 0.2s; }
   
   .area-btn { background: #fff; color: #008000; border: 2px solid #008000; }
-  .area-btn.active { background: #008000; color: #fff; box-shadow: 0 0 5px rgba(0,128,0,0.5); }
+  .area-btn.active { background: #008000 !important; color: #fff !important; border-color: #008000 !important; box-shadow: 0 0 5px rgba(0,128,0,0.5); }
+  
+  .chkLabel { background: #fff; color: #008000; border: 1px solid #008000; }
+  input:checked + .chkLabel { background: #d0f0c0 !important; border: 2px solid #008000 !important; color: #008000 !important; }
+  
+  .industry-btn-label { background: #fff; color: #0066cc; border: 2px solid #0066cc; }
+  input:checked + .industry-btn-label { background: #0066cc !important; color: #fff !important; border-color: #0066cc !important; }
+  
+  .job-btn-label { background: #fff; color: #e6006b; border: 2px solid #e6006b; }
+  input:checked + .job-btn-label { background: #e6006b !important; color: #fff !important; border-color: #e6006b !important; }
   
   /* 排他制御用 */
   .btn-base.disabled { background-color: #e0e0e0 !important; color: #999 !important; border-color: #ccc !important; pointer-events: none; opacity: 0.7; }
   .area-btn.disabled { background-color: #e0e0e0 !important; color: #999 !important; border-color: #ccc !important; }
   .exclusion-msg { display: none; color: #d32f2f; font-size: 0.9em; font-weight: bold; margin-bottom: 10px; background: #fff0f0; padding: 8px; border-radius: 4px; border-left: 4px solid #d32f2f; }
 
-  .chkLabel { background: #fff; color: #008000; border: 1px solid #008000; }
-  input:checked + .chkLabel { background: #d0f0c0; border: 2px solid #008000; }
   input[type="checkbox"], input[type="radio"] { display: none; }
-  
-  .industry-btn-label { background: #fff; color: #0066cc; border: 2px solid #0066cc; }
-  input:checked + .industry-btn-label { background: #0066cc; color: #fff; }
-  
-  .job-btn-label { background: #fff; color: #e6006b; border: 2px solid #e6006b; }
-  input:checked + .job-btn-label { background: #e6006b; color: #fff; }
   
   details { margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; overflow: hidden; background: #fff; width: 100%; }
   summary { cursor: pointer; padding: 15px; font-weight: bold; background-color: #f0f0f0; list-style: none; position: relative; font-size: 16px; }
@@ -114,8 +112,12 @@
   .save-btn { flex: 1; padding: 12px; background: #fff; color: #555; border: 1px solid #bbb; border-radius: 6px; cursor: pointer; font-size: 14px; }
   .save-btn:active { background: #eee; }
 
-  .notice-box { background-color: #fff4f4; border: 1px solid #d32f2f; padding: 12px; border-radius: 5px; margin-bottom: 15px; font-size: 0.9em; color: #333; line-height: 1.5; }
+  /* エリア選択時の注意事項 背景色を白（#ffffff）に変更 */
+  .notice-box { background-color: #ffffff; border: 1px solid #d32f2f; padding: 12px; border-radius: 5px; margin-bottom: 15px; font-size: 0.9em; color: #333; line-height: 1.5; }
   .notice-box strong { color: #d32f2f; }
+
+  /* スマホ版 検索ボタン上部のフローティングバー */
+  .floating-condition { display: none; pointer-events: none; }
 
   /* =========================================
      ▼ 応募方法・マイページ案内エリア ▼ 
@@ -129,247 +131,50 @@
     overflow: hidden;
   }
 
-  /* 1. マイページ案内セクション全体 */
-  .mypage-cta-section {
-    padding: 30px 0 20px 0; 
-    background-color: #fafafa;
-  }
-  .mypage-cta-header {
-    padding: 0 20px;
-    text-align: center;
-  }
+  .mypage-cta-section { padding: 30px 0 20px 0; background-color: #fafafa; }
+  .mypage-cta-header { padding: 0 20px; text-align: center; }
   
-  /* タイトルのマーカー（蛍光ペン）風デザイン */
-  .mypage-cta-title {
-    font-size: 19px;
-    color: #333;
-    font-weight: bold;
-    margin: 0 0 15px 0;
-    letter-spacing: 0.05em;
-  }
-  .mypage-cta-title span {
-    background: linear-gradient(transparent 60%, rgba(200, 90, 50, 0.3) 60%);
-    display: inline-block;
-    padding: 0 2px;
-  }
+  .mypage-cta-title { font-size: 19px; color: #333; font-weight: bold; margin: 0 0 15px 0; letter-spacing: 0.05em; }
+  .mypage-cta-title span { background: linear-gradient(transparent 60%, rgba(200, 90, 50, 0.3) 60%); display: inline-block; padding: 0 2px; }
 
-  /* 導入文 */
-  .mypage-cta-intro {
-    font-size: 14px;
-    color: #555;
-    line-height: 1.6;
-    margin-bottom: 20px;
-    text-align: center;
-  }
+  .mypage-cta-intro { font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 20px; text-align: center; }
 
-  /* ▼ メリット一覧 ▼ */
-  .mypage-features {
-    background-color: #fff9f6;
-    border-radius: 8px;
-    padding: 22px 20px;
-    margin: 0 20px 25px 20px;
-    border: 1px solid #f2e3dd;
-  }
-  .mypage-features-title {
-    font-size: 15px;
-    font-weight: bold;
-    color: #C85A32;
-    margin: 0 0 15px 0;
-    text-align: center;
-    letter-spacing: 0.05em;
-  }
-  .mypage-features ul.large-benefits {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .mypage-features ul.large-benefits li {
-    font-size: 15px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 14px;
-    padding-left: 26px;
-    position: relative;
-    line-height: 1.5;
-  }
-  .mypage-features ul.large-benefits li::before {
-    content: '';
-    position: absolute;
-    left: 8px;
-    top: 5px;
-    width: 6px;
-    height: 12px;
-    border-right: 3px solid #C85A32;
-    border-bottom: 3px solid #C85A32;
-    transform: rotate(45deg);
-  }
-  .mypage-features ul.large-benefits li:last-child {
-    margin-bottom: 0;
-  }
+  .mypage-features { background-color: #fff9f6; border-radius: 8px; padding: 22px 20px; margin: 0 20px 25px 20px; border: 1px solid #f2e3dd; }
+  .mypage-features-title { font-size: 15px; font-weight: bold; color: #C85A32; margin: 0 0 15px 0; text-align: center; letter-spacing: 0.05em; }
+  .mypage-features ul.large-benefits { list-style: none; padding: 0; margin: 0; }
+  .mypage-features ul.large-benefits li { font-size: 15px; font-weight: bold; color: #333; margin-bottom: 14px; padding-left: 26px; position: relative; line-height: 1.5; }
+  .mypage-features ul.large-benefits li::before { content: ''; position: absolute; left: 8px; top: 5px; width: 6px; height: 12px; border-right: 3px solid #C85A32; border-bottom: 3px solid #C85A32; transform: rotate(45deg); }
+  .mypage-features ul.large-benefits li:last-child { margin-bottom: 0; }
 
-  /* スワイプ案内のテキスト */
-  .mypage-cta-desc {
-    font-size: 14px;
-    color: #666;
-    line-height: 1.6;
-    margin-bottom: 10px;
-  }
-  .swipe-hint {
-    font-size: 15px; 
-    color: #C85A32;
-    font-weight: bold;
-    margin-bottom: 15px;
-  }
+  .mypage-cta-desc { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 10px; }
+  .swipe-hint { font-size: 15px; color: #C85A32; font-weight: bold; margin-bottom: 15px; }
 
-  /* カルーセル（スワイプ）コンテナ */
-  .card-carousel {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    gap: 15px;
-    padding: 10px 20px 15px 20px; 
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  .card-carousel::-webkit-scrollbar {
-    display: none;
-  }
+  .card-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 10px 20px 15px 20px; -ms-overflow-style: none; scrollbar-width: none; }
+  .card-carousel::-webkit-scrollbar { display: none; }
 
-  /* カード本体のデザイン */
-  .card-item {
-    flex: 0 0 85%;
-    max-width: 320px;
-    scroll-snap-align: center;
-    background: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    padding: 20px 30px 25px 30px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-    display: flex;
-    flex-direction: column;
-    position: relative;
-  }
+  .card-item { flex: 0 0 85%; max-width: 320px; scroll-snap-align: center; background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 20px 30px 25px 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: flex; flex-direction: column; position: relative; }
   
-  /* カード両脇の透かし矢印アイコン */
-  .card-arrow-left, .card-arrow-right {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 24px;
-    color: #C85A32;
-    opacity: 0.35;
-    pointer-events: none;
-  }
+  .card-arrow-left, .card-arrow-right { position: absolute; top: 50%; transform: translateY(-50%); font-size: 24px; color: #C85A32; opacity: 0.35; pointer-events: none; }
   .card-arrow-left { left: 10px; }
   .card-arrow-right { right: 10px; }
 
-  .card-header-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 12px;
-  }
-  .card-badge {
-    display: inline-block;
-    background-color: #fcece6;
-    color: #C85A32;
-    font-size: 11.5px;
-    font-weight: bold;
-    padding: 4px 10px;
-    border-radius: 20px;
-  }
+  .card-header-row { display: flex; justify-content: center; align-items: center; margin-bottom: 12px; }
+  .card-badge { display: inline-block; background-color: #fcece6; color: #C85A32; font-size: 11.5px; font-weight: bold; padding: 4px 10px; border-radius: 20px; }
   
-  .card-title {
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
-    margin: 0 0 15px 0;
-    line-height: 1.4;
-    text-align: center;
-  }
+  .card-title { font-size: 16px; font-weight: bold; color: #333; margin: 0 0 15px 0; line-height: 1.4; text-align: center; }
+  .card-desc { font-size: 13.5px; color: #555; line-height: 1.6; flex-grow: 1; margin-bottom: 20px; }
+  .card-caution { font-size: 12px; color: #d32f2f; background: #fff4f4; padding: 10px; border-radius: 6px; margin-top: 5px; margin-bottom: 15px; line-height: 1.5; }
   
-  .card-desc {
-    font-size: 13.5px;
-    color: #555;
-    line-height: 1.6;
-    flex-grow: 1;
-    margin-bottom: 20px;
-  }
-  .card-caution {
-    font-size: 12px;
-    color: #d32f2f;
-    background: #fff4f4;
-    padding: 10px;
-    border-radius: 6px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    line-height: 1.5;
-  }
-  
-  /* カード内ボタン */
-  .card-btn {
-    display: block;
-    width: 100%;
-    background-color: #C85A32;
-    color: #fff !important;
-    text-align: center;
-    padding: 14px 0;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: bold;
-    text-decoration: none;
-    transition: opacity 0.2s;
-    box-sizing: border-box;
-  }
-  .card-btn:active {
-    opacity: 0.8;
-  }
+  .card-btn { display: block; width: 100%; background-color: #C85A32; color: #fff !important; text-align: center; padding: 14px 0; border-radius: 8px; font-size: 14px; font-weight: bold; text-decoration: none; transition: opacity 0.2s; box-sizing: border-box; }
+  .card-btn:active { opacity: 0.8; }
 
-  /* 2. 応募方法セクション */
-  .apply-guide-section {
-    padding: 25px 20px;
-    background-color: #fff;
-    border-top: 1px dashed #ddd;
-  }
-  .apply-guide-title {
-    font-size: 16px;
-    color: #333;
-    font-weight: bold;
-    margin: 0 0 15px 0;
-    border-left: 4px solid #008000;
-    padding-left: 10px;
-  }
-  .apply-guide-text {
-    font-size: 14px;
-    color: #444;
-    line-height: 1.6;
-    margin-bottom: 15px;
-  }
-  .warning-box {
-    background-color: #fcf8f8;
-    border: 1px solid #d9a0a0;
-    padding: 15px;
-    border-radius: 6px;
-    color: #b33939;
-    font-size: 13px;
-    line-height: 1.6;
-  }
-  .warning-box strong {
-    color: #a02020;
-  }
+  .apply-guide-section { padding: 25px 20px; background-color: #fff; border-top: 1px dashed #ddd; }
+  .apply-guide-title { font-size: 16px; color: #333; font-weight: bold; margin: 0 0 15px 0; border-left: 4px solid #008000; padding-left: 10px; }
+  .apply-guide-text { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 15px; }
+  .warning-box { background-color: #fcf8f8; border: 1px solid #d9a0a0; padding: 15px; border-radius: 6px; color: #b33939; font-size: 13px; line-height: 1.6; }
+  .warning-box strong { color: #a02020; }
 
-  /* 3. お問い合わせセクション */
-  .contact-section {
-    background-color: #fff;
-    text-align: center;
-    padding: 25px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
-    border-top: 1px dashed #ddd;
-    line-height: 1.6;
-    letter-spacing: 0.05em;
-  }
+  .contact-section { background-color: #fff; text-align: center; padding: 25px 20px; font-size: 16px; font-weight: bold; color: #333; border-top: 1px dashed #ddd; line-height: 1.6; letter-spacing: 0.05em; }
 
   @media screen and (max-width: 600px) {
     #wrapper { padding: 10px 5px; width: 100%; padding-bottom: 140px; }
@@ -378,6 +183,28 @@
     .bottom-info-container { margin-top: 30px; }
     .apply-guide-section { padding: 20px 15px; }
     .floating-help-btn { top: 20px; font-size: 12px; padding: 8px 12px; }
+    
+    /* フローティングバーのデザイン（虫眼鏡対応・文字色等調整） */
+    .floating-condition {
+      display: block;
+      position: fixed;
+      bottom: 70px;
+      left: 0;
+      width: 100%;
+      background: #f4f8f4;
+      padding: 10px 15px;
+      font-size: 14px;
+      color: #2e7d32;
+      font-weight: bold;
+      z-index: 998;
+      box-sizing: border-box;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+      pointer-events: none; /* ボタンのクリックを邪魔しないための安全策 */
+    }
   }
 </style>
 
@@ -385,7 +212,8 @@
   var amp = String.fromCharCode(38); // 記号回避用
   
   var areaData = {
-    "matsuyama_all": { name: "松山市内全域", code: "38201", words: "" },
+    // ▼ 「松山市内全域」から「松山市全域」へ変更 ▼
+    "matsuyama_all": { name: "松山市全域", code: "38201", words: "" },
     "east":  { name: "城東・中央", code: "38201", words: "一番町　二番町　三番町　千舟町　大街道　湊町　道後　石手　祝谷　東野　樽味　桑原　松末" },
     "west":  { name: "城西・中央", code: "38201", words: "大手町　南江戸　竹原　小栗　土居田　宮西　萱町　本町　花園町　藤原　保免　余戸" },
     "north": { name: "城北",      code: "38201", words: "潮見　久枝　和気　堀江　吉藤　谷町　御幸　鴨川　平田　山越　問屋町　内宮　安城寺" },
@@ -534,8 +362,12 @@
     var nextSelectedKeys = selectedAreaKeys.slice();
 
     if (isMatsuyama) {
-      nextSelectedKeys = nextSelectedKeys.filter(function(k) { return matsuyamaGroup.indexOf(k) === -1; });
-      nextSelectedKeys.push(key);
+      if (index !== -1) {
+          nextSelectedKeys.splice(index, 1);
+      } else {
+          nextSelectedKeys = nextSelectedKeys.filter(function(k) { return matsuyamaGroup.indexOf(k) === -1; });
+          nextSelectedKeys.push(key);
+      }
     } else {
       if (index === -1) { nextSelectedKeys.push(key); } 
       else { nextSelectedKeys.splice(index, 1); }
@@ -543,7 +375,7 @@
 
     if (nextSelectedKeys.length > selectedAreaKeys.length) { 
         if (countUniqueCodes(nextSelectedKeys) > 5) {
-            showMyModal("選択できません", "ハローワークの仕様上、同時に選択できる地域は5つまでです。\n（松山市内は全域で1つとカウントされます）", false);
+            showMyModal("選択できません", "ハローワークの仕様上、同時に選択できる地域は5つまでです。", false);
             return;
         }
     }
@@ -572,8 +404,9 @@
 
   function updateAreaDisplay() {
     var display = document.getElementById('selectedAreaDisplay');
+    // 何も選択されていない場合は「指定しない」に変更
     if (selectedAreaKeys.length === 0) {
-      display.innerText = "指定なし（松山市全域）";
+      display.innerText = "指定しない";
       document.getElementById('FreeW').value = "";
       document.getElementById('u4').checked = true; 
       onRadioClick(); 
@@ -636,7 +469,6 @@
     var ippan = document.querySelector('input[name="radio1"]:checked');
     var ippanText = ippan ? document.querySelector('label[for="' + ippan.id + '"]').innerText : "";
     
-    // 業界と職種の両方のテキストを取得し、結合する
     var ind = document.querySelector('input[name="radioIndustry"]:checked');
     var indText = (ind && ind.id !== 'ind0') ? document.querySelector('label[for="' + ind.id + '"]').innerText : "";
     
@@ -646,7 +478,7 @@
     var jobIndCombined = [];
     if(indText) jobIndCombined.push(indText);
     if(jobText) jobIndCombined.push(jobText);
-    if(jobIndCombined.length === 0) jobIndCombined.push("指定なし");
+    if(jobIndCombined.length === 0) jobIndCombined.push("指定しない");
 
     text += "【職種・区分】 " + ippanText + " / " + jobIndCombined.join("・") + "\n";
 
@@ -667,10 +499,21 @@
     if(conds.length > 0) {
         text += "【その他条件】 " + conds.join("、");
     } else {
-        text += "【その他条件】 指定なし";
+        text += "【その他条件】 指定しない";
     }
 
     document.getElementById('current-conditions-text').innerText = text;
+    
+    // ▼ 検索ボタン上のフローティングバーにも全条件を反映させる処理 ▼
+    var floatText = "🔍 選択中： " + area;
+    if (jobIndCombined.join("・") !== "指定しない") {
+        floatText += " / " + jobIndCombined.join("・");
+    }
+    if (conds.length > 0) {
+        floatText += " / " + conds.join("・");
+    }
+    var floatEl = document.getElementById('floating-condition-text');
+    if(floatEl) floatEl.innerText = floatText;
   }
 
   function saveConditions() {
@@ -714,16 +557,12 @@
     }
   }
 
-  function Search() {
+  function executeMySearch() {
     var uniqueCodes = [];
-    if (selectedAreaKeys.length === 0) {
-      uniqueCodes.push("38201");
-    } else {
-      selectedAreaKeys.forEach(function(k) {
-        var c = areaData[k].code;
-        if(uniqueCodes.indexOf(c) === -1) { uniqueCodes.push(c); }
-      });
-    }
+    selectedAreaKeys.forEach(function(k) {
+      var c = areaData[k].code;
+      if(uniqueCodes.indexOf(c) === -1) { uniqueCodes.push(c); }
+    });
 
     if(uniqueCodes.length > 5) {
         showMyModal("エラー", "地域コードが5つを超えています。\n選択を減らしてください。", false);
@@ -735,8 +574,6 @@
                           document.getElementById('u7').checked;
 
     var params = "";
-    
-    // 都道府県コードを「38」で固定し、siku1HiddenにURLエンコードしたカンマ(%2C)で集約
     params += amp + "tDFK1CmbBox=38" + amp + "siku1Hidden=" + uniqueCodes.join("%2C") + amp + "siku2Hidden=" + amp + "siku3Hidden=";
 
     var collect = function(fname) {
@@ -750,25 +587,24 @@
     
     var fw = document.getElementById("FreeW").value;
     
-    var executeSearch = function() {
-        // tatZngyCKBox=1（手当・固定残業代を含むフラグ）を追加。searchClear=1, initDispに変更。
+    var performOpen = function() {
         var finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchBtn" + amp + "initDisp" + amp + "screenId=GECA110010" + amp + "searchClear=1" + amp + "kjKbnRadioBtn=1" + amp + "tatZngyCKBox=1" + params;
         window.open(finalUrl, '_blank');
     };
 
     if (isKeywordSearch) {
         params += collect('Free');
-        executeSearch();
+        performOpen();
     } else if(fw && fw !== "") {
        var encodedFW = encodeURIComponent(fw);
        params += amp + "freeWordInput=" + encodedFW + amp + "freeWordRadioBtn=0"; 
        showMyModal("検索確認", "上に表示されている条件で\nハローワークの検索を開きますか？", true, function(result){
-           if(result) executeSearch();
+           if(result) performOpen();
        });
     } else { 
        params += collect('Free'); 
        showMyModal("検索確認", "上に表示されている条件で\nハローワークの検索を開きますか？", true, function(result){
-           if(result) executeSearch();
+           if(result) performOpen();
        });
     }
   }
@@ -776,7 +612,7 @@
 </head>
 <body>
 
-<a class="floating-help-btn" onclick="openHelp(); return false;">？ 利用方法</a>
+<a class="floating-help-btn" onclick="openHelp(); return false;">？ 利用方法・注意事項</a>
 
 <div id="help-modal" class="modal-overlay" onclick="if(event.target == this) closeHelp();">
   <div class="modal-content-help">
@@ -787,30 +623,31 @@
     <div class="modal-body">
       
       <div class="help-section-title" style="margin-top: 0;">操作方法について</div>
-      <ul class="help-list" style="margin-bottom: 20px;">
+      <ul class="help-list" style="margin-bottom: 25px;">
         <li><strong>条件の選択：</strong>各項目からご希望の条件をタップして選択してください。選択した条件は画面下部の「現在の検索条件」に表示されます。</li>
         <li><strong>検索の実行：</strong>「この条件で検索する」ボタンを押すと、ハローワークインターネットサービスの検索結果画面が新しいタブで開きます。</li>
         <li><strong>条件の保存：</strong>「この条件を保存」ボタンを押すと、お使いのスマートフォン（ブラウザ）に条件が記憶され、次回開いた際に自動でセットされます。</li>
         <li><strong>条件のリセット：</strong>選択を最初からやり直したい場合は「リセット」ボタンを押してください。</li>
       </ul>
 
-      <div class="help-warning">
-        <h4 class="help-warning-title">検索における網羅性について</h4>
-        <p class="help-text">
-          <strong>【エリアの指定】</strong><br>
-          松山市内の地区指定は、主要な町名を抽出して検索する仕組みとなっております。そのため、指定したエリア内のすべての求人が表示されるわけではありません。条件に合う求人を漏れなく確認したい場合は、<strong>「松山市内全域（限定なし）」</strong>を選択することをお勧めいたします。
+      <div class="help-section-title">ご利用時の注意事項</div>
+      <div class="help-notes">
+        
+        <p class="help-note-item">
+          <strong>【LINE等からのご利用について】</strong><br>
+          検索結果の「2ページ目」へ進もうとすると、入力した条件がリセットされる場合があります。エラーが起きた場合は、こちらの <a href="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchShosaiBtn&amp;screenId=GECA110010&amp;kjKbnRadioBtn=1&amp;ippanCKBox=1&amp;ippanCKBox=2" target="_blank" style="color:#0066cc; font-weight:bold; text-decoration:underline;">「ハローワークインターネットサービスへ」</a> から公式サイトを開き、再度検索をお願いいたします。
         </p>
-        <p class="help-text" style="margin-bottom:0;">
-          <strong>【職種の指定】</strong><br>
-          本システムのボタンは大分類（大まかな職種）を指定しています。より詳細な小分類で絞り込みたい場合は、<strong>検索結果画面（ハローワークインターネットサービス）に遷移した後、画面上部の検索条件から職種を再選択</strong>してください。
+        
+        <p class="help-note-item">
+          <strong>【検索における網羅性について】</strong><br>
+          松山市内の地区指定は主要な町名を抽出するため、すべての求人が表示されるわけではありません。漏れなく確認したい場合は<strong>「松山市全域」</strong>を選択してください。また、職種は大分類です。詳細な小分類は検索結果画面から再選択してください。
         </p>
-      </div>
-      
-      <div class="help-warning">
-        <h4 class="help-warning-title">シニア・子育て・ミドル検索について</h4>
-        <p class="help-text" style="margin-bottom:0;">
-          これらの条件を選択した場合、システム上の文字数制限の関係により、<strong>地区指定（詳細な町名）との併用はできません</strong>のでご了承ください。
+
+        <p class="help-note-item">
+          <strong>【シニア・子育て・ミドル検索について】</strong><br>
+          システム制限により、<strong>地区指定（詳細な町名）との併用はできません</strong>のでご了承ください。
         </p>
+
       </div>
 
       <div style="text-align:center; margin-top:20px;">
@@ -832,12 +669,7 @@
 </div>
 
 <div id="wrapper">
-  
-  <div class="line-warning">
-    <div class="line-warning-title">ご利用時のご注意</div>
-    LINEなどのアプリからご覧の場合、検索結果の「2ページ目」へ進もうとすると、<strong>入力した条件がリセットされる</strong>場合があります。<br>
-    もし条件が消えてしまった場合は、お手数ですが下にある<strong>「ハローワークインターネットサービスへ」</strong>ボタンから公式サイトを開き、再度条件を入力して検索をお願いいたします。
-  </div>
+
   <div class="intro-text">
     ハローワーク松山管轄の求人情報を、簡単な操作で検索することができます。<br>
     <span class="caution-text">※本機能は簡易検索システムのため、条件によっては全ての求人が表示されない場合があります。</span>
@@ -853,7 +685,7 @@
   <div class="notice-box">
     <strong>【エリア選択時のご注意】</strong><br>
     ・ハローワークの仕様上、同時に選択できる地域は<strong>5つまで</strong>です。<br>
-    ・松山市内の地区指定は、主要なエリア（町名）を抽出します。抜け漏れなく探したい場合は<strong>「松山市内全域（限定なし）」</strong>を推奨します。
+    ・松山市内の地区指定は、主要なエリア（町名）を抽出します。抜け漏れなく探したい場合は<strong>「松山市全域」</strong>を推奨します。
   </div>
   
   <div id="area-warning-msg" class="exclusion-msg">
@@ -862,7 +694,7 @@
 
   <div class="sub-section">▼松山市内（1つのみ選択可）</div>
   <div class="grid-container">
-    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-matsuyama_all" onclick="selectArea('matsuyama_all');" class="btn-base area-btn" style="background:#eee; border-color:#aaa; color:#333;">松山市内全域（限定なし）</a></div>
+    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-matsuyama_all" onclick="selectArea('matsuyama_all');" class="btn-base area-btn" style="border-color:#aaa; color:#333;">松山市全域</a></div>
     <div class="grid-item-2"><a href="javascript:void(0);" id="btn-east" onclick="selectArea('east');" class="btn-base area-btn">城東・中央</a></div>
     <div class="grid-item-2"><a href="javascript:void(0);" id="btn-west" onclick="selectArea('west');" class="btn-base area-btn">城西・中央</a></div>
     <div class="grid-item-2"><a href="javascript:void(0);" id="btn-north" onclick="selectArea('north');" class="btn-base area-btn">城北</a></div>
@@ -879,11 +711,11 @@
     <div class="grid-item-2"><a href="javascript:void(0);" id="btn-tobe" onclick="selectArea('tobe');" class="btn-base area-btn">砥部町</a></div>
     <div class="grid-item-2"><a href="javascript:void(0);" id="btn-kuma" onclick="selectArea('kuma');" class="btn-base area-btn">久万高原町</a></div>
   </div>
-  <div id="selectedAreaDisplay" style="color:#008000; font-weight:bold; margin-top:10px; margin-bottom:15px; border-bottom:1px solid #ccc; padding-bottom:5px;">指定なし（松山市全域）</div>
+  <div id="selectedAreaDisplay" style="color:#008000; font-weight:bold; margin-top:10px; margin-bottom:15px; border-bottom:1px solid #ccc; padding-bottom:5px;">指定しない</div>
 
   <div class="section">2. 求人区分</div>
   <form name="ippan" class="grid-container">
-    <div class="grid-item-2"><input checked id="s4" name="radio1" type="radio" value=""/><label for="s4" class="btn-base chkLabel">限定なし</label></div>
+    <div class="grid-item-2"><input checked id="s4" name="radio1" type="radio" value=""/><label for="s4" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
     <div class="grid-item-2"><input id="s1" name="radio1" type="radio" value="&ippanCKBox=1&koyoFltmCKBox=1"/><label for="s1" class="btn-base chkLabel">正社員</label></div>
     <div class="grid-item-2"><input id="s2" name="radio1" type="radio" value="&ippanCKBox=1"/><label for="s2" class="btn-base chkLabel">フルタイム</label></div>
     <div class="grid-item-2"><input id="s3" name="radio1" type="radio" value="&ippanCKBox=2"/><label for="s3" class="btn-base chkLabel">パート</label></div>
@@ -892,7 +724,7 @@
   <div id="salary-aux-section" class="aux-section">
     <div class="aux-title">↳ 【給与の希望】※任意</div>
     <form name="salary" id="salary-form" class="grid-container">
-      <div class="grid-item-2"><input checked id="sal0" name="radioSalary" type="radio" value=""/><label for="sal0" class="btn-base chkLabel" style="background:#fff; border-color:#aaa; color:#333;">指定なし</label></div>
+      <div class="grid-item-2"><input checked id="sal0" name="radioSalary" type="radio" value=""/><label for="sal0" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
       
       <div class="grid-item-2 sal-monthly"><input id="salM1" name="radioSalary" type="radio" value="&gkkyIn=200000"/><label for="salM1" class="btn-base chkLabel">月給 20万円以上</label></div>
       <div class="grid-item-2 sal-monthly"><input id="salM2" name="radioSalary" type="radio" value="&gkkyIn=250000"/><label for="salM2" class="btn-base chkLabel">月給 25万円以上</label></div>
@@ -906,7 +738,7 @@
 
   <div class="section">3. 新着区分</div>
   <form name="newArri" class="grid-container">
-    <div class="grid-item-2"><input checked id="t3" name="radio2" type="radio" value=""/><label for="t3" class="btn-base chkLabel">指定なし</label></div>
+    <div class="grid-item-2"><input checked id="t3" name="radio2" type="radio" value=""/><label for="t3" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
     <div class="grid-item-2"><input id="t1" name="radio2" type="radio" value="&newArrivedCKBox=1"/><label for="t1" class="btn-base chkLabel">新着(当日/前日)</label></div>
     <div class="grid-item-2"><input id="t2" name="radio2" type="radio" value="&newArrivedCKBox=2"/><label for="t2" class="btn-base chkLabel">1週間以内</label></div>
   </form>
@@ -918,7 +750,7 @@
     <summary>▼ 業界から探す</summary>
     <div class="details-content">
       <form name="JobIndustry" class="grid-container">
-        <div class="grid-item-full"><input checked id="ind0" name="radioIndustry" type="radio" value="" /><label for="ind0" class="btn-base industry-btn-label" style="background:#eee; border-color:#aaa; color:#333;">限定なし</label></div>
+        <div class="grid-item-full"><input checked id="ind0" name="radioIndustry" type="radio" value="" /><label for="ind0" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
         <div class="grid-item-2"><input id="ind16" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=83&kiboSuruSngBrui2In=84&kiboSuruSngBrui3In=85" /><label for="ind16" class="btn-base industry-btn-label">医療,福祉</label></div>
         <div class="grid-item-2"><input id="ind18" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=88&kiboSuruSngBrui2In=91&kiboSuruSngBrui3In=92" /><label for="ind18" class="btn-base industry-btn-label">サービス業・警備</label></div>
         <div class="grid-item-2"><input id="ind9" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=50&kiboSuruSngBrui2In=56&kiboSuruSngBrui3In=61" /><label for="ind9" class="btn-base industry-btn-label">卸売業・小売業</label></div>
@@ -942,7 +774,7 @@
       </div>
 
       <form name="JobType" class="grid-container">
-        <div class="grid-item-full"><input checked id="job0" name="radioJobType" type="radio" value="" /><label for="job0" class="btn-base job-btn-label" style="background:#eee; border-color:#aaa; color:#333;">限定なし</label></div>
+        <div class="grid-item-full"><input checked id="job0" name="radioJobType" type="radio" value="" /><label for="job0" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
         
         <div class="grid-item-2"><input id="job1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=01,00" /><label for="job1" class="btn-base job-btn-label">事務・管理職</label></div>
         <div class="grid-item-2"><input id="job2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=02,00" /><label for="job2" class="btn-base job-btn-label">営業</label></div>
@@ -982,7 +814,7 @@
 
   <div class="section">6. キーワード・その他</div>
   <form name="Free" class="grid-container">
-    <div class="grid-item-2"><input checked id="u4" name="radio3" type="radio" value="" onclick="onRadioClick()"/><label for="u4" class="btn-base chkLabel">限定なし</label></div>
+    <div class="grid-item-2"><input checked id="u4" name="radio3" type="radio" value="" onclick="onRadioClick()"/><label for="u4" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
     <div class="grid-item-2"><input id="u2" name="radio3" type="radio" value="&freeWordInput=%E5%AD%90%E8%82%B2%E3%81%A6%E6%94%AF%E6%8F%B4%E6%B1%82%E4%BA%BA" onclick="onRadioClick()"/><label for="u2" class="btn-base chkLabel">子育て支援</label></div>
     
     <div id="senior-warning-msg" class="exclusion-msg" style="flex:100%; display:none;">
@@ -1000,7 +832,10 @@
 
   <div class="condition-summary">
     <div class="condition-summary-title">現在の検索条件</div>
-    <p style="font-size:0.85em; color:#666; margin:0 0 5px 0;">※「この条件を保存」ボタンを押すと、次回開いた時にも同じ条件が自動でセットされます。</p>
+    <p style="font-size:0.85em; color:#666; margin:0 0 5px 0;">
+      ※「この条件を保存」ボタンを押すと、次回開いた時にも同じ条件が自動でセットされます。<br>
+      <span style="color:#d32f2f;">（※お使いのブラウザや使用環境によっては、条件が保存されない場合がございます。あらかじめご容赦ください。）</span>
+    </p>
     <div id="current-conditions-text" style="white-space: pre-wrap; margin-top: 8px;"></div>
     
     <div class="save-btn-container">
@@ -1009,7 +844,8 @@
     </div>
   </div>
 
-  <a class="searchbutton" href="javascript:void(0);" onclick="Search()">この条件で検索する</a>
+  <div id="floating-condition-text" class="floating-condition"></div>
+  <a class="searchbutton" href="javascript:void(0);" onclick="executeMySearch()">この条件で検索する</a>
 
   <div class="bottom-info-container">
     
