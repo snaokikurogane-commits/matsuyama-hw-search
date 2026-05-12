@@ -1,0 +1,16 @@
+    // ▼ 【最終解決版】GET送信 ＋ LINE外部ブラウザ強制起動
+    var executeSearch = function() {
+        // ベースとなるハローワークの検索URLを構築
+        var finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchBtn" 
+                     + amp + "screenId=GECA110010" 
+                     + amp + "kjKbnRadioBtn=1" 
+                     + amp + "searchClear=1" 
+                     + params;
+                     
+        // 【重要】LINE内ブラウザ対策：SafariやChromeに強制的に飛ばす魔法のパラメータを追加
+        finalUrl += amp + "openExternalBrowser=1";
+        
+        // 遷移を実行
+        window.location.href = finalUrl;
+    };
+    // ▲ 修正箇所ここまで
