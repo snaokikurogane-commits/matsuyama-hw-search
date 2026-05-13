@@ -1,42 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>かんたん求人検索（松山版）</title>
 <style type="text/css">
+  /* 全体・基本設定 */
   #hw-search-tool-root { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 0; background-color: #f9f9f9; text-align: left; }
   #hw-search-tool-root #wrapper { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding-bottom: 80px; box-sizing: border-box; position: relative; overflow-x: hidden; }
   
-  /* モーダル共通設定 */
+  /* 案内文エリア */
+  #hw-search-tool-root .intro-text { font-size: 15px; color: #333; background: #f4f4f4; padding: 15px; border-radius: 5px; margin-bottom: 20px; line-height: 1.6; }
+  #hw-search-tool-root .caution-text { color: #d32f2f; font-weight: bold; font-size: 0.95em; display: block; margin-bottom: 5px; }
+  #hw-search-tool-root .hwis-guide-box { margin-top: 5px; text-align: center; }
+  #hw-search-tool-root .hwis-link-btn { display: inline-block; background: #f0f7ff; color: #0055b3; border: 3px solid #0066cc; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px; transition: all 0.2s; }
+  #hw-search-tool-root .hwis-link-btn:active { background: #e6f0fa; transform: translateY(2px); }
+
+  #hw-search-tool-root .floating-help-btn { position: fixed; top: 15px; right: 15px; z-index: 9999; background-color: #ff9800; color: #ffffff !important; font-weight: bold; font-size: 13px; padding: 10px 16px; border-radius: 25px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.3); opacity: 0.95; cursor: pointer; }
+  
+  /* モーダル共通設定（縦伸び防止・スクロール対応） */
   #hw-search-tool-root .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; padding: 10px; box-sizing: border-box; }
   
-  /* メッセージモーダルのレイアウト：画像を横幅いっぱいに */
-  #hw-search-tool-root .modal-content-msg { background-color: #fff; width: 100%; max-width: 360px; padding: 25px 0 20px 0; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center; animation: popIn 0.2s ease-out; overflow: hidden; }
+  #hw-search-tool-root .modal-content-msg { 
+    background-color: #fff; 
+    width: 100%; 
+    max-width: 380px; 
+    max-height: 90vh; /* 画面高さの90%に制限 */
+    padding: 25px 0 0 0; 
+    border-radius: 12px; 
+    box-shadow: 0 5px 25px rgba(0,0,0,0.3); 
+    text-align: center; 
+    animation: popIn 0.2s ease-out; 
+    overflow-y: auto; /* 縦に長い場合はスクロール可能にする */
+    display: flex;
+    flex-direction: column;
+  }
   @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   
-  #hw-search-tool-root .msg-text-container { padding: 0 20px; }
-  #hw-search-tool-root .msg-title { font-size: 1.3em; font-weight: bold; color: #333; margin-bottom: 12px; }
-  #hw-search-tool-root .msg-body { font-size: 15px; color: #444; line-height: 1.6; margin-bottom: 20px; }
+  #hw-search-tool-root .modal-content-help { background-color: #fff; width: 100%; max-width: 500px; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); max-height: 85vh; overflow-y: auto; position: relative; animation: popIn 0.2s ease-out; }
   
-  /* 画像の左右空白をなくす設定 */
+  #hw-search-tool-root .msg-title { font-size: 1.25em; font-weight: bold; color: #333; margin-bottom: 15px; padding: 0 20px; }
+  #hw-search-tool-root .msg-body { font-size: 15px; color: #444; line-height: 1.7; margin-bottom: 20px; padding: 0 20px; }
+  
+  /* 選択条件のプレビュー（深緑ベースで信頼感を演出） */
+  #hw-search-tool-root .selected-preview { 
+    background-color: #f0f7f0; 
+    border: 1px solid #d0e0d0; 
+    border-radius: 6px; 
+    padding: 12px; 
+    margin: 0 20px 20px 20px; 
+    text-align: left; 
+    font-size: 13.5px;
+  }
+  #hw-search-tool-root .selected-preview-title { font-weight: bold; color: #1e703d; border-bottom: 1px solid #d0e0d0; margin-bottom: 5px; padding-bottom: 3px; font-size: 12px; }
+
+  /* ガイド画像の左右空白なし設定 */
   #hw-search-tool-root .msg-guide-img { width: 100%; height: auto; display: block; margin: 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; }
   
-  /* ▼ 修正：ボタンの横幅をさらに伸ばす（flex比率の変更） */
-  #hw-search-tool-root .msg-buttons { display: flex; justify-content: center; gap: 10px; padding: 20px 15px 0 15px; }
-  #hw-search-tool-root .btn-ok { background: #008000; color: #fff !important; border: none; padding: 12px 5px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; flex: 1.5; white-space: nowrap; } /* 1.2から1.5へ拡大 */
-  #hw-search-tool-root .btn-cancel { background: #ccc; color: #333 !important; border: none; padding: 12px 5px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; flex: 0.5; white-space: nowrap; } /* 0.8から0.5へ縮小 */
+  /* ポップアップのボタン（1行に収めつつ公式感のあるデザインに） */
+  #hw-search-tool-root .msg-buttons { 
+    display: flex; 
+    justify-content: center; 
+    gap: 10px; 
+    padding: 20px; 
+    background: #fdfdfd;
+    border-radius: 0 0 12px 12px;
+  }
+  #hw-search-tool-root .btn-ok { background: #008000; color: #fff !important; border: none; padding: 14px 5px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; flex: 1.5; white-space: nowrap; }
+  #hw-search-tool-root .btn-cancel { background: #ccc; color: #333 !important; border: none; padding: 14px 5px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; flex: 0.5; white-space: nowrap; }
 
   /* UI基本パーツ */
-  .grid-container { display: flex; flex-wrap: wrap; gap: 8px; }
-  .grid-item-2 { flex: 1 1 calc(50% - 8px); }
-  .btn-base { display: flex; align-items: center; justify-content: center; padding: 5px; text-align: center; cursor: pointer; box-sizing: border-box; font-size: 15px; font-weight: bold; border-radius: 8px; text-decoration: none; min-height: 60px; line-height: 1.3; width: 100%; border: 2px solid transparent; transition: all 0.2s; }
-  .area-btn { background: #fff; color: #008000; border: 2px solid #008000; }
-  .area-btn.active { background: #008000 !important; color: #fff !important; }
-  .searchbutton { display: block; width: 100%; padding: 20px; background: #008000; color: #fff !important; text-align: center; font-size: 24px; font-weight: bold; border-radius: 12px; margin-top: 15px; text-decoration: none; box-sizing: border-box; }
-  input[type="checkbox"], input[type="radio"] { display: none; }
-  .chkLabel { background: #fff; color: #008000; border: 1px solid #008000; }
-  input:checked + .chkLabel { background: #d0f0c0 !important; border: 2px solid #008000 !important; }
-  .section { margin-top: 2em; font-weight: bold; border-bottom: 2px solid #008000; padding-bottom: 5px; margin-bottom: 15px; color: #333; }
+  #hw-search-tool-root .section { margin-top: 2em; font-weight: bold; border-bottom: 2px solid #008000; padding-bottom: 5px; margin-bottom: 15px; color: #333; }
+  #hw-search-tool-root .grid-container { display: flex; flex-wrap: wrap; gap: 8px; }
+  #hw-search-tool-root .grid-item-2 { flex: 1 1 calc(50% - 8px); }
+  #hw-search-tool-root .grid-item-full { flex: 1 1 100%; }
+  #hw-search-tool-root .btn-base { display: flex; align-items: center; justify-content: center; padding: 5px; text-align: center; cursor: pointer; box-sizing: border-box; font-size: 15px; font-weight: bold; border-radius: 8px; text-decoration: none; min-height: 60px; line-height: 1.3; width: 100%; border: 2px solid transparent; transition: all 0.2s; }
+  #hw-search-tool-root .area-btn { background: #fff; color: #008000; border: 2px solid #008000; }
+  #hw-search-tool-root .area-btn.active { background: #008000 !important; color: #fff !important; }
+  #hw-search-tool-root .chkLabel { background: #fff; color: #008000; border: 1px solid #008000; }
+  #hw-search-tool-root input:checked + .chkLabel { background: #d0f0c0 !important; border: 2px solid #008000 !important; }
+  #hw-search-tool-root input[type="checkbox"], #hw-search-tool-root input[type="radio"] { display: none; }
+  
+  #hw-search-tool-root .searchbutton { display: block; width: 100%; padding: 20px; background: #008000; color: #fff !important; text-align: center; font-size: 24px; font-weight: bold; border-radius: 12px; margin-top: 15px; text-decoration: none; box-sizing: border-box; }
+
+  /* スマホ対応 */
+  @media screen and (max-width: 600px) {
+    #hw-search-tool-root #wrapper { padding: 10px 5px; width: 100%; padding-bottom: 140px; }
+    #hw-search-tool-root .searchbutton { position: fixed; bottom: 0; left: 0; width: 100%; border-radius: 0; z-index: 999; padding: 20px; }
+  }
 </style>
 
 <script type="text/javascript">
   var amp = String.fromCharCode(38);
   var selectedAreaKeys = [];
+  var areaData = {
+    "matsuyama_all": { name: "松山市全域", code: "38201", words: "" },
+    "east":  { name: "城東・中央", code: "38201", words: "一番町　二番町　三番町" },
+    "west":  { name: "城西・中央", code: "38201", words: "大手町　南江戸　竹原" },
+    "iyo":    { name: "伊予市",     code: "38210", words: "" }
+  };
 
   function showMyModal(title, bodyHtml, isConfirm, callback) {
     var overlay = document.getElementById('msg-modal-overlay');
@@ -50,9 +112,32 @@
   }
 
   function executeMySearch() {
-    var params = ""; // 検索条件収集ロジック
+    // 選択条件をテキスト形式で取得する関数
+    var getConditionSummary = function() {
+        var summary = "";
+        var areaDisplay = document.getElementById('selectedAreaDisplay') ? document.getElementById('selectedAreaDisplay').innerText : "指定なし";
+        summary += "● 地区： " + areaDisplay.replace("選択中: ", "") + "<br>";
+        
+        var ippan = document.querySelector('input[name="radio1"]:checked');
+        if(ippan && ippan.id !== 's4') summary += "● 区分： " + document.querySelector('label[for="'+ippan.id+'"]').innerText + "<br>";
+        
+        var ind = document.querySelector('input[name="radioIndustry"]:checked');
+        if(ind && ind.id !== 'ind0') summary += "● 業界： " + document.querySelector('label[for="'+ind.id+'"]').innerText + "<br>";
+
+        var job = document.querySelector('input[name="radioJobType"]:checked');
+        if(job && job.id !== 'job0') summary += "● 職種： " + document.querySelector('label[for="'+job.id+'"]').innerText + "<br>";
+
+        var checks = document.querySelectorAll('input[name="j1"]:checked');
+        if(checks.length > 0) {
+            var names = [];
+            checks.forEach(function(c){ names.push(document.querySelector('label[for="'+c.id+'"]').innerText); });
+            summary += "● 条件： " + names.join(", ");
+        }
+        return summary === "" ? "指定なし" : summary;
+    };
 
     var performOpen = function() {
+        var params = ""; // ここに検索条件収集ロジックが入る
         var finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchShosaiBtn" 
                      + amp + "screenId=GECA110010" 
                      + amp + "searchClear=1" 
@@ -61,40 +146,58 @@
         window.location.href = finalUrl;
     };
 
-    // ▼ 修正：タイトルを信頼感のあるものに、本文を「最下部」という表現に変更
-    var modalTitle = "ハローワーク公式サイトで検索";
-    var confirmHtml = "<div class='msg-text-container'>"
-                    + "<div class='msg-body'><b>ハローワークインターネットサービスの<br>詳細検索画面へ移動します。</b><br>"
-                    + "<span style='font-size:13px; color:#d32f2f;'>（選択した条件は自動で入力されています）</span><br><br>"
-                    + "移動先の画面を<b>一番下（最下部）</b>まで進み、緑色の<br>"
-                    + "<span style='display:inline-block; background:#1e703d; color:#fff; padding:6px 15px; border-radius:4px; font-weight:bold; margin:5px 0;'>🔍 検索する</span><br>"
-                    + "ボタンを押して検索を完了してください。</div></div>"
-                    + "<img src='./search-guide.png' class='msg-guide-img' alt='操作案内' onerror=\"this.src='https://placehold.jp/24/f4f4f4/666/400x200.png?text=search-guide.pngをアップロードしてください';\">";
+    // モーダル用コンテンツ
+    var confirmHtml = "<div class='selected-preview'>"
+                    + "<div class='selected-preview-title'>下記条件を引き継ぎます</div>"
+                    + getConditionSummary()
+                    + "</div>"
+                    + "<div class='msg-body'>ハローワーク公式サイトの<br>詳細検索画面へ移動します。<br><br>"
+                    + "遷移先画面下部の<br>"
+                    + "<b style='color:#1e703d; font-size:1.2em;'>【検索する】</b><br>"
+                    + "ボタンを押下して検索を完了してください。</div>"
+                    + "<img src='./search-guide.png' class='msg-guide-img' alt='操作案内' onerror=\"this.style.display='none';\">";
 
-    showMyModal(modalTitle, confirmHtml, true, function(result){
+    showMyModal("ハローワーク公式サイトで検索", confirmHtml, true, function(result){
         if(result) performOpen();
     });
   }
 
-  function selectArea(k) { selectedAreaKeys = [k]; }
+  function selectArea(k) { 
+    var btn = event.currentTarget;
+    btn.classList.toggle('active');
+    document.getElementById('selectedAreaDisplay').innerText = "選択中: " + areaData[k].name;
+  }
 </script>
 
 <div id="hw-search-tool-root">
   <div id="wrapper">
+    <div class="intro-text">
+      ハローワーク松山管轄の求人を簡単に検索できます。
+    </div>
+
     <div class="section">1. 地区を選択</div>
+    <div id="selectedAreaDisplay" style="margin-bottom:10px; font-weight:bold; color:#008000;">選択中: 指定なし</div>
     <div class="grid-container">
       <div class="grid-item-2"><a href="javascript:void(0);" onclick="selectArea('matsuyama_all');" class="btn-base area-btn">松山市全域</a></div>
+      <div class="grid-item-2"><a href="javascript:void(0);" onclick="selectArea('east');" class="btn-base area-btn">城東・中央</a></div>
     </div>
+
+    <div style="display:none;">
+      <input id="s4" name="radio1" type="radio" checked><label for="s4"></label>
+      <input id="ind0" name="radioIndustry" type="radio" checked><label for="ind0"></label>
+      <input id="job0" name="radioJobType" type="radio" checked><label for="job0"></label>
+    </div>
+
     <a class="searchbutton" href="javascript:void(0);" onclick="executeMySearch()">この条件で検索する</a>
   </div>
 
   <div id="msg-modal-overlay" class="modal-overlay">
     <div class="modal-content-msg">
-      <div id="msg-modal-title" class="msg-title" style="padding:0 20px;"></div>
+      <div id="msg-modal-title" class="msg-title"></div>
       <div id="msg-modal-text-content"></div>
       <div class="msg-buttons">
           <button id="msg-btn-cancel" class="btn-cancel">戻る</button>
-          <button id="msg-btn-ok" class="btn-ok">公式画面へ進む</button>
+          <button id="msg-btn-ok" class="btn-ok">公式サイトへ進む</button>
       </div>
     </div>
   </div>
