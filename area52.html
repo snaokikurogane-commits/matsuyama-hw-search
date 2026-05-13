@@ -27,7 +27,7 @@
     background-color: #fff; 
     width: 100%; 
     max-width: 380px; 
-    max-height: 90vh; /* 縦伸び防止 */
+    max-height: 90vh; 
     padding: 25px 0 0 0; 
     border-radius: 12px; 
     box-shadow: 0 5px 25px rgba(0,0,0,0.3); 
@@ -55,14 +55,11 @@
     margin: 0 20px 15px 20px; 
     text-align: left; 
     font-size: 14px;
-    max-height: 130px;
+    max-height: 150px;
     overflow-y: auto; 
   }
   .selected-preview-title { font-weight: bold; color: #1e703d; border-bottom: 1px solid #d0e0d0; margin-bottom: 6px; padding-bottom: 4px; font-size: 13.5px; }
 
-  /* ガイド画像 */
-  .msg-guide-img { width: 100%; max-width: 100%; max-height: 250px; display: block; margin: 0 auto; border-top: 1px solid #eee; border-bottom: 1px solid #eee; object-fit: contain; }
-  
   /* ボタン上下幅の調整 */
   .msg-buttons { 
     display: flex; 
@@ -95,14 +92,19 @@
   .grid-item-2 { flex: 1 1 calc(50% - 8px); }
   .grid-item-full { flex: 1 1 100%; }
   .btn-base { display: flex; align-items: center; justify-content: center; padding: 5px; text-align: center; cursor: pointer; box-sizing: border-box; font-size: 15px; font-weight: bold; border-radius: 8px; text-decoration: none; min-height: 60px; line-height: 1.3; width: 100%; border: 2px solid transparent; transition: all 0.2s; }
+  
   .area-btn { background: #fff; color: #008000; border: 2px solid #008000; }
   .area-btn.active { background: #008000 !important; color: #fff !important; border-color: #008000 !important; box-shadow: 0 0 5px rgba(0,128,0,0.5); }
+  
   .chkLabel { background: #fff; color: #008000; border: 1px solid #008000; }
   input:checked + .chkLabel { background: #d0f0c0 !important; border: 2px solid #008000 !important; color: #008000 !important; }
+  
   .industry-btn-label { background: #fff; color: #0066cc; border: 2px solid #0066cc; }
   input:checked + .industry-btn-label { background: #0066cc !important; color: #fff !important; border-color: #0066cc !important; }
+  
   .job-btn-label { background: #fff; color: #e6006b; border: 2px solid #e6006b; }
   input:checked + .job-btn-label { background: #e6006b !important; color: #fff !important; border-color: #e6006b !important; }
+  
   .btn-base.disabled { background-color: #e0e0e0 !important; color: #999 !important; border-color: #ccc !important; pointer-events: none; opacity: 0.7; }
   .area-btn.disabled { background-color: #e0e0e0 !important; color: #999 !important; border-color: #ccc !important; }
   .exclusion-msg { display: none; color: #d32f2f; font-size: 0.9em; font-weight: bold; margin-bottom: 10px; background: #fff0f0; padding: 8px; border-radius: 4px; border-left: 4px solid #d32f2f; }
@@ -167,6 +169,7 @@
   .warning-box strong { color: #a02020; }
   .contact-section { background-color: #fff; text-align: center; padding: 25px 20px; font-size: 16px; font-weight: bold; color: #333; border-top: 1px dashed #ddd; line-height: 1.6; letter-spacing: 0.05em; }
 
+  /* スマホ対応 */
   @media screen and (max-width: 600px) {
     #wrapper { padding: 10px 5px; width: 100%; padding-bottom: 140px; }
     .btn-base { font-size: 14px; padding: 5px; min-height: 55px; }
@@ -309,7 +312,7 @@
     if(isConfirm) {
         btnCancel.style.display = 'block';
         btnCancel.innerText = "キャンセル";
-        btnOk.innerText = "「詳しい条件で検索」へ進む";
+        btnOk.innerText = "公式サイトへ進む";
     } else {
         btnCancel.style.display = 'none';
         btnOk.innerText = "OK";
@@ -379,6 +382,7 @@
 
   function updateAreaDisplay() {
     var display = document.getElementById('selectedAreaDisplay');
+    // 何も選択されていない場合は「指定しない」に変更
     if (selectedAreaKeys.length === 0) {
       display.innerText = "指定しない";
       document.getElementById('FreeW').value = "";
@@ -558,7 +562,6 @@
     
     params += collect('ippan') + collect('newArri') + collect('jyouken') + collect('JobIndustry') + collect('JobType') + collect('salary');
     
-    // ▼ 引き継ぐ条件を取得して表示用のテキストを作成
     var getConditionSummary = function() {
         var summary = "";
         var areaDisplay = document.getElementById('selectedAreaDisplay') ? document.getElementById('selectedAreaDisplay').innerText : "指定なし";
@@ -585,9 +588,8 @@
     var fw = document.getElementById("FreeW").value;
     
     var performOpen = function() {
-        // HWISのシステム仕様に対応するため、遷移先を searchShosaiBtn (詳細条件画面) に変更
-        // ▼ 検索条件を消さないための searchClear=0 は維持 ▼
-        var finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchShosaiBtn" 
+        // ▼ action=searchBtn に戻すことで、条件を確実に引き継いで検索結果を表示します
+        var finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchBtn" 
                      + amp + "screenId=GECA110010" 
                      + amp + "searchClear=0" 
                      + amp + "kjKbnRadioBtn=1" 
@@ -599,15 +601,16 @@
 
     var modalTitle = "ハローワークインターネット<br>サービスで検索";
 
+    // ▼ いきなり検索結果が出るため、ボタンを押させる案内文と画像を削除し、スッキリさせました
     var confirmHtml = "<div class='selected-preview'>"
-                    + "<div class='selected-preview-title'>下記条件を引き継ぎます</div>"
+                    + "<div class='selected-preview-title'>下記条件で検索を実行します</div>"
                     + getConditionSummary()
                     + "</div>"
                     + "<div class='msg-body'>"
-                    + "遷移先画面下部の <b style='color:#1e703d; font-size:1.15em;'>【検索する】</b> "
-                    + "ボタンを押下して検索を完了してください。</div>"
-                    + "<div style='font-size:13.5px; font-weight:bold; color:#1e703d; margin-bottom:5px;'>▼ 遷移先画面イメージ ▼</div>"
-                    + "<img src='./search-guide.png' class='msg-guide-img' alt='操作案内' onerror=\"this.style.display='none';\">";
+                    + "ハローワーク公式サイトの <b style='color:#1e703d; font-size:1.15em;'>検索結果（求人一覧）</b> "
+                    + "へ直接移動します。<br><br>"
+                    + "<span style='font-size:0.9em; color:#d32f2f;'>※2ページ目以降を見る際、もしエラーが出た場合は、画面下部の「条件を変更する」から再度検索してください。</span>"
+                    + "</div>";
 
     if (isKeywordSearch) {
         params += collect('Free');
@@ -629,322 +632,327 @@
 </head>
 <body>
 
-<a class="floating-help-btn" onclick="openHelp(); return false;">？ 利用方法・注意事項</a>
+<div id="hw-search-tool-root">
 
-<div id="help-modal" class="modal-overlay" onclick="if(event.target == this) closeHelp();">
-  <div class="modal-content-help">
-    <div class="modal-header">
-      <span>ご利用案内・ご注意</span>
-      <button class="modal-close-btn" onclick="closeHelp()">閉じる ×</button>
-    </div>
-    <div class="modal-body">
-      
-      <div class="help-section-title" style="margin-top: 0;">操作方法について</div>
-      <ul class="help-list" style="margin-bottom: 25px;">
-        <li><strong>条件の選択：</strong>各項目からご希望の条件をタップして選択してください。選択した条件は画面下部の「現在の検索条件」に表示されます。</li>
-        <li><strong>検索の実行：</strong>「この条件で検索する」ボタンを押すと、ハローワークインターネットサービスの詳細検索画面に移動します。</li>
-        <li><strong>条件の保存：</strong>「この条件を保存」ボタンを押すと、お使いのスマートフォン（ブラウザ）に条件が記憶され、次回開いた際に自動でセットされます。</li>
-        <li><strong>条件のリセット：</strong>選択を最初からやり直したい場合は「リセット」ボタンを押してください。</li>
-      </ul>
+  <a class="floating-help-btn" onclick="openHelp(); return false;">？ 利用方法・注意事項</a>
 
-      <div class="help-section-title">ご利用時の注意事項</div>
-      <div class="help-notes">
+  <div id="help-modal" class="modal-overlay" onclick="if(event.target == this) closeHelp();">
+    <div class="modal-content-help">
+      <div class="modal-header">
+        <span>ご利用案内・ご注意</span>
+        <button class="modal-close-btn" onclick="closeHelp()">閉じる ×</button>
+      </div>
+      <div class="modal-body">
         
-        <p class="help-note-item">
-          <strong>【LINE等からのご利用について】</strong><br>
-          検索結果の「2ページ目」へ進もうとすると、入力した条件がリセットされる場合があります。エラーが起きた場合は、こちらの <a href="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchShosaiBtn&amp;screenId=GECA110010&amp;kjKbnRadioBtn=1&amp;ippanCKBox=1&amp;ippanCKBox=2" target="_blank" style="color:#0066cc; font-weight:bold; text-decoration:underline;">「ハローワークインターネットサービスへ」</a> から公式サイトを開き、再度検索をお願いいたします。
-        </p>
-        
-        <p class="help-note-item">
-          <strong>【検索における網羅性について】</strong><br>
-          松山市内の地区指定は主要な町名を抽出するため、すべての求人が表示されるわけではありません。漏れなく確認したい場合は<strong>「松山市全域」</strong>を選択してください。また、職種は大分類です。詳細な小分類は検索結果画面から再選択してください。
-        </p>
-
-        <p class="help-note-item">
-          <strong>【シニア・子育て・ミドル検索について】</strong><br>
-          システム制限により、<strong>地区指定（詳細な町名）との併用はできません</strong>のでご了承ください。
-        </p>
-
-      </div>
-
-      <div style="text-align:center; margin-top:20px;">
-        <button onclick="closeHelp()" style="padding:10px 25px; background:#008000; color:#fff; border:none; border-radius:5px; font-weight:bold; font-size:15px; cursor:pointer;">閉じる</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id="msg-modal-overlay" class="modal-overlay">
-  <div class="modal-content-msg">
-    <div id="msg-modal-title" class="msg-title"></div>
-    <div id="msg-modal-text-content"></div>
-    <div class="msg-buttons">
-        <button id="msg-btn-cancel" class="btn-cancel">キャンセル</button>
-        <button id="msg-btn-ok" class="btn-ok">OK</button>
-    </div>
-  </div>
-</div>
-
-<div id="wrapper">
-
-  <div class="intro-text">
-    ハローワーク松山管轄の求人情報を、簡単な操作で検索することができます。<br>
-    <span class="caution-text">※本機能は簡易検索システムのため、条件によっては全ての求人が表示されない場合があります。</span>
-    
-    <div class="hwis-guide-box">
-      <p class="hwis-guide-text">より詳細な条件で検索したい場合は、以下のサービスをご利用ください。</p>
-      <a href="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchShosaiBtn&amp;screenId=GECA110010&amp;kjKbnRadioBtn=1&amp;ippanCKBox=1&amp;ippanCKBox=2" target="_blank" class="hwis-link-btn">ハローワークインターネットサービスへ</a>
-    </div>
-  </div>
-
-  <div class="section">1. 地区を選択</div>
-  
-  <div class="notice-box">
-    <strong>【エリア選択時のご注意】</strong><br>
-    ・ハローワークの仕様上、同時に選択できる地域は<strong>5つまで</strong>です。<br>
-    ・松山市内の地区指定は、主要なエリア（町名）を抽出します。抜け漏れなく探したい場合は<strong>「松山市全域」</strong>を推奨します。
-  </div>
-  
-  <div id="area-warning-msg" class="exclusion-msg">
-    ※「シニア」「子育て」等を選択中は、詳細エリア指定はできません（併用不可）
-  </div>
-
-  <div class="sub-section">▼松山市内（1つのみ選択可）</div>
-  <div class="grid-container">
-    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-matsuyama_all" onclick="selectArea('matsuyama_all');" class="btn-base area-btn" style="border-color:#aaa; color:#333;">松山市全域</a></div>
-    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-east" onclick="selectArea('east');" class="btn-base area-btn">城東・中央</a></div>
-    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-west" onclick="selectArea('west');" class="btn-base area-btn">城西・中央</a></div>
-    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-north" onclick="selectArea('north');" class="btn-base area-btn">城北</a></div>
-    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-south" onclick="selectArea('south');" class="btn-base area-btn">城南</a></div>
-    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-joto" onclick="selectArea('joto');" class="btn-base area-btn">久米・小野</a></div>
-    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-josai" onclick="selectArea('josai');" class="btn-base area-btn">三津・垣生</a></div>
-    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-hojo" onclick="selectArea('hojo');" class="btn-base area-btn">北条・島しょ</a></div>
-  </div>
-  <div class="sub-section" style="margin-top:10px;">▼周辺地域（複数選択可・合計5地域まで）</div>
-  <div class="grid-container">
-    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-iyo" onclick="selectArea('iyo');" class="btn-base area-btn">伊予市</a></div>
-    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-toon" onclick="selectArea('toon');" class="btn-base area-btn">東温市</a></div>
-    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-masaki" onclick="selectArea('masaki');" class="btn-base area-btn">松前町</a></div>
-    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-tobe" onclick="selectArea('tobe');" class="btn-base area-btn">砥部町</a></div>
-    <div class="grid-item-2"><a href="javascript:void(0);" id="btn-kuma" onclick="selectArea('kuma');" class="btn-base area-btn">久万高原町</a></div>
-  </div>
-  <div id="selectedAreaDisplay" style="color:#008000; font-weight:bold; margin-top:10px; margin-bottom:15px; border-bottom:1px solid #ccc; padding-bottom:5px;">指定しない</div>
-
-  <div class="section">2. 求人区分</div>
-  <form name="ippan" class="grid-container">
-    <div class="grid-item-2"><input checked id="s4" name="radio1" type="radio" value=""/><label for="s4" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
-    <div class="grid-item-2"><input id="s1" name="radio1" type="radio" value="&ippanCKBox=1&koyoFltmCKBox=1"/><label for="s1" class="btn-base chkLabel">正社員</label></div>
-    <div class="grid-item-2"><input id="s2" name="radio1" type="radio" value="&ippanCKBox=1"/><label for="s2" class="btn-base chkLabel">フルタイム</label></div>
-    <div class="grid-item-2"><input id="s3" name="radio1" type="radio" value="&ippanCKBox=2"/><label for="s3" class="btn-base chkLabel">パート</label></div>
-  </form>
-
-  <div id="salary-aux-section" class="aux-section">
-    <div class="aux-title">↳ 【給与の希望】※任意</div>
-    <form name="salary" id="salary-form" class="grid-container">
-      <div class="grid-item-2"><input checked id="sal0" name="radioSalary" type="radio" value=""/><label for="sal0" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
-      <div class="grid-item-2 sal-monthly"><input id="salM1" name="radioSalary" type="radio" value="&gkkyIn=200000"/><label for="salM1" class="btn-base chkLabel">月給 20万円以上</label></div>
-      <div class="grid-item-2 sal-monthly"><input id="salM2" name="radioSalary" type="radio" value="&gkkyIn=250000"/><label for="salM2" class="btn-base chkLabel">月給 25万円以上</label></div>
-      <div class="grid-item-2 sal-monthly"><input id="salM3" name="radioSalary" type="radio" value="&gkkyIn=300000"/><label for="salM3" class="btn-base chkLabel">月給 30万円以上</label></div>
-      <div class="grid-item-2 sal-hourly"><input id="salH1" name="radioSalary" type="radio" value="&jikyIn=1100"/><label for="salH1" class="btn-base chkLabel">時給 1,100円以上</label></div>
-      <div class="grid-item-2 sal-hourly"><input id="salH2" name="radioSalary" type="radio" value="&jikyIn=1200"/><label for="salH2" class="btn-base chkLabel">時給 1,200円以上</label></div>
-      <div class="grid-item-2 sal-hourly"><input id="salH3" name="radioSalary" type="radio" value="&jikyIn=1500"/><label for="salH3" class="btn-base chkLabel">時給 1,500円以上</label></div>
-    </form>
-  </div>
-
-  <div class="section">3. 新着区分</div>
-  <form name="newArri" class="grid-container">
-    <div class="grid-item-2"><input checked id="t3" name="radio2" type="radio" value=""/><label for="t3" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
-    <div class="grid-item-2"><input id="t1" name="radio2" type="radio" value="&newArrivedCKBox=1"/><label for="t1" class="btn-base chkLabel">新着(当日/前日)</label></div>
-    <div class="grid-item-2"><input id="t2" name="radio2" type="radio" value="&newArrivedCKBox=2"/><label for="t2" class="btn-base chkLabel">1週間以内</label></div>
-  </form>
-
-  <div class="section">4. 業界・職種</div>
-  <p style="font-size:0.9em; color:#008000; font-weight:bold;">※「業界」と「職種」を両方選んで絞り込むことも可能です。</p>
-  
-  <details>
-    <summary>▼ 業界から探す</summary>
-    <div class="details-content">
-      <form name="JobIndustry" class="grid-container">
-        <div class="grid-item-full"><input checked id="ind0" name="radioIndustry" type="radio" value="" /><label for="ind0" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
-        <div class="grid-item-2"><input id="ind16" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=83&kiboSuruSngBrui2In=84&kiboSuruSngBrui3In=85" /><label for="ind16" class="btn-base industry-btn-label">医療,福祉</label></div>
-        <div class="grid-item-2"><input id="ind18" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=88&kiboSuruSngBrui2In=91&kiboSuruSngBrui3In=92" /><label for="ind18" class="btn-base industry-btn-label">サービス業・警備</label></div>
-        <div class="grid-item-2"><input id="ind9" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=50&kiboSuruSngBrui2In=56&kiboSuruSngBrui3In=61" /><label for="ind9" class="btn-base industry-btn-label">卸売業・小売業</label></div>
-        <div class="grid-item-2"><input id="ind4" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=06&kiboSuruSngBrui2In=07&kiboSuruSngBrui3In=08" /><label for="ind4" class="btn-base industry-btn-label">建設業</label></div>
-        <div class="grid-item-2"><input id="ind8" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=42&kiboSuruSngBrui2In=44&kiboSuruSngBrui3In=49" /><label for="ind8" class="btn-base industry-btn-label">運送・郵便</label></div>
-        <div class="grid-item-2"><input id="ind13" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=75&kiboSuruSngBrui2In=76&kiboSuruSngBrui3In=77" /><label for="ind13" class="btn-base industry-btn-label">宿泊・飲食サービス</label></div>
-        <div class="grid-item-2"><input id="ind5" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=09&kiboSuruSngBrui2In=26&kiboSuruSngBrui3In=16" /><label for="ind5" class="btn-base industry-btn-label">製造業</label></div>
-        <div class="grid-item-2"><input id="ind1" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=01&kiboSuruSngBrui2In=02&kiboSuruSngBrui3In=03&kiboSuruSngBrui4In=04" /><label for="ind1" class="btn-base industry-btn-label">農林漁業</label></div>
-        <div class="grid-item-2"><input id="ind7" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=39&kiboSuruSngBrui2In=40&kiboSuruSngBrui3In=41" /><label for="ind7" class="btn-base industry-btn-label">情報通信業</label></div>
-        <div class="grid-item-2"><input id="ind15" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=81&kiboSuruSngBrui2In=82" /><label for="ind15" class="btn-base industry-btn-label">教育,学習支援業</label></div>
-      </form>
-    </div>
-  </details>
-
-  <details>
-    <summary>▼ 職種から探す</summary>
-    <div class="details-content">
-      <div class="notice-box" style="margin-top: 5px;">
-        <strong>【職種選択時のご注意】</strong><br>
-        各ボタンは大分類を指定しています。より細かく小分類で指定したい場合は、<strong>検索先の画面を上にスクロールして職種を再選択</strong>してください。
-      </div>
-
-      <form name="JobType" class="grid-container">
-        <div class="grid-item-full"><input checked id="job0" name="radioJobType" type="radio" value="" /><label for="job0" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
-        <div class="grid-item-2"><input id="job1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=01,00" /><label for="job1" class="btn-base job-btn-label">事務・管理職</label></div>
-        <div class="grid-item-2"><input id="job2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=02,00" /><label for="job2" class="btn-base job-btn-label">営業</label></div>
-        <div class="grid-item-2"><input id="job3" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=03,00" /><label for="job3" class="btn-base job-btn-label">販売</label></div>
-        <div class="grid-item-2"><input id="job4" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=04,00" /><label for="job4" class="btn-base job-btn-label">接客・サービス</label></div>
-        <div class="grid-item-2"><input id="job5" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=05,00" /><label for="job5" class="btn-base job-btn-label">介護・福祉</label></div>
-        <div class="grid-item-2"><input id="job6" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=06,00" /><label for="job6" class="btn-base job-btn-label">保育・教育</label></div>
-        <div class="grid-item-2"><input id="job7" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=07,00" /><label for="job7" class="btn-base job-btn-label">医療・看護</label></div>
-        <div class="grid-item-2"><input id="job8" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=08,00" /><label for="job8" class="btn-base job-btn-label">製造・修理</label></div>
-        <div class="grid-item-2"><input id="job9" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=09,00" /><label for="job9" class="btn-base job-btn-label">技術・IT・専門職</label></div>
-        <div class="grid-item-2"><input id="job10" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=10,00" /><label for="job10" class="btn-base job-btn-label">建築・土木・電気</label></div>
-        <div class="grid-item-2"><input id="job11" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=11,00" /><label for="job11" class="btn-base job-btn-label">警備・施設管理</label></div>
-        <div class="grid-item-2"><input id="job12" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=12,00" /><label for="job12" class="btn-base job-btn-label">運輸・配送</label></div>
-        <div class="grid-item-2"><input id="job13" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=13,00" /><label for="job13" class="btn-base job-btn-label">清掃・軽作業</label></div>
-        <div class="grid-item-2"><input id="job14" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=14,00" /><label for="job14" class="btn-base job-btn-label">農林漁業</label></div>
-      </form>
-    </div>
-  </details>
-
-  <div class="section">5. 詳しい条件</div>
-  <form name="jyouken" class="grid-container">
-    <div class="grid-item-2"><input id="w1" name="j1" type="checkbox" value="&grkiFumonCKBox=1"/><label for="w1" class="btn-base chkLabel">学歴不問</label></div>
-    <div class="grid-item-2"><input id="w2" name="j1" type="checkbox" value="&hynaKikntFumonCKBox=1"/><label for="w2" class="btn-base chkLabel">経験不問</label></div>
-    <div class="grid-item-2"><input id="w3" name="j1" type="checkbox" value="&hynaMenkyoSkkuFumonCKBox=1"/><label for="w3" class="btn-base chkLabel">資格不問</label></div>
-    <div class="grid-item-2"><input id="w6" name="j1" type="checkbox" value="&sonotaCKBox=4"/><label for="w6" class="btn-base chkLabel">転勤なし</label></div>
-    <div class="grid-item-2"><input id="w7" name="j1" type="checkbox" value="&jkgiRadioBtn=2"/><label for="w7" class="btn-base chkLabel">残業なし</label></div>
-    <div class="grid-item-2"><input id="w8" name="j1" type="checkbox" value="&shoyoAriCKBox=1"/><label for="w8" class="btn-base chkLabel">賞与あり</label></div>
-    <div class="grid-item-2"><input id="w9" name="j1" type="checkbox" value="&nyukyoKaCKBox=1"/><label for="w9" class="btn-base chkLabel">単身住宅有</label></div>
-    <div class="grid-item-2"><input id="w10" name="j1" type="checkbox" value="&riyoKanoNaTjsAriCKBox=1"/><label for="w10" class="btn-base chkLabel">託児施設有</label></div>
-    <div class="grid-item-2"><input id="w5" name="j1" type="checkbox" value="&sonotaCKBox=3"/><label for="w5" class="btn-base chkLabel">マイカー通勤</label></div>
-    <div class="grid-item-2"><input id="w4" name="j1" type="checkbox" value="&holidayCKBox=6,7,8"/><label for="w4" class="btn-base chkLabel">土日祝休み</label></div>
-    <div class="grid-item-2"><input id="w15" name="j1" type="checkbox" value="&sonotaCKBox=1"/><label for="w15" class="btn-base chkLabel">書類選考なし</label></div>
-    <div class="grid-item-2"><input id="w16" name="j1" type="checkbox" value="&sonotaCKBox=5"/><label for="w16" class="btn-base chkLabel">在宅勤務</label></div>
-    <div class="grid-item-2"><input id="w17" name="j1" type="checkbox" value="&sonotaCKBox=6"/><label for="w17" class="btn-base chkLabel">駅近(徒歩10分以内)</label></div>
-    <div class="grid-item-2"><input id="w18" name="j1" type="checkbox" value="&jdsMenkyoCKBox=4"/><label for="w18" class="btn-base chkLabel">運転免許不要</label></div>
-  </form>
-
-  <div class="section">6. キーワード・その他</div>
-  <form name="Free" class="grid-container">
-    <div class="grid-item-2"><input checked id="u4" name="radio3" type="radio" value="" onclick="onRadioClick()"/><label for="u4" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
-    <div class="grid-item-2"><input id="u2" name="radio3" type="radio" value="&freeWordInput=%E5%AD%90%E8%82%B2%E3%81%A6%E6%94%AF%E6%8F%B4%E6%B1%82%E4%BA%BA" onclick="onRadioClick()"/><label for="u2" class="btn-base chkLabel">子育て支援</label></div>
-    
-    <div id="senior-warning-msg" class="exclusion-msg" style="flex:100%; display:none;">
-      ※エリア指定中は、上記キーワードボタンは使用できません（併用不可）
-    </div>
-
-    <div class="grid-item-2"><input id="u6" name="radio3" type="radio" value="&freeWordInput=%E3%82%B7%E3%83%8B%E3%82%A2%E3%80%80%EF%BC%96%EF%BC%90%E6%AD%B3%E4%BB%A5%E4%B8%8A&nOTKNSKFreeWordInput=%E3%83%9F%E3%83%89%E3%83%AB%E3%82%B7%E3%83%8B%E3%82%A2&freeWordRadioBtn=0" onclick="onRadioClick()"/><label for="u6" class="btn-base chkLabel">シニア(60歳~)</label></div>
-    <div class="grid-item-2"><input id="u7" name="radio3" type="radio" value="&freeWordInput=%E3%83%9F%E3%83%89%E3%83%AB%E3%82%B7%E3%83%8B%E3%82%A2&freeWordRadioBtn=0" onclick="onRadioClick()"/><label for="u7" class="btn-base chkLabel">ミドルシニア</label></div>
-    
-    <div class="grid-item-2" style="flex:100%;"><input id="u5" name="radio3" type="radio" value="" onclick="onRadioClick()"/><label for="u5" class="btn-base chkLabel">入力する</label></div>
-  </form>
-  <div id="FreeWord" style="display:none;">
-    <input class="textarea" id="FreeW" placeholder="全角スペースで区切って入力" type="text" />
-  </div>
-
-  <div class="condition-summary">
-    <div class="condition-summary-title">現在の検索条件</div>
-    <p style="font-size:0.85em; color:#666; margin:0 0 5px 0;">
-      ※「この条件を保存」ボタンを押すと、次回開いた時にも同じ条件が自動でセットされます。<br>
-      <span style="color:#d32f2f;">（※お使いのブラウザや使用環境によっては、条件が保存されない場合がございます。あらかじめご容赦ください。）</span>
-    </p>
-    <div id="current-conditions-text" style="white-space: pre-wrap; margin-top: 8px;"></div>
-    
-    <div class="save-btn-container">
-      <button class="save-btn" onclick="saveConditions()">この条件を保存</button>
-      <button class="save-btn" onclick="resetAll()">リセット</button>
-    </div>
-  </div>
-
-  <div id="floating-condition-text" class="floating-condition"></div>
-  <a class="searchbutton" href="javascript:void(0);" onclick="executeMySearch()">この条件で検索する</a>
-
-  <div class="bottom-info-container">
-    
-    <div class="mypage-cta-section" style="padding-bottom: 10px;">
-      <div class="mypage-cta-header">
-        <h3 class="mypage-cta-title"><span>マイページでもっと便利に</span></h3>
-        <p class="mypage-cta-intro">「ハローワークに行く時間がない」「気になる求人をストックしておきたい」<br>そんな方には、求職者マイページがおすすめです！</p>
-      </div>
-
-      <div class="mypage-features">
-        <div class="mypage-features-title">＼ 求職者マイページでできること ／</div>
-        <ul class="large-benefits">
-          <li>検索条件を保存できる</li>
-          <li>気になる求人をお気に入り登録</li>
-          <li>ハローワークからおすすめ求人が届く</li>
-          <li>ハローワークへの登録内容を確認・変更</li>
-          <li>紹介状や選考結果、応募履歴を確認できる</li>
+        <div class="help-section-title" style="margin-top: 0;">操作方法について</div>
+        <ul class="help-list" style="margin-bottom: 25px;">
+          <li><strong>条件の選択：</strong>各項目からご希望の条件をタップして選択してください。選択した条件は画面下部の「現在の検索条件」に表示されます。</li>
+          <li><strong>検索の実行：</strong>「この条件で検索する」ボタンを押すと、ハローワークインターネットサービスの詳細検索画面に移動します。</li>
+          <li><strong>条件の保存：</strong>「この条件を保存」ボタンを押すと、お使いのスマートフォン（ブラウザ）に条件が記憶され、次回開いた際に自動でセットされます。</li>
+          <li><strong>条件のリセット：</strong>選択を最初からやり直したい場合は「リセット」ボタンを押してください。</li>
         </ul>
-      </div>
 
-      <div class="mypage-cta-header">
-        <p class="mypage-cta-desc">現在の状況に合わせて、以下のカードから<br>ご自身に当てはまるものを確認してください。</p>
-        <div class="swipe-hint">← 左右にスワイプして確認 →</div>
-      </div>
+        <div class="help-section-title">ご利用時の注意事項</div>
+        <div class="help-notes">
+          
+          <p class="help-note-item">
+            <strong>【LINE等からのご利用について】</strong><br>
+            検索結果の「2ページ目」へ進もうとすると、入力した条件がリセットされる場合があります。エラーが起きた場合は、こちらの <a href="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchShosaiBtn&amp;screenId=GECA110010&amp;kjKbnRadioBtn=1&amp;ippanCKBox=1&amp;ippanCKBox=2" target="_blank" style="color:#0066cc; font-weight:bold; text-decoration:underline;">「ハローワークインターネットサービスへ」</a> から公式サイトを開き、再度検索をお願いいたします。
+          </p>
+          
+          <p class="help-note-item">
+            <strong>【検索における網羅性について】</strong><br>
+            松山市内の地区指定は主要な町名を抽出するため、すべての求人が表示されるわけではありません。漏れなく確認したい場合は<strong>「松山市全域」</strong>を選択してください。また、職種は大分類です。詳細な小分類は検索結果画面から再選択してください。
+          </p>
 
-      <div class="card-carousel">
-        <div class="card-item">
-          <span class="card-arrow-right">▶︎</span>
-          <div class="card-header-row">
-            <span class="card-badge">初めてご利用の方</span>
-          </div>
-          <h4 class="card-title">新規マイページ開設</h4>
-          <p class="card-desc">ハローワークのご利用が初めての方はこちら。スマホから「求職登録」と「マイページ開設」が同時に完了します。</p>
-          <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA020020.do?screenId=GEAA020020&action=execRedirect&nextScreenId=GEAA010010" target="_blank" class="card-btn">新規登録・開設はこちら</a>
+          <p class="help-note-item">
+            <strong>【シニア・子育て・ミドル検索について】</strong><br>
+            システム制限により、<strong>地区指定（詳細な町名）との併用はできません</strong>のでご了承ください。
+          </p>
+
         </div>
 
-        <div class="card-item">
-          <span class="card-arrow-left">◀︎</span>
-          <span class="card-arrow-right">▶︎</span>
-          <div class="card-header-row">
-            <span class="card-badge">過去にハローワークを利用した方</span>
-          </div>
-          <h4 class="card-title">窓口でのアカウント連携</h4>
-          <p class="card-desc" style="margin-bottom: 10px;">過去（5年以内）にハローワークを利用・求職登録された方は、これまでの情報と連携させるため、お近くの窓口での手続きが必要です。<br>
-          <span style="font-size: 0.9em; color: #a02020;">※同一のメールアドレスで重複して新規登録することはできません。</span></p>
-          <div class="card-caution" style="text-align: left; margin-bottom: 15px;">
-            <strong>【登録の手順】</strong><br>
-            窓口で<strong>「アカウント作成コード」</strong>を発行します。その後、ご自身のスマートフォン等でコードを入力し、登録を完了させてください。
-          </div>
-          <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA530040.do?action=initDisp&screenId=GEAA530040" target="_blank" class="card-btn">作成コードを入力する</a>
-        </div>
-
-        <div class="card-item">
-          <span class="card-arrow-left">◀︎</span>
-          <div class="card-header-row">
-            <span class="card-badge">すでに登録済みの方</span>
-          </div>
-          <h4 class="card-title">マイページにログイン</h4>
-          <p class="card-desc">すでにマイページをお持ちの方はこちら。ご登録のメールアドレスとパスワードでログインしてご利用ください。</p>
-          <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA040010.do?action=initDisp&screenId=GEAA040010" target="_blank" class="card-btn">ログイン画面へ</a>
+        <div style="text-align:center; margin-top:20px;">
+          <button onclick="closeHelp()" style="padding:10px 25px; background:#008000; color:#fff; border:none; border-radius:5px; font-weight:bold; font-size:15px; cursor:pointer;">閉じる</button>
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="apply-guide-section">
-      <h3 class="apply-guide-title">求人へのご応募について</h3>
-      <p class="apply-guide-text">
-        原則として、求人へご応募いただく際はハローワークが発行する<strong>「紹介状」</strong>が必要となります。
-      </p>
+  <div id="msg-modal-overlay" class="modal-overlay">
+    <div class="modal-content-msg">
+      <div id="msg-modal-title" class="msg-title"></div>
+      <div id="msg-modal-text-content"></div>
+      <div class="msg-buttons">
+          <button id="msg-btn-cancel" class="btn-cancel">キャンセル</button>
+          <button id="msg-btn-ok" class="btn-ok">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="wrapper">
+
+    <div class="intro-text">
+      ハローワーク松山管轄の求人情報を、簡単な操作で検索することができます。<br>
+      <span class="caution-text">※本機能は簡易検索システムのため、条件によっては全ての求人が表示されない場合があります。</span>
       
-      <p class="apply-guide-text" style="margin-bottom:8px; font-weight:bold;">オンライン自主応募をご利用の方へ</p>
-      <div class="warning-box">
-        <strong>【給付金等に関するご注意】</strong><br>
-        マイページから一部利用可能な「オンライン自主応募」は、応募者ご自身による直接応募の扱いとなり、ハローワークからの職業紹介には該当しません。<br>
-        そのため、ハローワークの紹介を要件とする<strong>各種給付金（再就職手当など）の支給対象外となる場合</strong>がございます。
+      <div class="hwis-guide-box">
+        <p class="hwis-guide-text">より詳細な条件で検索したい場合は、以下のサービスをご利用ください。</p>
+        <a href="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchShosaiBtn&amp;screenId=GECA110010&amp;kjKbnRadioBtn=1&amp;ippanCKBox=1&amp;ippanCKBox=2" target="_blank" class="hwis-link-btn">ハローワークインターネットサービスへ</a>
       </div>
     </div>
 
-    <div class="contact-section">
-      お問い合わせ：ハローワーク松山<br>
-      <span class="tel">TEL: 089-917-8609</span>
+    <div class="section">1. 地区を選択</div>
+    
+    <div class="notice-box">
+      <strong>【エリア選択時のご注意】</strong><br>
+      ・ハローワークの仕様上、同時に選択できる地域は<strong>5つまで</strong>です。<br>
+      ・松山市内の地区指定は、主要なエリア（町名）を抽出します。抜け漏れなく探したい場合は<strong>「松山市全域」</strong>を推奨します。
+    </div>
+    
+    <div id="area-warning-msg" class="exclusion-msg">
+      ※「シニア」「子育て」等を選択中は、詳細エリア指定はできません（併用不可）
     </div>
 
+    <div class="sub-section">▼松山市内（1つのみ選択可）</div>
+    <div class="grid-container">
+      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-matsuyama_all" onclick="selectArea('matsuyama_all');" class="btn-base area-btn" style="border-color:#aaa; color:#333;">松山市全域</a></div>
+      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-east" onclick="selectArea('east');" class="btn-base area-btn">城東・中央</a></div>
+      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-west" onclick="selectArea('west');" class="btn-base area-btn">城西・中央</a></div>
+      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-north" onclick="selectArea('north');" class="btn-base area-btn">城北</a></div>
+      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-south" onclick="selectArea('south');" class="btn-base area-btn">城南</a></div>
+      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-joto" onclick="selectArea('joto');" class="btn-base area-btn">久米・小野</a></div>
+      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-josai" onclick="selectArea('josai');" class="btn-base area-btn">三津・垣生</a></div>
+      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-hojo" onclick="selectArea('hojo');" class="btn-base area-btn">北条・島しょ</a></div>
+    </div>
+    <div class="sub-section" style="margin-top:10px;">▼周辺地域（複数選択可・合計5地域まで）</div>
+    <div class="grid-container">
+      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-iyo" onclick="selectArea('iyo');" class="btn-base area-btn">伊予市</a></div>
+      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-toon" onclick="selectArea('toon');" class="btn-base area-btn">東温市</a></div>
+      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-masaki" onclick="selectArea('masaki');" class="btn-base area-btn">松前町</a></div>
+      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-tobe" onclick="selectArea('tobe');" class="btn-base area-btn">砥部町</a></div>
+      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-kuma" onclick="selectArea('kuma');" class="btn-base area-btn">久万高原町</a></div>
+    </div>
+    <div id="selectedAreaDisplay" style="color:#008000; font-weight:bold; margin-top:10px; margin-bottom:15px; border-bottom:1px solid #ccc; padding-bottom:5px;">指定しない</div>
+
+    <div class="section">2. 求人区分</div>
+    <form name="ippan" class="grid-container">
+      <div class="grid-item-2"><input checked id="s4" name="radio1" type="radio" value=""/><label for="s4" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
+      <div class="grid-item-2"><input id="s1" name="radio1" type="radio" value="&ippanCKBox=1&koyoFltmCKBox=1"/><label for="s1" class="btn-base chkLabel">正社員</label></div>
+      <div class="grid-item-2"><input id="s2" name="radio1" type="radio" value="&ippanCKBox=1"/><label for="s2" class="btn-base chkLabel">フルタイム</label></div>
+      <div class="grid-item-2"><input id="s3" name="radio1" type="radio" value="&ippanCKBox=2"/><label for="s3" class="btn-base chkLabel">パート</label></div>
+    </form>
+
+    <div id="salary-aux-section" class="aux-section">
+      <div class="aux-title">↳ 【給与の希望】※任意</div>
+      <form name="salary" id="salary-form" class="grid-container">
+        <div class="grid-item-2"><input checked id="sal0" name="radioSalary" type="radio" value=""/><label for="sal0" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
+        
+        <div class="grid-item-2 sal-monthly"><input id="salM1" name="radioSalary" type="radio" value="&gkkyIn=200000"/><label for="salM1" class="btn-base chkLabel">月給 20万円以上</label></div>
+        <div class="grid-item-2 sal-monthly"><input id="salM2" name="radioSalary" type="radio" value="&gkkyIn=250000"/><label for="salM2" class="btn-base chkLabel">月給 25万円以上</label></div>
+        <div class="grid-item-2 sal-monthly"><input id="salM3" name="radioSalary" type="radio" value="&gkkyIn=300000"/><label for="salM3" class="btn-base chkLabel">月給 30万円以上</label></div>
+        
+        <div class="grid-item-2 sal-hourly"><input id="salH1" name="radioSalary" type="radio" value="&jikyIn=1100"/><label for="salH1" class="btn-base chkLabel">時給 1,100円以上</label></div>
+        <div class="grid-item-2 sal-hourly"><input id="salH2" name="radioSalary" type="radio" value="&jikyIn=1200"/><label for="salH2" class="btn-base chkLabel">時給 1,200円以上</label></div>
+        <div class="grid-item-2 sal-hourly"><input id="salH3" name="radioSalary" type="radio" value="&jikyIn=1500"/><label for="salH3" class="btn-base chkLabel">時給 1,500円以上</label></div>
+      </form>
+    </div>
+
+    <div class="section">3. 新着区分</div>
+    <form name="newArri" class="grid-container">
+      <div class="grid-item-2"><input checked id="t3" name="radio2" type="radio" value=""/><label for="t3" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
+      <div class="grid-item-2"><input id="t1" name="radio2" type="radio" value="&newArrivedCKBox=1"/><label for="t1" class="btn-base chkLabel">新着(当日/前日)</label></div>
+      <div class="grid-item-2"><input id="t2" name="radio2" type="radio" value="&newArrivedCKBox=2"/><label for="t2" class="btn-base chkLabel">1週間以内</label></div>
+    </form>
+
+    <div class="section">4. 業界・職種</div>
+    <p style="font-size:0.9em; color:#008000; font-weight:bold;">※「業界」と「職種」を両方選んで絞り込むことも可能です。</p>
+    
+    <details>
+      <summary>▼ 業界から探す</summary>
+      <div class="details-content">
+        <form name="JobIndustry" class="grid-container">
+          <div class="grid-item-full"><input checked id="ind0" name="radioIndustry" type="radio" value="" /><label for="ind0" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
+          <div class="grid-item-2"><input id="ind16" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=83&kiboSuruSngBrui2In=84&kiboSuruSngBrui3In=85" /><label for="ind16" class="btn-base industry-btn-label">医療,福祉</label></div>
+          <div class="grid-item-2"><input id="ind18" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=88&kiboSuruSngBrui2In=91&kiboSuruSngBrui3In=92" /><label for="ind18" class="btn-base industry-btn-label">サービス業・警備</label></div>
+          <div class="grid-item-2"><input id="ind9" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=50&kiboSuruSngBrui2In=56&kiboSuruSngBrui3In=61" /><label for="ind9" class="btn-base industry-btn-label">卸売業・小売業</label></div>
+          <div class="grid-item-2"><input id="ind4" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=06&kiboSuruSngBrui2In=07&kiboSuruSngBrui3In=08" /><label for="ind4" class="btn-base industry-btn-label">建設業</label></div>
+          <div class="grid-item-2"><input id="ind8" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=42&kiboSuruSngBrui2In=44&kiboSuruSngBrui3In=49" /><label for="ind8" class="btn-base industry-btn-label">運送・郵便</label></div>
+          <div class="grid-item-2"><input id="ind13" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=75&kiboSuruSngBrui2In=76&kiboSuruSngBrui3In=77" /><label for="ind13" class="btn-base industry-btn-label">宿泊・飲食サービス</label></div>
+          <div class="grid-item-2"><input id="ind5" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=09&kiboSuruSngBrui2In=26&kiboSuruSngBrui3In=16" /><label for="ind5" class="btn-base industry-btn-label">製造業</label></div>
+          <div class="grid-item-2"><input id="ind1" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=01&kiboSuruSngBrui2In=02&kiboSuruSngBrui3In=03&kiboSuruSngBrui4In=04" /><label for="ind1" class="btn-base industry-btn-label">農林漁業</label></div>
+          <div class="grid-item-2"><input id="ind7" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=39&kiboSuruSngBrui2In=40&kiboSuruSngBrui3In=41" /><label for="ind7" class="btn-base industry-btn-label">情報通信業</label></div>
+          <div class="grid-item-2"><input id="ind15" name="radioIndustry" type="radio" value="&kiboSuruSngBrui1In=81&kiboSuruSngBrui2In=82" /><label for="ind15" class="btn-base industry-btn-label">教育,学習支援業</label></div>
+        </form>
+      </div>
+    </details>
+
+    <details>
+      <summary>▼ 職種から探す</summary>
+      <div class="details-content">
+        <div class="notice-box" style="margin-top: 5px;">
+          <strong>【職種選択時のご注意】</strong><br>
+          各ボタンは大分類を指定しています。より細かく小分類で指定したい場合は、<strong>検索先の画面を上にスクロールして職種を再選択</strong>してください。
+        </div>
+
+        <form name="JobType" class="grid-container">
+          <div class="grid-item-full"><input checked id="job0" name="radioJobType" type="radio" value="" /><label for="job0" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
+          
+          <div class="grid-item-2"><input id="job1" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=01,00" /><label for="job1" class="btn-base job-btn-label">事務・管理職</label></div>
+          <div class="grid-item-2"><input id="job2" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=02,00" /><label for="job2" class="btn-base job-btn-label">営業</label></div>
+          <div class="grid-item-2"><input id="job3" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=03,00" /><label for="job3" class="btn-base job-btn-label">販売</label></div>
+          <div class="grid-item-2"><input id="job4" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=04,00" /><label for="job4" class="btn-base job-btn-label">接客・サービス</label></div>
+          <div class="grid-item-2"><input id="job5" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=05,00" /><label for="job5" class="btn-base job-btn-label">介護・福祉</label></div>
+          <div class="grid-item-2"><input id="job6" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=06,00" /><label for="job6" class="btn-base job-btn-label">保育・教育</label></div>
+          <div class="grid-item-2"><input id="job7" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=07,00" /><label for="job7" class="btn-base job-btn-label">医療・看護</label></div>
+          <div class="grid-item-2"><input id="job8" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=08,00" /><label for="job8" class="btn-base job-btn-label">製造・修理</label></div>
+          <div class="grid-item-2"><input id="job9" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=09,00" /><label for="job9" class="btn-base job-btn-label">技術・IT・専門職</label></div>
+          <div class="grid-item-2"><input id="job10" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=10,00" /><label for="job10" class="btn-base job-btn-label">建築・土木・電気</label></div>
+          <div class="grid-item-2"><input id="job11" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=11,00" /><label for="job11" class="btn-base job-btn-label">警備・施設管理</label></div>
+          <div class="grid-item-2"><input id="job12" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=12,00" /><label for="job12" class="btn-base job-btn-label">運輸・配送</label></div>
+          <div class="grid-item-2"><input id="job13" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=13,00" /><label for="job13" class="btn-base job-btn-label">清掃・軽作業</label></div>
+          <div class="grid-item-2"><input id="job14" name="radioJobType" type="radio" value="&kiboSuruSKSU1Hidden=14,00" /><label for="job14" class="btn-base job-btn-label">農林漁業</label></div>
+        </form>
+      </div>
+    </details>
+
+    <div class="section">5. 詳しい条件</div>
+    <form name="jyouken" class="grid-container">
+      <div class="grid-item-2"><input id="w1" name="j1" type="checkbox" value="&grkiFumonCKBox=1"/><label for="w1" class="btn-base chkLabel">学歴不問</label></div>
+      <div class="grid-item-2"><input id="w2" name="j1" type="checkbox" value="&hynaKikntFumonCKBox=1"/><label for="w2" class="btn-base chkLabel">経験不問</label></div>
+      <div class="grid-item-2"><input id="w3" name="j1" type="checkbox" value="&hynaMenkyoSkkuFumonCKBox=1"/><label for="w3" class="btn-base chkLabel">資格不問</label></div>
+      <div class="grid-item-2"><input id="w6" name="j1" type="checkbox" value="&sonotaCKBox=4"/><label for="w6" class="btn-base chkLabel">転勤なし</label></div>
+      <div class="grid-item-2"><input id="w7" name="j1" type="checkbox" value="&jkgiRadioBtn=2"/><label for="w7" class="btn-base chkLabel">残業なし</label></div>
+      <div class="grid-item-2"><input id="w8" name="j1" type="checkbox" value="&shoyoAriCKBox=1"/><label for="w8" class="btn-base chkLabel">賞与あり</label></div>
+      <div class="grid-item-2"><input id="w9" name="j1" type="checkbox" value="&nyukyoKaCKBox=1"/><label for="w9" class="btn-base chkLabel">単身住宅有</label></div>
+      <div class="grid-item-2"><input id="w10" name="j1" type="checkbox" value="&riyoKanoNaTjsAriCKBox=1"/><label for="w10" class="btn-base chkLabel">託児施設有</label></div>
+      <div class="grid-item-2"><input id="w5" name="j1" type="checkbox" value="&sonotaCKBox=3"/><label for="w5" class="btn-base chkLabel">マイカー通勤</label></div>
+      <div class="grid-item-2"><input id="w4" name="j1" type="checkbox" value="&holidayCKBox=6,7,8"/><label for="w4" class="btn-base chkLabel">土日祝休み</label></div>
+      <div class="grid-item-2"><input id="w15" name="j1" type="checkbox" value="&sonotaCKBox=1"/><label for="w15" class="btn-base chkLabel">書類選考なし</label></div>
+      <div class="grid-item-2"><input id="w16" name="j1" type="checkbox" value="&sonotaCKBox=5"/><label for="w16" class="btn-base chkLabel">在宅勤務</label></div>
+      <div class="grid-item-2"><input id="w17" name="j1" type="checkbox" value="&sonotaCKBox=6"/><label for="w17" class="btn-base chkLabel">駅近(徒歩10分以内)</label></div>
+      <div class="grid-item-2"><input id="w18" name="j1" type="checkbox" value="&jdsMenkyoCKBox=4"/><label for="w18" class="btn-base chkLabel">運転免許不要</label></div>
+    </form>
+
+    <div class="section">6. キーワード・その他</div>
+    <form name="Free" class="grid-container">
+      <div class="grid-item-2"><input checked id="u4" name="radio3" type="radio" value="" onclick="onRadioClick()"/><label for="u4" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
+      <div class="grid-item-2"><input id="u2" name="radio3" type="radio" value="&freeWordInput=%E5%AD%90%E8%82%B2%E3%81%A6%E6%94%AF%E6%8F%B4%E6%B1%82%E4%BA%BA" onclick="onRadioClick()"/><label for="u2" class="btn-base chkLabel">子育て支援</label></div>
+      
+      <div id="senior-warning-msg" class="exclusion-msg" style="flex:100%; display:none;">
+        ※エリア指定中は、上記キーワードボタンは使用できません（併用不可）
+      </div>
+
+      <div class="grid-item-2"><input id="u6" name="radio3" type="radio" value="&freeWordInput=%E3%82%B7%E3%83%8B%E3%82%A2%E3%80%80%EF%BC%96%EF%BC%90%E6%AD%B3%E4%BB%A5%E4%B8%8A&nOTKNSKFreeWordInput=%E3%83%9F%E3%83%89%E3%83%AB%E3%82%B7%E3%83%8B%E3%82%A2&freeWordRadioBtn=0" onclick="onRadioClick()"/><label for="u6" class="btn-base chkLabel">シニア(60歳~)</label></div>
+      <div class="grid-item-2"><input id="u7" name="radio3" type="radio" value="&freeWordInput=%E3%83%9F%E3%83%89%E3%83%AB%E3%82%B7%E3%83%8B%E3%82%A2&freeWordRadioBtn=0" onclick="onRadioClick()"/><label for="u7" class="btn-base chkLabel">ミドルシニア</label></div>
+      
+      <div class="grid-item-2" style="flex:100%;"><input id="u5" name="radio3" type="radio" value="" onclick="onRadioClick()"/><label for="u5" class="btn-base chkLabel">入力する</label></div>
+    </form>
+    <div id="FreeWord" style="display:none;">
+      <input class="textarea" id="FreeW" placeholder="全角スペースで区切って入力" type="text" />
+    </div>
+
+    <div class="condition-summary">
+      <div class="condition-summary-title">現在の検索条件</div>
+      <p style="font-size:0.85em; color:#666; margin:0 0 5px 0;">
+        ※「この条件を保存」ボタンを押すと、次回開いた時にも同じ条件が自動でセットされます。<br>
+        <span style="color:#d32f2f;">（※お使いのブラウザや使用環境によっては、条件が保存されない場合がございます。あらかじめご容赦ください。）</span>
+      </p>
+      <div id="current-conditions-text" style="white-space: pre-wrap; margin-top: 8px;"></div>
+      
+      <div class="save-btn-container">
+        <button class="save-btn" onclick="saveConditions()">この条件を保存</button>
+        <button class="save-btn" onclick="resetAll()">リセット</button>
+      </div>
+    </div>
+
+    <div id="floating-condition-text" class="floating-condition"></div>
+    <a class="searchbutton" href="javascript:void(0);" onclick="executeMySearch()">この条件で検索する</a>
+
+    <div class="bottom-info-container">
+      
+      <div class="mypage-cta-section" style="padding-bottom: 10px;">
+        <div class="mypage-cta-header">
+          <h3 class="mypage-cta-title"><span>マイページでもっと便利に</span></h3>
+          <p class="mypage-cta-intro">「ハローワークに行く時間がない」「気になる求人をストックしておきたい」<br>そんな方には、求職者マイページがおすすめです！</p>
+        </div>
+
+        <div class="mypage-features">
+          <div class="mypage-features-title">＼ 求職者マイページでできること ／</div>
+          <ul class="large-benefits">
+            <li>検索条件を保存できる</li>
+            <li>気になる求人をお気に入り登録</li>
+            <li>ハローワークからおすすめ求人が届く</li>
+            <li>ハローワークへの登録内容を確認・変更</li>
+            <li>紹介状や選考結果、応募履歴を確認できる</li>
+          </ul>
+        </div>
+
+        <div class="mypage-cta-header">
+          <p class="mypage-cta-desc">現在の状況に合わせて、以下のカードから<br>ご自身に当てはまるものを確認してください。</p>
+          <div class="swipe-hint">← 左右にスワイプして確認 →</div>
+        </div>
+
+        <div class="card-carousel">
+          <div class="card-item">
+            <span class="card-arrow-right">▶︎</span>
+            <div class="card-header-row">
+              <span class="card-badge">初めてご利用の方</span>
+            </div>
+            <h4 class="card-title">新規マイページ開設</h4>
+            <p class="card-desc">ハローワークのご利用が初めての方はこちら。スマホから「求職登録」と「マイページ開設」が同時に完了します。</p>
+            <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA020020.do?screenId=GEAA020020&action=execRedirect&nextScreenId=GEAA010010" target="_blank" class="card-btn">新規登録・開設はこちら</a>
+          </div>
+
+          <div class="card-item">
+            <span class="card-arrow-left">◀︎</span>
+            <span class="card-arrow-right">▶︎</span>
+            <div class="card-header-row">
+              <span class="card-badge">過去にハローワークを利用した方</span>
+            </div>
+            <h4 class="card-title">窓口でのアカウント連携</h4>
+            <p class="card-desc" style="margin-bottom: 10px;">過去（5年以内）にハローワークを利用・求職登録された方は、これまでの情報と連携させるため、お近くの窓口での手続きが必要です。<br>
+            <span style="font-size: 0.9em; color: #a02020;">※同一のメールアドレスで重複して新規登録することはできません。</span></p>
+            <div class="card-caution" style="text-align: left; margin-bottom: 15px;">
+              <strong>【登録の手順】</strong><br>
+              窓口で<strong>「アカウント作成コード」</strong>を発行します。その後、ご自身のスマートフォン等でコードを入力し、登録を完了させてください。
+            </div>
+            <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA530040.do?action=initDisp&screenId=GEAA530040" target="_blank" class="card-btn">作成コードを入力する</a>
+          </div>
+
+          <div class="card-item">
+            <span class="card-arrow-left">◀︎</span>
+            <div class="card-header-row">
+              <span class="card-badge">すでに登録済みの方</span>
+            </div>
+            <h4 class="card-title">マイページにログイン</h4>
+            <p class="card-desc">すでにマイページをお持ちの方はこちら。ご登録のメールアドレスとパスワードでログインしてご利用ください。</p>
+            <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA040010.do?action=initDisp&screenId=GEAA040010" target="_blank" class="card-btn">ログイン画面へ</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="apply-guide-section">
+        <h3 class="apply-guide-title">求人へのご応募について</h3>
+        <p class="apply-guide-text">
+          原則として、求人へご応募いただく際はハローワークが発行する<strong>「紹介状」</strong>が必要となります。
+        </p>
+        
+        <p class="apply-guide-text" style="margin-bottom:8px; font-weight:bold;">オンライン自主応募をご利用の方へ</p>
+        <div class="warning-box">
+          <strong>【給付金等に関するご注意】</strong><br>
+          マイページから一部利用可能な「オンライン自主応募」は、応募者ご自身による直接応募の扱いとなり、ハローワークからの職業紹介には該当しません。<br>
+          そのため、ハローワークの紹介を要件とする<strong>各種給付金（再就職手当など）の支給対象外となる場合</strong>がございます。
+        </div>
+      </div>
+
+      <div class="contact-section">
+        お問い合わせ：ハローワーク松山<br>
+        <span class="tel">TEL: 089-917-8609</span>
+      </div>
+
+    </div>
   </div>
 </div>
-
 </body>
 </html>
