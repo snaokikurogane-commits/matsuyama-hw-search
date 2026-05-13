@@ -27,7 +27,7 @@
     background-color: #fff; 
     width: 100%; 
     max-width: 380px; 
-    max-height: 90vh; 
+    max-height: 90vh; /* 縦伸び防止 */
     padding: 25px 0 0 0; 
     border-radius: 12px; 
     box-shadow: 0 5px 25px rgba(0,0,0,0.3); 
@@ -55,11 +55,14 @@
     margin: 0 20px 15px 20px; 
     text-align: left; 
     font-size: 14px;
-    max-height: 150px;
+    max-height: 130px;
     overflow-y: auto; 
   }
   .selected-preview-title { font-weight: bold; color: #1e703d; border-bottom: 1px solid #d0e0d0; margin-bottom: 6px; padding-bottom: 4px; font-size: 13.5px; }
 
+  /* ガイド画像 */
+  .msg-guide-img { width: 100%; max-width: 100%; max-height: 250px; display: block; margin: 0 auto; border-top: 1px solid #eee; border-bottom: 1px solid #eee; object-fit: contain; }
+  
   /* ボタン上下幅の調整 */
   .msg-buttons { 
     display: flex; 
@@ -92,19 +95,14 @@
   .grid-item-2 { flex: 1 1 calc(50% - 8px); }
   .grid-item-full { flex: 1 1 100%; }
   .btn-base { display: flex; align-items: center; justify-content: center; padding: 5px; text-align: center; cursor: pointer; box-sizing: border-box; font-size: 15px; font-weight: bold; border-radius: 8px; text-decoration: none; min-height: 60px; line-height: 1.3; width: 100%; border: 2px solid transparent; transition: all 0.2s; }
-  
   .area-btn { background: #fff; color: #008000; border: 2px solid #008000; }
   .area-btn.active { background: #008000 !important; color: #fff !important; border-color: #008000 !important; box-shadow: 0 0 5px rgba(0,128,0,0.5); }
-  
   .chkLabel { background: #fff; color: #008000; border: 1px solid #008000; }
   input:checked + .chkLabel { background: #d0f0c0 !important; border: 2px solid #008000 !important; color: #008000 !important; }
-  
   .industry-btn-label { background: #fff; color: #0066cc; border: 2px solid #0066cc; }
   input:checked + .industry-btn-label { background: #0066cc !important; color: #fff !important; border-color: #0066cc !important; }
-  
   .job-btn-label { background: #fff; color: #e6006b; border: 2px solid #e6006b; }
   input:checked + .job-btn-label { background: #e6006b !important; color: #fff !important; border-color: #e6006b !important; }
-  
   .btn-base.disabled { background-color: #e0e0e0 !important; color: #999 !important; border-color: #ccc !important; pointer-events: none; opacity: 0.7; }
   .area-btn.disabled { background-color: #e0e0e0 !important; color: #999 !important; border-color: #ccc !important; }
   .exclusion-msg { display: none; color: #d32f2f; font-size: 0.9em; font-weight: bold; margin-bottom: 10px; background: #fff0f0; padding: 8px; border-radius: 4px; border-left: 4px solid #d32f2f; }
@@ -147,7 +145,6 @@
   .mypage-features ul.large-benefits li:last-child { margin-bottom: 0; }
   .mypage-cta-desc { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 10px; }
   .swipe-hint { font-size: 15px; color: #C85A32; font-weight: bold; margin-bottom: 15px; }
-
   .card-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 10px 20px 15px 20px; -ms-overflow-style: none; scrollbar-width: none; }
   .card-carousel::-webkit-scrollbar { display: none; }
   .card-item { flex: 0 0 85%; max-width: 320px; scroll-snap-align: center; background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 20px 30px 25px 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: flex; flex-direction: column; position: relative; }
@@ -161,7 +158,6 @@
   .card-caution { font-size: 12px; color: #d32f2f; background: #fff4f4; padding: 10px; border-radius: 6px; margin-top: 5px; margin-bottom: 15px; line-height: 1.5; }
   .card-btn { display: block; width: 100%; background-color: #C85A32; color: #fff !important; text-align: center; padding: 14px 0; border-radius: 8px; font-size: 14px; font-weight: bold; text-decoration: none; transition: opacity 0.2s; box-sizing: border-box; }
   .card-btn:active { opacity: 0.8; }
-
   .apply-guide-section { padding: 25px 20px; background-color: #fff; border-top: 1px dashed #ddd; }
   .apply-guide-title { font-size: 16px; color: #333; font-weight: bold; margin: 0 0 15px 0; border-left: 4px solid #008000; padding-left: 10px; }
   .apply-guide-text { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 15px; }
@@ -312,7 +308,7 @@
     if(isConfirm) {
         btnCancel.style.display = 'block';
         btnCancel.innerText = "キャンセル";
-        btnOk.innerText = "公式サイトへ進む";
+        btnOk.innerText = "「詳しい条件で検索」へ進む";
     } else {
         btnCancel.style.display = 'none';
         btnOk.innerText = "OK";
@@ -562,6 +558,7 @@
     
     params += collect('ippan') + collect('newArri') + collect('jyouken') + collect('JobIndustry') + collect('JobType') + collect('salary');
     
+    // ▼ 引き継ぐ条件を取得して表示用のHTMLを作成
     var getConditionSummary = function() {
         var summary = "";
         var areaDisplay = document.getElementById('selectedAreaDisplay') ? document.getElementById('selectedAreaDisplay').innerText : "指定なし";
@@ -588,8 +585,8 @@
     var fw = document.getElementById("FreeW").value;
     
     var performOpen = function() {
-        // ▼ action=searchBtn に戻すことで、条件を確実に引き継いで検索結果を表示します
-        var finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchBtn" 
+        // ▼ 確実な解決策：searchShosaiBtn ＋ searchClear=0 に完全固定 ▼
+        var finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchShosaiBtn" 
                      + amp + "screenId=GECA110010" 
                      + amp + "searchClear=0" 
                      + amp + "kjKbnRadioBtn=1" 
@@ -601,16 +598,15 @@
 
     var modalTitle = "ハローワークインターネット<br>サービスで検索";
 
-    // ▼ いきなり検索結果が出るため、ボタンを押させる案内文と画像を削除し、スッキリさせました
     var confirmHtml = "<div class='selected-preview'>"
-                    + "<div class='selected-preview-title'>下記条件で検索を実行します</div>"
+                    + "<div class='selected-preview-title'>下記条件を引き継ぎます</div>"
                     + getConditionSummary()
                     + "</div>"
                     + "<div class='msg-body'>"
-                    + "ハローワーク公式サイトの <b style='color:#1e703d; font-size:1.15em;'>検索結果（求人一覧）</b> "
-                    + "へ直接移動します。<br><br>"
-                    + "<span style='font-size:0.9em; color:#d32f2f;'>※2ページ目以降を見る際、もしエラーが出た場合は、画面下部の「条件を変更する」から再度検索してください。</span>"
-                    + "</div>";
+                    + "遷移先画面下部の <b style='color:#1e703d; font-size:1.15em;'>【検索する】</b> "
+                    + "ボタンを押下して検索を完了してください。</div>"
+                    + "<div style='font-size:13.5px; font-weight:bold; color:#1e703d; margin-bottom:5px;'>▼ 遷移先画面イメージ ▼</div>"
+                    + "<img src='./search-guide.png' class='msg-guide-img' alt='操作案内' onerror=\"this.style.display='none';\">";
 
     if (isKeywordSearch) {
         params += collect('Free');
