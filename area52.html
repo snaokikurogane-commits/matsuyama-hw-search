@@ -27,7 +27,7 @@
     background-color: #fff; 
     width: 100%; 
     max-width: 380px; 
-    max-height: 90vh; /* 縦伸び防止 */
+    max-height: 90vh; 
     padding: 25px 0 0 0; 
     border-radius: 12px; 
     box-shadow: 0 5px 25px rgba(0,0,0,0.3); 
@@ -308,7 +308,7 @@
     if(isConfirm) {
         btnCancel.style.display = 'block';
         btnCancel.innerText = "キャンセル";
-        btnOk.innerText = "「詳しい条件で検索」へ進む";
+        btnOk.innerText = "OK"; // POST送信方式（いきなり検索結果）なのでOKに変更
     } else {
         btnCancel.style.display = 'none';
         btnOk.innerText = "OK";
@@ -546,19 +546,72 @@
                           document.getElementById('u6').checked || 
                           document.getElementById('u7').checked;
 
-    var params = "";
-    params += amp + "tDFK1CmbBox=38" + amp + "siku1Hidden=" + uniqueCodes.join("%2C") + amp + "siku2Hidden=" + amp + "siku3Hidden=";
+    // ▼ POST送信のための動的フォーム生成処理（案2）
+    var performOpen = function() {
+        var form = document.createElement("form");
+        form.method = "POST";
+        form.action = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do";
+        
+        var addInput = function(name, value) {
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.name = name;
+            input.value = value;
+            form.appendChild(input);
+        };
 
-    var collect = function(fname) {
-      var str = "";
-      var el = document.forms[fname] ? document.forms[fname].elements : [];
-      for(var i=0; el.length > i; i++) { if(el[i].checked) str += el[i].value; }
-      return str;
+        // 基本パラメータ
+        addInput("action", "searchBtn");
+        addInput("screenId", "GECA110010");
+        addInput("searchClear", "0");
+        addInput("kjKbnRadioBtn", "1");
+        addInput("tatZngyCKBox", "1");
+        addInput("tDFK1CmbBox", "38");
+        addInput("siku1Hidden", uniqueCodes.join(","));
+        addInput("siku2Hidden", "");
+        addInput("siku3Hidden", "");
+
+        // チェックされた条件をパースして追加する関数
+        var parseAndAdd = function(valStr) {
+            if(!valStr) return;
+            var parts = valStr.split("&");
+            for(var p=0; p<parts.length; p++) {
+                if(parts[p]) {
+                    var kv = parts[p].split("=");
+                    if(kv.length === 2) {
+                        addInput(kv[0], decodeURIComponent(kv[1]));
+                    }
+                }
+            }
+        };
+
+        // 各フォームの選択状態を取得
+        var formNames = ['ippan', 'newArri', 'jyouken', 'JobIndustry', 'JobType', 'salary'];
+        for(var i=0; i<formNames.length; i++) {
+            var el = document.forms[formNames[i]] ? document.forms[formNames[i]].elements : [];
+            for(var j=0; j<el.length; j++) {
+                if(el[j].checked && el[j].value) parseAndAdd(el[j].value);
+            }
+        }
+
+        var fw = document.getElementById("FreeW").value;
+
+        // フリーワード・キーワード処理
+        if (isKeywordSearch) {
+            var freeEl = document.forms['Free'].elements;
+            for(var j=0; j<freeEl.length; j++) {
+                if(freeEl[j].checked && freeEl[j].value) parseAndAdd(freeEl[j].value);
+            }
+        } else if (fw && fw !== "") {
+            addInput("freeWordInput", fw);
+            addInput("freeWordRadioBtn", "0");
+        }
+
+        document.body.appendChild(form);
+        form.submit(); // POST送信実行！
     };
-    
-    params += collect('ippan') + collect('newArri') + collect('jyouken') + collect('JobIndustry') + collect('JobType') + collect('salary');
-    
-    // ▼ 引き継ぐ条件を取得して表示用のHTMLを作成
+
+    // 引き継ぐ条件を取得して表示用のHTMLを作成
     var getConditionSummary = function() {
         var summary = "";
         var areaDisplay = document.getElementById('selectedAreaDisplay') ? document.getElementById('selectedAreaDisplay').innerText : "指定なし";
@@ -582,47 +635,23 @@
         return summary === "" ? "指定なし" : summary;
     };
 
-    var fw = document.getElementById("FreeW").value;
-    
-    var performOpen = function() {
-        // ▼ 確実な解決策：searchShosaiBtn ＋ searchClear=0 に完全固定 ▼
-        var finalUrl = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchShosaiBtn" 
-                     + amp + "screenId=GECA110010" 
-                     + amp + "searchClear=0" 
-                     + amp + "kjKbnRadioBtn=1" 
-                     + amp + "tatZngyCKBox=1" 
-                     + params;
-        
-        window.location.href = finalUrl;
-    };
-
     var modalTitle = "ハローワークインターネット<br>サービスで検索";
 
+    // 案2ではいきなり検索結果が出るため、案内文をスッキリさせます
     var confirmHtml = "<div class='selected-preview'>"
-                    + "<div class='selected-preview-title'>下記条件を引き継ぎます</div>"
+                    + "<div class='selected-preview-title'>下記条件で検索を実行します</div>"
                     + getConditionSummary()
                     + "</div>"
                     + "<div class='msg-body'>"
-                    + "遷移先画面下部の <b style='color:#1e703d; font-size:1.15em;'>【検索する】</b> "
-                    + "ボタンを押下して検索を完了してください。</div>"
-                    + "<div style='font-size:13.5px; font-weight:bold; color:#1e703d; margin-bottom:5px;'>▼ 遷移先画面イメージ ▼</div>"
-                    + "<img src='./search-guide.png' class='msg-guide-img' alt='操作案内' onerror=\"this.style.display='none';\">";
+                    + "ハローワーク公式サイトの <b style='color:#1e703d; font-size:1.15em;'>検索結果（求人一覧）</b> "
+                    + "へ直接移動します。<br><br>"
+                    + "<span style='font-size:0.9em; color:#d32f2f;'>※2ページ目以降を見る際、もしエラーが出た場合は、画面下部の「条件を変更する」から再度検索してください。</span>"
+                    + "</div>";
 
-    if (isKeywordSearch) {
-        params += collect('Free');
-        performOpen();
-    } else if(fw && fw !== "") {
-       var encodedFW = encodeURIComponent(fw);
-       params += amp + "freeWordInput=" + encodedFW + amp + "freeWordRadioBtn=0"; 
-       showMyModal(modalTitle, confirmHtml, true, function(result){
-           if(result) performOpen();
-       });
-    } else { 
-       params += collect('Free'); 
-       showMyModal(modalTitle, confirmHtml, true, function(result){
-           if(result) performOpen();
-       });
-    }
+    // POST動的生成関数をコールバックにセット
+    showMyModal(modalTitle, confirmHtml, true, function(result){
+        if(result) performOpen();
+    });
   }
 </script>
 </head>
