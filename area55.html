@@ -2,11 +2,10 @@
   #hw-search-tool-root { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 0; background-color: #f9f9f9; text-align: left; }
   #hw-search-tool-root #wrapper { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding-bottom: 80px; box-sizing: border-box; position: relative; overflow-x: hidden; }
   
-  #hw-search-tool-root .intro-text { font-size: 15px; color: #333; background: #f4f4f4; padding: 15px; border-radius: 5px; margin-bottom: 20px; line-height: 1.6; }
-  #hw-search-tool-root .caution-note { margin-top: 10px; font-size: 14px; color: #444; line-height: 1.6; }
-  #hw-search-tool-root .caution-note .red { color: #d32f2f; font-weight: bold; }
+  #hw-search-tool-root .intro-text { font-size: 15px; color: #333; background: #f4f4f4; padding: 20px; border-radius: 8px; margin-bottom: 25px; line-height: 1.6; }
   
-  #hw-search-tool-root .hwis-guide-box { margin-top: 15px; text-align: center; }
+  #hw-search-tool-root .hwis-guide-box { margin-top: 5px; text-align: center; }
+  #hw-search-tool-root .hwis-guide-text { font-size: 14px; color: #444; margin-bottom: 10px; line-height: 1.5; text-align: left; }
   #hw-search-tool-root .hwis-link-btn { display: inline-block; background: #f0f7ff; color: #0055b3; border: 3px solid #0066cc; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px; box-shadow: 0 4px 8px rgba(0, 102, 204, 0.15); transition: all 0.2s; }
   #hw-search-tool-root .hwis-link-btn:active { background: #e6f0fa; transform: translateY(2px); box-shadow: 0 2px 4px rgba(0, 102, 204, 0.15); }
 
@@ -61,7 +60,14 @@
   
   #hw-search-tool-root .btn-base.disabled { background-color: #e0e0e0 !important; color: #999 !important; border-color: #ccc !important; pointer-events: none; opacity: 0.7; }
   #hw-search-tool-root .area-btn.disabled { background-color: #e0e0e0 !important; color: #999 !important; border-color: #ccc !important; }
-  #hw-search-tool-root .exclusion-msg { display: none; color: #d32f2f; font-size: 0.9em; font-weight: bold; margin-bottom: 10px; background: #fff0f0; padding: 8px; border-radius: 4px; border-left: 4px solid #d32f2f; }
+  
+  /* エラー・警告系ボックスの背景はすべて白に統一 */
+  #hw-search-tool-root .notice-box { background-color: #ffffff !important; border: 1px solid #d32f2f; padding: 12px; border-radius: 5px; margin-bottom: 15px; font-size: 0.9em; color: #333; line-height: 1.5; }
+  #hw-search-tool-root .notice-box strong { color: #d32f2f; }
+  #hw-search-tool-root .exclusion-msg { display: none; color: #d32f2f; font-size: 0.9em; font-weight: bold; margin-bottom: 10px; background-color: #ffffff !important; padding: 10px; border-radius: 4px; border: 1px solid #d32f2f; }
+  #hw-search-tool-root .card-caution { font-size: 12px; color: #d32f2f; background-color: #ffffff !important; padding: 10px; border-radius: 6px; margin-top: 5px; margin-bottom: 15px; line-height: 1.5; border: 1px solid #d9a0a0; }
+  #hw-search-tool-root .warning-box { background-color: #ffffff !important; border: 1px solid #d9a0a0; padding: 15px; border-radius: 6px; color: #b33939; font-size: 13px; line-height: 1.6; }
+  #hw-search-tool-root .warning-box strong { color: #a02020; }
 
   #hw-search-tool-root input[type="checkbox"], #hw-search-tool-root input[type="radio"] { display: none; }
   
@@ -80,9 +86,6 @@
   #hw-search-tool-root .save-btn-container { display: flex; justify-content: space-between; gap: 10px; margin-top: 10px; }
   #hw-search-tool-root .save-btn { flex: 1; padding: 12px; background: #fff; color: #555; border: 1px solid #bbb; border-radius: 6px; cursor: pointer; font-size: 14px; touch-action: manipulation; }
   #hw-search-tool-root .save-btn:active { background: #eee; }
-
-  #hw-search-tool-root .notice-box { background-color: #ffffff; border: 1px solid #d32f2f; padding: 12px; border-radius: 5px; margin-bottom: 15px; font-size: 0.9em; color: #333; line-height: 1.5; }
-  #hw-search-tool-root .notice-box strong { color: #d32f2f; }
 
   #hw-search-tool-root .floating-condition { display: none; }
 
@@ -118,7 +121,6 @@
   
   #hw-search-tool-root .card-title { font-size: 16px; font-weight: bold; color: #333; margin: 0 0 15px 0; line-height: 1.4; text-align: center; }
   #hw-search-tool-root .card-desc { font-size: 13.5px; color: #555; line-height: 1.6; flex-grow: 1; margin-bottom: 20px; }
-  #hw-search-tool-root .card-caution { font-size: 12px; color: #d32f2f; background: #fff4f4; padding: 10px; border-radius: 6px; margin-top: 5px; margin-bottom: 15px; line-height: 1.5; }
   
   #hw-search-tool-root .card-btn { display: block; width: 100%; background-color: #C85A32; color: #fff !important; text-align: center; padding: 14px 0; border-radius: 8px; font-size: 14px; font-weight: bold; text-decoration: none; transition: opacity 0.2s; box-sizing: border-box; touch-action: manipulation; }
   #hw-search-tool-root .card-btn:active { opacity: 0.8; }
@@ -126,8 +128,6 @@
   #hw-search-tool-root .apply-guide-section { padding: 25px 20px; background-color: #fff; border-top: 1px dashed #ddd; }
   #hw-search-tool-root .apply-guide-title { font-size: 16px; color: #333; font-weight: bold; margin: 0 0 15px 0; border-left: 4px solid #008000; padding-left: 10px; }
   #hw-search-tool-root .apply-guide-text { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 15px; }
-  #hw-search-tool-root .warning-box { background-color: #fcf8f8; border: 1px solid #d9a0a0; padding: 15px; border-radius: 6px; color: #b33939; font-size: 13px; line-height: 1.6; }
-  #hw-search-tool-root .warning-box strong { color: #a02020; }
 
   #hw-search-tool-root .contact-section { background-color: #fff; text-align: center; padding: 25px 20px; font-size: 16px; font-weight: bold; color: #333; border-top: 1px dashed #ddd; line-height: 1.6; letter-spacing: 0.05em; }
 
@@ -717,12 +717,22 @@
 
   <div id="wrapper">
 
-    <div class="intro-text" style="font-weight: bold;">
-      ハローワーク松山管轄の求人情報を、簡単な操作で検索することができます。<br><br>
-      <span style="color: #d32f2f;">本機能は簡易検索のため、一部の求人が表示されない場合や、「2ページ目」へ進むと入力した条件がリセットされる場合があります。</span><br><br>
-      すべての求人の確認や、より詳細な条件での検索、エラー発生時は、大変お手数ですが、以下の公式サイトを開き、再度検索をお願いいたします。
+    <div class="intro-text">
+      <div style="font-weight: bold; margin-bottom: 15px; color: #333;">
+        ハローワーク松山管轄の求人情報を、簡単な操作で検索することができます。<br>
+        <span style="color: #d32f2f;">※本機能は簡易検索システムのため、条件によっては全ての求人が表示されない場合があります。</span>
+      </div>
+
+      <div class="notice-box">
+        <strong style="color: #d32f2f;">⚠️ ご利用時のご注意</strong><br>
+        <span style="color: #333; font-weight: normal;">
+          LINEなどのアプリからご覧の場合、検索結果の「2ページ目」へ進もうとすると、<span style="color: #d32f2f; font-weight: bold;">入力した条件がリセットされる</span>場合があります。<br>
+          もし条件が消えてしまった場合は、お手数ですが下にある「ハローワークインターネットサービスへ」ボタンから公式サイトを開き、再度条件を入力して検索をお願いいたします。
+        </span>
+      </div>
       
-      <div class="hwis-guide-box">
+      <div class="hwis-guide-box" style="border-top: 1px dashed #ccc; padding-top: 15px; text-align: center;">
+        <p style="font-size: 14px; color: #444; margin-bottom: 10px; font-weight: bold;">より詳細な条件で検索したい場合は、以下のサービスをご利用ください。</p>
         <a href="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchShosaiBtn&amp;screenId=GECA110010&amp;kjKbnRadioBtn=1&amp;ippanCKBox=1&amp;ippanCKBox=2" target="_blank" class="hwis-link-btn">ハローワークインターネットサービスへ</a>
       </div>
     </div>
@@ -731,8 +741,8 @@
     
     <div class="notice-box">
       <strong>【エリア選択時のご注意】</strong><br>
-      ・ハローワークの仕様上、同時に選択できる地域は<strong>5つまで</strong>です。<br>
-      ・松山市内の地区指定は、主要なエリア（町名）を抽出します。抜け漏れなく探したい場合は<strong>「松山市全域」</strong>を推奨します。
+      ・ハローワークの仕様上、同時に選択できる地域は<strong style="color: #d32f2f;">5つまで</strong>です。<br>
+      ・松山市内の地区指定は、主要なエリア（町名）を抽出します。抜け漏れなく探したい場合は<strong style="color: #d32f2f;">「松山市全域」</strong>を推奨します。
     </div>
     
     <div id="area-warning-msg" class="exclusion-msg">
