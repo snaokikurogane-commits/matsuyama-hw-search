@@ -1,190 +1,180 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>かんたん求人検索（松山版）</title>
 <style type="text/css">
-  /* 全体・基本設定 */
-  body { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 0; background-color: #f9f9f9; text-align: left; }
-  #wrapper { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding-bottom: 80px; box-sizing: border-box; position: relative; overflow-x: hidden; }
+  #hw-search-tool-root { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 0; background-color: #f9f9f9; text-align: left; }
+  #hw-search-tool-root #wrapper { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding-bottom: 80px; box-sizing: border-box; position: relative; overflow-x: hidden; }
   
-  /* 案内文エリア */
-  .intro-text { font-size: 15px; color: #333; background: #f4f4f4; padding: 15px; border-radius: 5px; margin-bottom: 20px; line-height: 1.6; }
-  .caution-text { color: #d32f2f; font-weight: bold; font-size: 0.95em; display: block; margin-bottom: 5px; }
-  .hwis-guide-box { margin-top: 5px; text-align: center; }
-  .hwis-guide-text { font-size: 14px; color: #444; margin-bottom: 10px; line-height: 1.5; text-align: left; }
-  .hwis-link-btn { display: inline-block; background: #f0f7ff; color: #0055b3; border: 3px solid #0066cc; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px; transition: all 0.2s; box-shadow: 0 4px 8px rgba(0, 102, 204, 0.15); }
-  .hwis-link-btn:active { background: #e6f0fa; transform: translateY(2px); box-shadow: 0 2px 4px rgba(0, 102, 204, 0.15); }
+  #hw-search-tool-root .intro-text { font-size: 15px; color: #333; background: #f4f4f4; padding: 15px; border-radius: 5px; margin-bottom: 20px; line-height: 1.6; }
+  #hw-search-tool-root .caution-note { margin-top: 10px; font-size: 14px; color: #444; line-height: 1.6; }
+  #hw-search-tool-root .caution-note .red { color: #d32f2f; font-weight: bold; }
+  
+  #hw-search-tool-root .hwis-guide-box { margin-top: 15px; text-align: center; }
+  #hw-search-tool-root .hwis-link-btn { display: inline-block; background: #f0f7ff; color: #0055b3; border: 3px solid #0066cc; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px; box-shadow: 0 4px 8px rgba(0, 102, 204, 0.15); transition: all 0.2s; }
+  #hw-search-tool-root .hwis-link-btn:active { background: #e6f0fa; transform: translateY(2px); box-shadow: 0 2px 4px rgba(0, 102, 204, 0.15); }
 
-  .floating-help-btn { position: fixed; top: 15px; right: 15px; z-index: 9999; background-color: #ff9800; color: #ffffff !important; font-weight: bold; font-size: 13px; padding: 10px 16px; border-radius: 25px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.3); opacity: 0.95; cursor: pointer; }
+  #hw-search-tool-root .floating-help-btn { position: fixed; top: 15px; right: 15px; z-index: 9999; background-color: #ff9800; color: #ffffff !important; font-weight: bold; font-size: 13px; padding: 10px 16px; border-radius: 25px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.3); opacity: 0.95; cursor: pointer; }
   
-  /* モーダル共通設定 */
-  .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; padding: 10px; box-sizing: border-box; }
-  
-  /* 検索確認モーダルのレイアウト */
-  .modal-content-msg { 
-    background-color: #fff; 
-    width: 100%; 
-    max-width: 380px; 
-    max-height: 90vh; 
-    padding: 25px 0 0 0; 
-    border-radius: 12px; 
-    box-shadow: 0 5px 25px rgba(0,0,0,0.3); 
-    text-align: center; 
-    animation: popIn 0.2s ease-out; 
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto; 
-  }
+  #hw-search-tool-root .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; }
+  #hw-search-tool-root .modal-content-help { background-color: #fff; width: 90%; max-width: 500px; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); max-height: 85vh; overflow-y: auto; position: relative; animation: popIn 0.2s ease-out; }
+  #hw-search-tool-root .modal-content-msg { background-color: #fff; width: 85%; max-width: 350px; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center; animation: popIn 0.2s ease-out; }
   @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   
-  /* ヘルプモーダル */
-  .modal-content-help { background-color: #fff; width: 100%; max-width: 500px; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); max-height: 85vh; overflow-y: auto; position: relative; animation: popIn 0.2s ease-out; }
+  #hw-search-tool-root .modal-header { font-size: 19px; font-weight: bold; color: #008000; border-bottom: 2px solid #008000; padding-bottom: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+  #hw-search-tool-root .modal-close-btn { background: #eee; border: none; padding: 8px 15px; cursor: pointer; border-radius: 20px; font-size: 15px; color: #333; font-weight: bold; }
   
-  /* 検索確認モーダル内のテキスト装飾 */
-  .msg-title { font-size: 1.35em; font-weight: 900; color: #008000; margin-bottom: 15px; padding: 0 10px; line-height: 1.4; }
-  .msg-body { font-size: 14.5px; color: #444; line-height: 1.7; margin-bottom: 15px; padding: 0 20px; text-align: left; }
+  #hw-search-tool-root .help-section-title { color: #008000; border-left: 6px solid #008000; padding-left: 10px; margin: 25px 0 10px 0; font-size: 17px; font-weight: bold; }
+  #hw-search-tool-root .help-list { padding-left: 20px; margin-top: 5px; font-size: 14.5px; color: #333; line-height: 1.6; }
+  #hw-search-tool-root .help-list li { margin-bottom: 8px; }
   
-  /* 選択条件のプレビュー表示エリア */
-  .selected-preview { 
-    background-color: #f0f7f0; 
-    border: 1px solid #d0e0d0; 
-    border-radius: 6px; 
-    padding: 12px 14px; 
-    margin: 0 20px 15px 20px; 
-    text-align: left; 
-    font-size: 14px;
-    max-height: 130px;
-    overflow-y: auto; 
-  }
-  .selected-preview-title { font-weight: bold; color: #1e703d; border-bottom: 1px solid #d0e0d0; margin-bottom: 6px; padding-bottom: 4px; font-size: 13.5px; }
+  #hw-search-tool-root .help-notes { background: #ffffff; padding: 5px 10px; }
+  #hw-search-tool-root .help-note-item { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #ccc; }
+  #hw-search-tool-root .help-note-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  #hw-search-tool-root .help-note-item strong { color: #d32f2f; }
+
+  #hw-search-tool-root .msg-title { font-size: 1.2em; font-weight: bold; color: #333; margin-bottom: 12px; }
+  #hw-search-tool-root .msg-body { font-size: 15px; color: #444; line-height: 1.6; margin-bottom: 25px; white-space: pre-wrap; }
+  #hw-search-tool-root .msg-buttons { display: flex; justify-content: center; gap: 15px; }
+  #hw-search-tool-root .btn-ok { background: #008000; color: #fff; border: none; padding: 12px 30px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; flex: 1; max-width: 140px; }
+  #hw-search-tool-root .btn-cancel { background: #ccc; color: #333; border: none; padding: 12px 30px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; flex: 1; max-width: 140px; }
+
+  #hw-search-tool-root .section { margin-top: 2.5em; font-weight: bold; border-bottom: 2px solid #008000; padding-bottom: 5px; margin-bottom: 15px; color: #333; font-size: 1.1em; }
+  #hw-search-tool-root .sub-section { font-size: 1em; color: #555; margin-bottom: 8px; }
   
-  /* ボタン上下幅の調整 */
-  .msg-buttons { 
-    display: flex; 
-    justify-content: center; 
-    gap: 10px; 
-    padding: 15px; 
-    background: #fdfdfd;
-    border-radius: 0 0 12px 12px;
-  }
-  .btn-ok { background: #008000; color: #fff !important; border: none; padding: 16px 5px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; flex: 1.5; white-space: nowrap; }
-  .btn-cancel { background: #ccc; color: #333 !important; border: none; padding: 16px 5px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; flex: 0.5; white-space: nowrap; }
+  #hw-search-tool-root .aux-section { background-color: #f0f7f0; border-left: 4px solid #008000; padding: 12px 15px; margin-top: 5px; margin-bottom: 20px; border-radius: 4px; display: none; }
+  #hw-search-tool-root .aux-title { font-size: 0.9em; font-weight: bold; color: #008000; margin-bottom: 10px; }
 
-  /* ヘルプ内デザイン */
-  .modal-header { font-size: 19px; font-weight: bold; color: #008000; border-bottom: 2px solid #008000; padding-bottom: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-  .modal-close-btn { background: #eee; border: none; padding: 8px 15px; cursor: pointer; border-radius: 20px; font-size: 15px; color: #333; font-weight: bold; }
-  .help-section-title { color: #008000; border-left: 6px solid #008000; padding-left: 10px; margin: 25px 0 10px 0; font-size: 17px; font-weight: bold; }
-  .help-list { padding-left: 20px; margin-top: 5px; font-size: 14.5px; color: #333; line-height: 1.6; }
-  .help-list li { margin-bottom: 8px; }
-  .help-notes { background: #ffffff; padding: 5px 10px; }
-  .help-note-item { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #ccc; }
-  .help-note-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-  .help-note-item strong { color: #d32f2f; }
+  #hw-search-tool-root .grid-container { display: flex; flex-wrap: wrap; gap: 8px; }
+  #hw-search-tool-root .grid-item-2 { flex: 1 1 calc(50% - 8px); }
+  #hw-search-tool-root .grid-item-full { flex: 1 1 100%; }
 
-  /* UI基本パーツ */
-  .section { margin-top: 2.5em; font-weight: bold; border-bottom: 2px solid #008000; padding-bottom: 5px; margin-bottom: 15px; color: #333; font-size: 1.1em; }
-  .sub-section { font-size: 1em; color: #555; margin-bottom: 8px; }
-  .aux-section { background-color: #f0f7f0; border-left: 4px solid #008000; padding: 12px 15px; margin-top: 5px; margin-bottom: 20px; border-radius: 4px; display: none; }
-  .aux-title { font-size: 0.9em; font-weight: bold; color: #008000; margin-bottom: 10px; }
-  .grid-container { display: flex; flex-wrap: wrap; gap: 8px; }
-  .grid-item-2 { flex: 1 1 calc(50% - 8px); }
-  .grid-item-full { flex: 1 1 100%; }
-  .btn-base { display: flex; align-items: center; justify-content: center; padding: 5px; text-align: center; cursor: pointer; box-sizing: border-box; font-size: 15px; font-weight: bold; border-radius: 8px; text-decoration: none; min-height: 60px; line-height: 1.3; width: 100%; border: 2px solid transparent; transition: all 0.2s; }
-  .area-btn { background: #fff; color: #008000; border: 2px solid #008000; }
-  .area-btn.active { background: #008000 !important; color: #fff !important; border-color: #008000 !important; box-shadow: 0 0 5px rgba(0,128,0,0.5); }
-  .chkLabel { background: #fff; color: #008000; border: 1px solid #008000; }
-  input:checked + .chkLabel { background: #d0f0c0 !important; border: 2px solid #008000 !important; color: #008000 !important; }
-  .industry-btn-label { background: #fff; color: #0066cc; border: 2px solid #0066cc; }
-  input:checked + .industry-btn-label { background: #0066cc !important; color: #fff !important; border-color: #0066cc !important; }
-  .job-btn-label { background: #fff; color: #e6006b; border: 2px solid #e6006b; }
-  input:checked + .job-btn-label { background: #e6006b !important; color: #fff !important; border-color: #e6006b !important; }
-  .btn-base.disabled { background-color: #e0e0e0 !important; color: #999 !important; border-color: #ccc !important; pointer-events: none; opacity: 0.7; }
-  .area-btn.disabled { background-color: #e0e0e0 !important; color: #999 !important; border-color: #ccc !important; }
-  .exclusion-msg { display: none; color: #d32f2f; font-size: 0.9em; font-weight: bold; margin-bottom: 10px; background: #fff0f0; padding: 8px; border-radius: 4px; border-left: 4px solid #d32f2f; }
-
-  input[type="checkbox"], input[type="radio"] { display: none; }
+  #hw-search-tool-root .btn-base { display: flex; align-items: center; justify-content: center; padding: 5px; text-align: center; cursor: pointer; box-sizing: border-box; font-size: 15px; font-weight: bold; border-radius: 8px; text-decoration: none; min-height: 60px; line-height: 1.3; width: 100%; border: 2px solid transparent; touch-action: manipulation; }
   
-  details { margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; overflow: hidden; background: #fff; width: 100%; display: block; }
-  summary { cursor: pointer; padding: 15px; font-weight: bold; background-color: #f0f0f0; list-style: none; position: relative; font-size: 16px; display: block; }
-  summary::after { content: "▼"; position: absolute; right: 20px; transition: transform 0.3s; color: #666; }
-  details[open] summary::after { transform: rotate(180deg); }
-  .details-content { padding: 10px; background: #fafafa; border-top: 1px solid #ccc; }
+  #hw-search-tool-root .area-btn { background: #fff; color: #008000; border: 2px solid #008000; }
+  #hw-search-tool-root .area-btn.active { background: #008000 !important; color: #fff !important; border-color: #008000 !important; box-shadow: 0 0 5px rgba(0,128,0,0.5); }
   
-  select, input[type="text"] { width: 100%; padding: 14px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; font-size: 17px; }
+  #hw-search-tool-root .chkLabel { background: #fff; color: #008000; border: 1px solid #008000; }
+  #hw-search-tool-root input:checked + .chkLabel { background: #d0f0c0 !important; border: 2px solid #008000 !important; color: #008000 !important; }
   
-  .searchbutton { display: block; width: 100%; padding: 20px; background: #008000; color: #fff !important; text-align: center; font-size: 24px; font-weight: bold; border-radius: 12px; margin-top: 15px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; }
+  #hw-search-tool-root .industry-btn-label { background: #fff; color: #0066cc; border: 2px solid #0066cc; }
+  #hw-search-tool-root input:checked + .industry-btn-label { background: #0066cc !important; color: #fff !important; border-color: #0066cc !important; }
   
-  .condition-summary { background: #fafafa; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-top: 35px; font-size: 14px; color: #444; line-height: 1.6; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-  .condition-summary-title { color: #555; margin-bottom: 5px; font-size: 15px; font-weight: bold; border-bottom: 1px solid #eaeaea; padding-bottom: 5px; }
-  .save-btn-container { display: flex; justify-content: space-between; gap: 10px; margin-top: 10px; }
-  .save-btn { flex: 1; padding: 12px; background: #fff; color: #555; border: 1px solid #bbb; border-radius: 6px; cursor: pointer; font-size: 14px; }
-  .save-btn:active { background: #eee; }
+  #hw-search-tool-root .job-btn-label { background: #fff; color: #e6006b; border: 2px solid #e6006b; }
+  #hw-search-tool-root input:checked + .job-btn-label { background: #e6006b !important; color: #fff !important; border-color: #e6006b !important; }
+  
+  #hw-search-tool-root .btn-base.disabled { background-color: #e0e0e0 !important; color: #999 !important; border-color: #ccc !important; pointer-events: none; opacity: 0.7; }
+  #hw-search-tool-root .area-btn.disabled { background-color: #e0e0e0 !important; color: #999 !important; border-color: #ccc !important; }
+  #hw-search-tool-root .exclusion-msg { display: none; color: #d32f2f; font-size: 0.9em; font-weight: bold; margin-bottom: 10px; background: #fff0f0; padding: 8px; border-radius: 4px; border-left: 4px solid #d32f2f; }
 
-  .notice-box { background-color: #ffffff; border: 1px solid #d32f2f; padding: 12px; border-radius: 5px; margin-bottom: 15px; font-size: 0.9em; color: #333; line-height: 1.5; }
-  .notice-box strong { color: #d32f2f; }
+  #hw-search-tool-root input[type="checkbox"], #hw-search-tool-root input[type="radio"] { display: none; }
+  
+  #hw-search-tool-root details { margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; overflow: hidden; background: #fff; width: 100%; display: block; }
+  #hw-search-tool-root summary { cursor: pointer; padding: 15px; font-weight: bold; background-color: #f0f0f0; list-style: none; position: relative; font-size: 16px; display: block; touch-action: manipulation; }
+  #hw-search-tool-root summary::after { content: "▼"; position: absolute; right: 20px; transition: transform 0.3s; color: #666; }
+  #hw-search-tool-root details[open] summary::after { transform: rotate(180deg); }
+  #hw-search-tool-root .details-content { padding: 10px; background: #fafafa; border-top: 1px solid #ccc; }
+  
+  #hw-search-tool-root select, #hw-search-tool-root input[type="text"] { width: 100%; padding: 14px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; font-size: 17px; }
+  
+  #hw-search-tool-root .searchbutton { display: block; width: 100%; padding: 20px; background: #008000; color: #fff !important; text-align: center; font-size: 24px; font-weight: bold; border-radius: 12px; margin-top: 15px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; touch-action: manipulation; }
+  
+  #hw-search-tool-root .condition-summary { background: #fafafa; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-top: 35px; font-size: 14px; color: #444; line-height: 1.6; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  #hw-search-tool-root .condition-summary-title { color: #555; margin-bottom: 5px; font-size: 15px; font-weight: bold; border-bottom: 1px solid #eaeaea; padding-bottom: 5px; }
+  #hw-search-tool-root .save-btn-container { display: flex; justify-content: space-between; gap: 10px; margin-top: 10px; }
+  #hw-search-tool-root .save-btn { flex: 1; padding: 12px; background: #fff; color: #555; border: 1px solid #bbb; border-radius: 6px; cursor: pointer; font-size: 14px; touch-action: manipulation; }
+  #hw-search-tool-root .save-btn:active { background: #eee; }
 
-  .floating-condition { display: none; }
+  #hw-search-tool-root .notice-box { background-color: #ffffff; border: 1px solid #d32f2f; padding: 12px; border-radius: 5px; margin-bottom: 15px; font-size: 0.9em; color: #333; line-height: 1.5; }
+  #hw-search-tool-root .notice-box strong { color: #d32f2f; }
 
-  /* 応募方法・マイページ案内エリア */
-  .bottom-info-container { margin-top: 40px; background: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; }
-  .mypage-cta-section { padding: 30px 0 20px 0; background-color: #fafafa; }
-  .mypage-cta-header { padding: 0 20px; text-align: center; }
-  .mypage-cta-title { font-size: 19px; color: #333; font-weight: bold; margin: 0 0 15px 0; letter-spacing: 0.05em; }
-  .mypage-cta-title span { background: linear-gradient(transparent 60%, rgba(200, 90, 50, 0.3) 60%); display: inline-block; padding: 0 2px; }
-  .mypage-cta-intro { font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 20px; text-align: center; }
-  .mypage-features { background-color: #fff9f6; border-radius: 8px; padding: 22px 20px; margin: 0 20px 25px 20px; border: 1px solid #f2e3dd; }
-  .mypage-features-title { font-size: 15px; font-weight: bold; color: #C85A32; margin: 0 0 15px 0; text-align: center; letter-spacing: 0.05em; }
-  .mypage-features ul.large-benefits { list-style: none; padding: 0; margin: 0; }
-  .mypage-features ul.large-benefits li { font-size: 15px; font-weight: bold; color: #333; margin-bottom: 14px; padding-left: 26px; position: relative; line-height: 1.5; }
-  .mypage-features ul.large-benefits li::before { content: ''; position: absolute; left: 8px; top: 5px; width: 6px; height: 12px; border-right: 3px solid #C85A32; border-bottom: 3px solid #C85A32; transform: rotate(45deg); }
-  .mypage-features ul.large-benefits li:last-child { margin-bottom: 0; }
-  .mypage-cta-desc { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 10px; }
-  .swipe-hint { font-size: 15px; color: #C85A32; font-weight: bold; margin-bottom: 15px; }
-  .card-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 10px 20px 15px 20px; -ms-overflow-style: none; scrollbar-width: none; }
-  .card-carousel::-webkit-scrollbar { display: none; }
-  .card-item { flex: 0 0 85%; max-width: 320px; scroll-snap-align: center; background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 20px 30px 25px 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: flex; flex-direction: column; position: relative; }
-  .card-arrow-left, .card-arrow-right { position: absolute; top: 50%; transform: translateY(-50%); font-size: 24px; color: #C85A32; opacity: 0.35; pointer-events: none; }
-  .card-arrow-left { left: 10px; }
-  .card-arrow-right { right: 10px; }
-  .card-header-row { display: flex; justify-content: center; align-items: center; margin-bottom: 12px; }
-  .card-badge { display: inline-block; background-color: #fcece6; color: #C85A32; font-size: 11.5px; font-weight: bold; padding: 4px 10px; border-radius: 20px; }
-  .card-title { font-size: 16px; font-weight: bold; color: #333; margin: 0 0 15px 0; line-height: 1.4; text-align: center; }
-  .card-desc { font-size: 13.5px; color: #555; line-height: 1.6; flex-grow: 1; margin-bottom: 20px; }
-  .card-caution { font-size: 12px; color: #d32f2f; background: #fff4f4; padding: 10px; border-radius: 6px; margin-top: 5px; margin-bottom: 15px; line-height: 1.5; }
-  .card-btn { display: block; width: 100%; background-color: #C85A32; color: #fff !important; text-align: center; padding: 14px 0; border-radius: 8px; font-size: 14px; font-weight: bold; text-decoration: none; transition: opacity 0.2s; box-sizing: border-box; }
-  .card-btn:active { opacity: 0.8; }
-  .apply-guide-section { padding: 25px 20px; background-color: #fff; border-top: 1px dashed #ddd; }
-  .apply-guide-title { font-size: 16px; color: #333; font-weight: bold; margin: 0 0 15px 0; border-left: 4px solid #008000; padding-left: 10px; }
-  .apply-guide-text { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 15px; }
-  .warning-box { background-color: #fcf8f8; border: 1px solid #d9a0a0; padding: 15px; border-radius: 6px; color: #b33939; font-size: 13px; line-height: 1.6; }
-  .warning-box strong { color: #a02020; }
-  .contact-section { background-color: #fff; text-align: center; padding: 25px 20px; font-size: 16px; font-weight: bold; color: #333; border-top: 1px dashed #ddd; line-height: 1.6; letter-spacing: 0.05em; }
+  #hw-search-tool-root .floating-condition { display: none; }
 
-  /* スマホ対応 */
+  #hw-search-tool-root .bottom-info-container { margin-top: 40px; background: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; }
+  #hw-search-tool-root .mypage-cta-section { padding: 30px 0 20px 0; background-color: #fafafa; }
+  #hw-search-tool-root .mypage-cta-header { padding: 0 20px; text-align: center; }
+  #hw-search-tool-root .mypage-cta-title { font-size: 19px; color: #333; font-weight: bold; margin: 0 0 15px 0; letter-spacing: 0.05em; }
+  #hw-search-tool-root .mypage-cta-title span { background: linear-gradient(transparent 60%, rgba(200, 90, 50, 0.3) 60%); display: inline-block; padding: 0 2px; }
+
+  #hw-search-tool-root .mypage-cta-intro { font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 20px; text-align: center; }
+
+  #hw-search-tool-root .mypage-features { background-color: #fff9f6; border-radius: 8px; padding: 22px 20px; margin: 0 20px 25px 20px; border: 1px solid #f2e3dd; }
+  #hw-search-tool-root .mypage-features-title { font-size: 15px; font-weight: bold; color: #C85A32; margin: 0 0 15px 0; text-align: center; letter-spacing: 0.05em; }
+  #hw-search-tool-root .mypage-features ul.large-benefits { list-style: none; padding: 0; margin: 0; }
+  #hw-search-tool-root .mypage-features ul.large-benefits li { font-size: 15px; font-weight: bold; color: #333; margin-bottom: 14px; padding-left: 26px; position: relative; line-height: 1.5; }
+  #hw-search-tool-root .mypage-features ul.large-benefits li::before { content: ''; position: absolute; left: 8px; top: 5px; width: 6px; height: 12px; border-right: 3px solid #C85A32; border-bottom: 3px solid #C85A32; transform: rotate(45deg); }
+  #hw-search-tool-root .mypage-features ul.large-benefits li:last-child { margin-bottom: 0; }
+
+  #hw-search-tool-root .mypage-cta-desc { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 10px; }
+  #hw-search-tool-root .swipe-hint { font-size: 15px; color: #C85A32; font-weight: bold; margin-bottom: 15px; }
+
+  #hw-search-tool-root .card-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 10px 20px 15px 20px; -ms-overflow-style: none; scrollbar-width: none; }
+  #hw-search-tool-root .card-carousel::-webkit-scrollbar { display: none; }
+
+  #hw-search-tool-root .card-item { flex: 0 0 85%; max-width: 320px; scroll-snap-align: center; background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 20px 30px 25px 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: flex; flex-direction: column; position: relative; }
+  
+  #hw-search-tool-root .card-arrow-left, #hw-search-tool-root .card-arrow-right { position: absolute; top: 50%; transform: translateY(-50%); font-size: 24px; color: #C85A32; opacity: 0.35; pointer-events: none; }
+  #hw-search-tool-root .card-arrow-left { left: 10px; }
+  #hw-search-tool-root .card-arrow-right { right: 10px; }
+
+  #hw-search-tool-root .card-header-row { display: flex; justify-content: center; align-items: center; margin-bottom: 12px; }
+  #hw-search-tool-root .card-badge { display: inline-block; background-color: #fcece6; color: #C85A32; font-size: 11.5px; font-weight: bold; padding: 4px 10px; border-radius: 20px; }
+  
+  #hw-search-tool-root .card-title { font-size: 16px; font-weight: bold; color: #333; margin: 0 0 15px 0; line-height: 1.4; text-align: center; }
+  #hw-search-tool-root .card-desc { font-size: 13.5px; color: #555; line-height: 1.6; flex-grow: 1; margin-bottom: 20px; }
+  #hw-search-tool-root .card-caution { font-size: 12px; color: #d32f2f; background: #fff4f4; padding: 10px; border-radius: 6px; margin-top: 5px; margin-bottom: 15px; line-height: 1.5; }
+  
+  #hw-search-tool-root .card-btn { display: block; width: 100%; background-color: #C85A32; color: #fff !important; text-align: center; padding: 14px 0; border-radius: 8px; font-size: 14px; font-weight: bold; text-decoration: none; transition: opacity 0.2s; box-sizing: border-box; touch-action: manipulation; }
+  #hw-search-tool-root .card-btn:active { opacity: 0.8; }
+
+  #hw-search-tool-root .apply-guide-section { padding: 25px 20px; background-color: #fff; border-top: 1px dashed #ddd; }
+  #hw-search-tool-root .apply-guide-title { font-size: 16px; color: #333; font-weight: bold; margin: 0 0 15px 0; border-left: 4px solid #008000; padding-left: 10px; }
+  #hw-search-tool-root .apply-guide-text { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 15px; }
+  #hw-search-tool-root .warning-box { background-color: #fcf8f8; border: 1px solid #d9a0a0; padding: 15px; border-radius: 6px; color: #b33939; font-size: 13px; line-height: 1.6; }
+  #hw-search-tool-root .warning-box strong { color: #a02020; }
+
+  #hw-search-tool-root .contact-section { background-color: #fff; text-align: center; padding: 25px 20px; font-size: 16px; font-weight: bold; color: #333; border-top: 1px dashed #ddd; line-height: 1.6; letter-spacing: 0.05em; }
+
   @media screen and (max-width: 600px) {
-    #wrapper { padding: 10px 5px; width: 100%; padding-bottom: 140px; }
-    .btn-base { font-size: 14px; padding: 5px; min-height: 55px; }
-    .searchbutton { position: fixed; bottom: 0; left: 0; width: 100%; margin: 0; border-radius: 0; z-index: 999; padding: 20px 20px; box-shadow: 0 -5px 15px rgba(0,0,0,0.2); }
-    .bottom-info-container { margin-top: 30px; }
-    .apply-guide-section { padding: 20px 15px; }
-    .floating-help-btn { top: 20px; font-size: 12px; padding: 8px 12px; }
+    #hw-search-tool-root #wrapper { padding: 10px 5px; width: 100%; padding-bottom: 140px; }
+    #hw-search-tool-root .btn-base { font-size: 14px; padding: 5px; min-height: 55px; }
+    #hw-search-tool-root .searchbutton { position: fixed; bottom: 0; left: 0; width: 100%; margin: 0; border-radius: 0; z-index: 999; padding: 20px 20px; box-shadow: 0 -5px 15px rgba(0,0,0,0.2); }
+    #hw-search-tool-root .bottom-info-container { margin-top: 30px; }
+    #hw-search-tool-root .apply-guide-section { padding: 20px 15px; }
+    #hw-search-tool-root .floating-help-btn { top: 20px; font-size: 12px; padding: 8px 12px; }
     
-    .floating-condition { display: block; position: fixed; bottom: 70px; left: 0; width: 100%; background: #f4f8f4; padding: 10px 15px; font-size: 14px; color: #2e7d32; font-weight: bold; z-index: 998; box-sizing: border-box; white-space: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; text-align: left; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); pointer-events: auto; }
-    .floating-condition::-webkit-scrollbar { display: none; }
+    #hw-search-tool-root .floating-condition {
+      display: block;
+      position: fixed;
+      bottom: 70px;
+      left: 0;
+      width: 100%;
+      background: #f4f8f4;
+      padding: 10px 15px;
+      font-size: 14px;
+      color: #2e7d32;
+      font-weight: bold;
+      z-index: 998;
+      box-sizing: border-box;
+      white-space: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      text-align: left;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+      pointer-events: auto;
+    }
+    #hw-search-tool-root .floating-condition::-webkit-scrollbar {
+      display: none;
+    }
   }
 </style>
 
 <script type="text/javascript">
-  var amp = String.fromCharCode(38); // 記号回避用
+(function() {
+  var amp = String.fromCharCode(38);
   
   var areaData = {
     "matsuyama_all": { name: "松山市全域", code: "38201", words: "" },
     "east":  { name: "城東・中央", code: "38201", words: "一番町　二番町　三番町　千舟町　大街道　湊町　道後　石手　祝谷　東野　樽味　桑原　松末" },
     "west":  { name: "城西・中央", code: "38201", words: "大手町　南江戸　竹原　小栗　土居田　宮西　萱町　本町　花園町　藤原　保免　余戸" },
-    "north": { name: "城北",      code: "38201", words: "潮見　久枝　和気　堀江　吉藤　谷町　御幸　鴨川　平田　山越　問屋町　内宮　安城寺" },
-    "south": { name: "城南",      code: "38201", words: "石井　居相　古川　はなみずき　和泉　森松　井門　天山　朝生田　土居　北井門　小坂" },
+    "north": { name: "城北",     code: "38201", words: "潮見　久枝　和気　堀江　吉藤　谷町　御幸　鴨川　平田　山越　問屋町　内宮　安城寺" },
+    "south": { name: "城南",     code: "38201", words: "石井　居相　古川　はなみずき　和泉　森松　井門　天山　朝生田　土居　北井門　小坂" },
     "joto":  { name: "久米・小野", code: "38201", words: "小野　久米　平井　鷹子　来住　湯の山　南久米　北久米　畑寺　水泥　福音寺　高井" },
     "josai": { name: "三津・垣生", code: "38201", words: "三津　高浜　味生　生石　垣生　空港通　富久　南吉田　梅津寺　北斎院　南斎院　別府" },
     "hojo":  { name: "北条・島しょ", code: "38201", words: "北条　浅海　立岩　難波　正岡　河野　由良　睦野　中島　大浦　粟井　柳原　八反地" },
@@ -199,15 +189,69 @@
   var selectedAreaKeys = [];
 
   document.addEventListener('DOMContentLoaded', function() {
-      var inputs = document.querySelectorAll('input[type="radio"], input[type="checkbox"]');
+      // Setup event listeners instead of using inline onclick attributes
+      var inputs = document.querySelectorAll('#hw-search-tool-root input[type="radio"], #hw-search-tool-root input[type="checkbox"]');
       inputs.forEach(function(input) {
           input.addEventListener('change', function() {
               if (this.name === 'radio1') {
                   updateSalaryVisibility();
               }
+              if (this.name === 'radio3') {
+                  onRadioClick();
+              }
               updateConditionText();
           });
       });
+
+      var areaBtns = document.querySelectorAll('#hw-search-tool-root .area-btn');
+      areaBtns.forEach(function(btn) {
+          btn.addEventListener('click', function(e) {
+              e.preventDefault();
+              var key = this.id.replace('btn-', '');
+              selectArea(key);
+          });
+      });
+
+      var helpBtn = document.querySelector('#hw-search-tool-root .floating-help-btn');
+      if (helpBtn) {
+          helpBtn.addEventListener('click', function(e) {
+              e.preventDefault();
+              openHelp();
+          });
+      }
+
+      var modalOverlay = document.querySelector('#hw-search-tool-root #help-modal');
+      if (modalOverlay) {
+          modalOverlay.addEventListener('click', function(e) {
+              if (e.target === this) closeHelp();
+          });
+      }
+
+      var closeHelpBtns = document.querySelectorAll('#hw-search-tool-root .modal-close-btn, #hw-search-tool-root .modal-body button');
+      closeHelpBtns.forEach(function(btn) {
+          btn.addEventListener('click', function() {
+              closeHelp();
+          });
+      });
+
+      var saveBtn = document.querySelector('#hw-search-tool-root .save-btn-container button:nth-child(1)');
+      if (saveBtn) {
+          saveBtn.addEventListener('click', saveConditions);
+      }
+
+      var resetBtn = document.querySelector('#hw-search-tool-root .save-btn-container button:nth-child(2)');
+      if (resetBtn) {
+          resetBtn.addEventListener('click', resetAll);
+      }
+
+      var searchBtn = document.querySelector('#hw-search-tool-root .searchbutton');
+      if (searchBtn) {
+          searchBtn.addEventListener('click', function(e) {
+              e.preventDefault();
+              executeMySearch();
+          });
+      }
+
       loadConditionsAuto();
   });
 
@@ -236,9 +280,9 @@
     document.getElementById('area-warning-msg').style.display = isKeywordSearch ? 'block' : 'none';
 
     var specialLabels = [
-        document.querySelector('label[for="u2"]'), 
-        document.querySelector('label[for="u6"]'), 
-        document.querySelector('label[for="u7"]') 
+        document.querySelector('#hw-search-tool-root label[for="u2"]'), 
+        document.querySelector('#hw-search-tool-root label[for="u6"]'), 
+        document.querySelector('#hw-search-tool-root label[for="u7"]') 
     ];
     specialLabels.forEach(function(lbl){
         if(lbl) {
@@ -251,7 +295,8 @@
 
   function onRadioClick() {
     updateExclusion();
-    if(document.getElementById('u5').checked) {
+    var u5 = document.getElementById('u5');
+    if(u5 && u5.checked) {
         document.getElementById('FreeWord').style.display = 'block';
     } else {
         document.getElementById('FreeWord').style.display = 'none';
@@ -275,24 +320,21 @@
       if (isFullTime) {
         for(var i=0; i<monthlies.length; i++) monthlies[i].style.display = 'block';
         for(var i=0; i<hourlies.length; i++) hourlies[i].style.display = 'none';
-        var current = document.querySelector('input[name="radioSalary"]:checked');
+        var current = document.querySelector('#hw-search-tool-root input[name="radioSalary"]:checked');
         if (current && current.id.startsWith('salH')) document.getElementById('sal0').checked = true;
       } else if (isPartTime) {
         for(var i=0; i<monthlies.length; i++) monthlies[i].style.display = 'none';
         for(var i=0; i<hourlies.length; i++) hourlies[i].style.display = 'block';
-        var current = document.querySelector('input[name="radioSalary"]:checked');
+        var current = document.querySelector('#hw-search-tool-root input[name="radioSalary"]:checked');
         if (current && current.id.startsWith('salM')) document.getElementById('sal0').checked = true;
       }
     }
   }
 
-  function showMyModal(title, bodyHtml, isConfirm, callback) {
+  function showMyModal(title, text, isConfirm, callback) {
     var overlay = document.getElementById('msg-modal-overlay');
-    
-    // HTMLタグを許可して表示
-    document.getElementById('msg-modal-title').innerHTML = title;
-    document.getElementById('msg-modal-text-content').innerHTML = bodyHtml;
-    
+    document.getElementById('msg-modal-title').innerText = title;
+    document.getElementById('msg-modal-text').innerText = text;
     var btnOk = document.getElementById('msg-btn-ok');
     var btnCancel = document.getElementById('msg-btn-cancel');
     var newOk = btnOk.cloneNode(true);
@@ -304,8 +346,7 @@
 
     if(isConfirm) {
         btnCancel.style.display = 'block';
-        btnCancel.innerText = "キャンセル";
-        btnOk.innerText = "公式サイトへ進む";
+        btnOk.innerText = "検索する";
     } else {
         btnCancel.style.display = 'none';
         btnOk.innerText = "OK";
@@ -396,7 +437,7 @@
   function closeHelp() { document.getElementById('help-modal').style.display = 'none'; }
   
   function resetAll() {
-    showMyModal("確認", "選択した条件をすべてリセットしますか？<br>（保存されている条件も消去されます）", true, function(result){
+    showMyModal("確認", "選択した条件をすべてリセットしますか？\n（保存されている条件も消去されます）", true, function(result){
         if(!result) return;
         selectedAreaKeys = [];
         var btns = document.getElementsByClassName('area-btn');
@@ -436,14 +477,14 @@
     var area = document.getElementById('selectedAreaDisplay').innerText.replace("選択中: ", "");
     text += "【エリア】 " + area + "\n";
 
-    var ippan = document.querySelector('input[name="radio1"]:checked');
-    var ippanText = ippan ? document.querySelector('label[for="' + ippan.id + '"]').innerText : "";
+    var ippan = document.querySelector('#hw-search-tool-root input[name="radio1"]:checked');
+    var ippanText = ippan ? document.querySelector('#hw-search-tool-root label[for="' + ippan.id + '"]').innerText : "";
     
-    var ind = document.querySelector('input[name="radioIndustry"]:checked');
-    var indText = (ind && ind.id !== 'ind0') ? document.querySelector('label[for="' + ind.id + '"]').innerText : "";
+    var ind = document.querySelector('#hw-search-tool-root input[name="radioIndustry"]:checked');
+    var indText = (ind && ind.id !== 'ind0') ? document.querySelector('#hw-search-tool-root label[for="' + ind.id + '"]').innerText : "";
     
-    var job = document.querySelector('input[name="radioJobType"]:checked');
-    var jobText = (job && job.id !== 'job0') ? document.querySelector('label[for="' + job.id + '"]').innerText : "";
+    var job = document.querySelector('#hw-search-tool-root input[name="radioJobType"]:checked');
+    var jobText = (job && job.id !== 'job0') ? document.querySelector('#hw-search-tool-root label[for="' + job.id + '"]').innerText : "";
     
     var jobIndCombined = [];
     if(indText) jobIndCombined.push(indText);
@@ -453,18 +494,23 @@
     text += "【職種・区分】 " + ippanText + " / " + jobIndCombined.join("・") + "\n";
 
     var conds = [];
-    var checks = document.querySelectorAll('input[name="j1"]:checked');
+    var checks = document.querySelectorAll('#hw-search-tool-root input[name="j1"]:checked');
     checks.forEach(function(c){
-        conds.push(document.querySelector('label[for="' + c.id + '"]').innerText);
+        var lbl = document.querySelector('#hw-search-tool-root label[for="' + c.id + '"]');
+        if(lbl) conds.push(lbl.innerText);
     });
     
-    var salary = document.querySelector('input[name="radioSalary"]:checked');
+    var salary = document.querySelector('#hw-search-tool-root input[name="radioSalary"]:checked');
     if(salary && salary.id !== 'sal0' && document.getElementById('salary-aux-section').style.display !== 'none') {
-        conds.push(document.querySelector('label[for="' + salary.id + '"]').innerText);
+        var slbl = document.querySelector('#hw-search-tool-root label[for="' + salary.id + '"]');
+        if(slbl) conds.push(slbl.innerText);
     }
 
-    var kw = document.querySelector('input[name="radio3"]:checked');
-    if(kw && kw.id !== 'u4' && kw.id !== 'u5') conds.push(document.querySelector('label[for="' + kw.id + '"]').innerText);
+    var kw = document.querySelector('#hw-search-tool-root input[name="radio3"]:checked');
+    if(kw && kw.id !== 'u4' && kw.id !== 'u5') {
+        var klbl = document.querySelector('#hw-search-tool-root label[for="' + kw.id + '"]');
+        if(klbl) conds.push(klbl.innerText);
+    }
 
     if(conds.length > 0) {
         text += "【その他条件】 " + conds.join("、");
@@ -487,13 +533,13 @@
 
   function saveConditions() {
     var state = { areaKeys: selectedAreaKeys, radios: {}, checkboxes: {} };
-    var radios = document.querySelectorAll('input[type="radio"]');
+    var radios = document.querySelectorAll('#hw-search-tool-root input[type="radio"]');
     radios.forEach(function(r) { if(r.checked) state.radios[r.name] = r.id; });
-    var checks = document.querySelectorAll('input[type="checkbox"]');
+    var checks = document.querySelectorAll('#hw-search-tool-root input[type="checkbox"]');
     checks.forEach(function(c) { state.checkboxes[c.id] = c.checked; });
 
     localStorage.setItem('hw_search_conditions', JSON.stringify(state));
-    showMyModal("保存完了", "現在の検索条件をブラウザに保存しました。<br>次回開いた時に自動で読み込まれます。", false);
+    showMyModal("保存完了", "現在の検索条件をブラウザに保存しました。\n次回開いた時に自動で読み込まれます。", false);
   }
 
   function loadConditionsAuto() {
@@ -534,7 +580,7 @@
     });
 
     if(uniqueCodes.length > 5) {
-        showMyModal("エラー", "地域コードが5つを超えています。<br>選択を減らしてください。", false);
+        showMyModal("エラー", "地域コードが5つを超えています。\n選択を減らしてください。", false);
         return;
     }
 
@@ -542,129 +588,91 @@
                           document.getElementById('u6').checked || 
                           document.getElementById('u7').checked;
 
-    // ▼ POST送信でハローワークへ検索条件を直接飛ばす（直検索）処理
+    var params = "";
+    params += amp + "tDFK1CmbBox=38" + amp + "siku1Hidden=" + uniqueCodes.join("%2C") + amp + "siku2Hidden=" + amp + "siku3Hidden=";
+
+    var collect = function(fname) {
+      var str = "";
+      var el = document.forms[fname] ? document.forms[fname].elements : [];
+      for(var i=0; el.length > i; i++) { if(el[i].checked) str += el[i].value; }
+      return str;
+    };
+    
+    params += collect('ippan') + collect('newArri') + collect('jyouken') + collect('JobIndustry') + collect('JobType') + collect('salary');
+    
+    var fw = document.getElementById("FreeW").value;
+    
     var performOpen = function() {
-        var form = document.createElement("form");
-        form.method = "POST";
-        form.action = "https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do";
-        
-        var addInput = function(name, value) {
-            var input = document.createElement("input");
-            input.type = "hidden";
+        var form = document.createElement('form');
+        form.action = 'https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do';
+        form.method = 'POST';
+        form.target = '_blank';
+
+        var addHiddenInput = function(name, value) {
+            var input = document.createElement('input');
+            input.type = 'hidden';
             input.name = name;
             input.value = value;
             form.appendChild(input);
         };
 
-        // 必須パラメータ（ここで searchBtn を指定し、直検索をかけます）
-        addInput("action", "searchBtn");
-        addInput("screenId", "GECA110010");
-        addInput("searchClear", "0");
-        addInput("kjKbnRadioBtn", "1");
-        addInput("tatZngyCKBox", "1");
-        addInput("tDFK1CmbBox", "38");
-        if(uniqueCodes.length > 0) addInput("siku1Hidden", uniqueCodes.join(","));
-        addInput("siku2Hidden", "");
-        addInput("siku3Hidden", "");
+        addHiddenInput('action', 'searchBtn');
+        addHiddenInput('initDisp', ''); 
+        addHiddenInput('screenId', 'GECA110010');
+        addHiddenInput('searchClear', '0'); 
+        addHiddenInput('kjKbnRadioBtn', '1');
+        addHiddenInput('tatZngyCKBox', '1');
 
-        // フォーム内のチェックされた条件を取得してPOSTデータに追加
-        var parseAndAdd = function(valStr) {
-            if(!valStr) return;
-            var parts = valStr.split("&");
-            for(var p=0; p<parts.length; p++) {
-                if(parts[p]) {
-                    var kv = parts[p].split("=");
-                    if(kv.length === 2) {
-                        addInput(kv[0], decodeURIComponent(kv[1]));
-                    }
-                }
+        var paramArray = params.split('&');
+        for (var i = 0; i < paramArray.length; i++) {
+            if (paramArray[i] !== "") {
+                var pair = paramArray[i].split('=');
+                var key = pair[0];
+                var val = pair.length > 1 ? decodeURIComponent(pair[1]) : "";
+                addHiddenInput(key, val);
             }
-        };
-
-        var formNames = ['ippan', 'newArri', 'jyouken', 'JobIndustry', 'JobType', 'salary'];
-        for(var i=0; i<formNames.length; i++) {
-            var el = document.forms[formNames[i]] ? document.forms[formNames[i]].elements : [];
-            for(var j=0; j<el.length; j++) {
-                if(el[j].checked && el[j].value) parseAndAdd(el[j].value);
-            }
-        }
-
-        var fw = document.getElementById("FreeW").value;
-        if (isKeywordSearch) {
-            var freeEl = document.forms['Free'].elements;
-            for(var j=0; j<freeEl.length; j++) {
-                if(freeEl[j].checked && freeEl[j].value) parseAndAdd(freeEl[j].value);
-            }
-        } else if (fw && fw !== "") {
-            addInput("freeWordInput", fw);
-            addInput("freeWordRadioBtn", "0");
         }
 
         document.body.appendChild(form);
         form.submit();
+        document.body.removeChild(form);
     };
 
-    var getConditionSummary = function() {
-        var summary = "";
-        var areaDisplay = document.getElementById('selectedAreaDisplay') ? document.getElementById('selectedAreaDisplay').innerText : "指定なし";
-        summary += "● 地区： " + areaDisplay.replace("選択中: ", "") + "<br>";
-        
-        var ippan = document.querySelector('input[name="radio1"]:checked');
-        if(ippan && ippan.id !== 's4') summary += "● 区分： " + document.querySelector('label[for="'+ippan.id+'"]').innerText + "<br>";
-        
-        var ind = document.querySelector('input[name="radioIndustry"]:checked');
-        if(ind && ind.id !== 'ind0') summary += "● 業界： " + document.querySelector('label[for="'+ind.id+'"]').innerText + "<br>";
-
-        var job = document.querySelector('input[name="radioJobType"]:checked');
-        if(job && job.id !== 'job0') summary += "● 職種： " + document.querySelector('label[for="'+job.id+'"]').innerText + "<br>";
-
-        var checks = document.querySelectorAll('input[name="j1"]:checked');
-        if(checks.length > 0) {
-            var names = [];
-            checks.forEach(function(c){ names.push(document.querySelector('label[for="'+c.id+'"]').innerText); });
-            summary += "● 条件： " + names.join(", ");
-        }
-        return summary === "" ? "指定なし" : summary;
-    };
-
-    var modalTitle = "ハローワークインターネット<br>サービスで検索";
-
-    // 直検索用にスッキリさせた案内文
-    var confirmHtml = "<div class='selected-preview'>"
-                    + "<div class='selected-preview-title'>下記条件で検索を実行します</div>"
-                    + getConditionSummary()
-                    + "</div>"
-                    + "<div class='msg-body'>"
-                    + "ハローワーク公式サイトの <b style='color:#1e703d; font-size:1.15em;'>検索結果（求人一覧）</b> "
-                    + "へ直接移動します。<br><br>"
-                    + "<span style='font-size:0.9em; color:#d32f2f;'>※2ページ目以降を見る際、もしエラーが出た場合は、画面下部の「条件を変更する」から再度検索してください。</span>"
-                    + "</div>";
-
-    // モーダルを出し、OKが押されたら POST送信（直検索） を実行
-    showMyModal(modalTitle, confirmHtml, true, function(result){
-        if(result) performOpen();
-    });
+    if (isKeywordSearch) {
+        params += collect('Free');
+        performOpen();
+    } else if(fw && fw !== "") {
+       var encodedFW = encodeURIComponent(fw);
+       params += amp + "freeWordInput=" + encodedFW + amp + "freeWordRadioBtn=0"; 
+       showMyModal("検索確認", "上に表示されている条件で\nハローワークの検索を開きますか？", true, function(result){
+           if(result) performOpen();
+       });
+    } else { 
+       params += collect('Free'); 
+       showMyModal("検索確認", "上に表示されている条件で\nハローワークの検索を開きますか？", true, function(result){
+           if(result) performOpen();
+       });
+    }
   }
+
+})();
 </script>
-</head>
-<body>
 
 <div id="hw-search-tool-root">
+  <a class="floating-help-btn" href="#">？ 利用方法・注意事項</a>
 
-  <a class="floating-help-btn" onclick="openHelp(); return false;">？ 利用方法・注意事項</a>
-
-  <div id="help-modal" class="modal-overlay" onclick="if(event.target == this) closeHelp();">
+  <div id="help-modal" class="modal-overlay">
     <div class="modal-content-help">
       <div class="modal-header">
         <span>ご利用案内・ご注意</span>
-        <button class="modal-close-btn" onclick="closeHelp()">閉じる ×</button>
+        <button class="modal-close-btn">閉じる ×</button>
       </div>
       <div class="modal-body">
         
         <div class="help-section-title" style="margin-top: 0;">操作方法について</div>
         <ul class="help-list" style="margin-bottom: 25px;">
           <li><strong>条件の選択：</strong>各項目からご希望の条件をタップして選択してください。選択した条件は画面下部の「現在の検索条件」に表示されます。</li>
-          <li><strong>検索の実行：</strong>「この条件で検索する」ボタンを押すと、ハローワークインターネットサービスの詳細検索画面に移動します。</li>
+          <li><strong>検索の実行：</strong>「この条件で検索する」ボタンを押すと、ハローワークインターネットサービスの検索結果画面が新しいタブで開きます。</li>
           <li><strong>条件の保存：</strong>「この条件を保存」ボタンを押すと、お使いのスマートフォン（ブラウザ）に条件が記憶され、次回開いた際に自動でセットされます。</li>
           <li><strong>条件のリセット：</strong>選択を最初からやり直したい場合は「リセット」ボタンを押してください。</li>
         </ul>
@@ -690,7 +698,7 @@
         </div>
 
         <div style="text-align:center; margin-top:20px;">
-          <button onclick="closeHelp()" style="padding:10px 25px; background:#008000; color:#fff; border:none; border-radius:5px; font-weight:bold; font-size:15px; cursor:pointer;">閉じる</button>
+          <button style="padding:10px 25px; background:#008000; color:#fff; border:none; border-radius:5px; font-weight:bold; font-size:15px; cursor:pointer;">閉じる</button>
         </div>
       </div>
     </div>
@@ -699,7 +707,7 @@
   <div id="msg-modal-overlay" class="modal-overlay">
     <div class="modal-content-msg">
       <div id="msg-modal-title" class="msg-title"></div>
-      <div id="msg-modal-text-content"></div>
+      <div id="msg-modal-text" class="msg-body"></div>
       <div class="msg-buttons">
           <button id="msg-btn-cancel" class="btn-cancel">キャンセル</button>
           <button id="msg-btn-ok" class="btn-ok">OK</button>
@@ -709,12 +717,12 @@
 
   <div id="wrapper">
 
-    <div class="intro-text">
-      ハローワーク松山管轄の求人情報を、簡単な操作で検索することができます。<br>
-      <span class="caution-text">※本機能は簡易検索システムのため、条件によっては全ての求人が表示されない場合があります。</span>
+    <div class="intro-text" style="font-weight: bold;">
+      ハローワーク松山管轄の求人情報を、簡単な操作で検索することができます。<br><br>
+      <span style="color: #d32f2f;">本機能は簡易検索のため、一部の求人が表示されない場合や、「2ページ目」へ進むと入力した条件がリセットされる場合があります。</span><br><br>
+      すべての求人の確認や、より詳細な条件での検索、エラー発生時は、大変お手数ですが、以下の公式サイトを開き、再度検索をお願いいたします。
       
       <div class="hwis-guide-box">
-        <p class="hwis-guide-text">より詳細な条件で検索したい場合は、以下のサービスをご利用ください。</p>
         <a href="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=searchShosaiBtn&amp;screenId=GECA110010&amp;kjKbnRadioBtn=1&amp;ippanCKBox=1&amp;ippanCKBox=2" target="_blank" class="hwis-link-btn">ハローワークインターネットサービスへ</a>
       </div>
     </div>
@@ -733,22 +741,22 @@
 
     <div class="sub-section">▼松山市内（1つのみ選択可）</div>
     <div class="grid-container">
-      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-matsuyama_all" onclick="selectArea('matsuyama_all');" class="btn-base area-btn" style="border-color:#aaa; color:#333;">松山市全域</a></div>
-      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-east" onclick="selectArea('east');" class="btn-base area-btn">城東・中央</a></div>
-      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-west" onclick="selectArea('west');" class="btn-base area-btn">城西・中央</a></div>
-      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-north" onclick="selectArea('north');" class="btn-base area-btn">城北</a></div>
-      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-south" onclick="selectArea('south');" class="btn-base area-btn">城南</a></div>
-      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-joto" onclick="selectArea('joto');" class="btn-base area-btn">久米・小野</a></div>
-      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-josai" onclick="selectArea('josai');" class="btn-base area-btn">三津・垣生</a></div>
-      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-hojo" onclick="selectArea('hojo');" class="btn-base area-btn">北条・島しょ</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-matsuyama_all" class="btn-base area-btn" style="border-color:#aaa; color:#333;">松山市全域</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-east" class="btn-base area-btn">城東・中央</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-west" class="btn-base area-btn">城西・中央</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-north" class="btn-base area-btn">城北</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-south" class="btn-base area-btn">城南</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-joto" class="btn-base area-btn">久米・小野</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-josai" class="btn-base area-btn">三津・垣生</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-hojo" class="btn-base area-btn">北条・島しょ</a></div>
     </div>
     <div class="sub-section" style="margin-top:10px;">▼周辺地域（複数選択可・合計5地域まで）</div>
     <div class="grid-container">
-      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-iyo" onclick="selectArea('iyo');" class="btn-base area-btn">伊予市</a></div>
-      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-toon" onclick="selectArea('toon');" class="btn-base area-btn">東温市</a></div>
-      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-masaki" onclick="selectArea('masaki');" class="btn-base area-btn">松前町</a></div>
-      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-tobe" onclick="selectArea('tobe');" class="btn-base area-btn">砥部町</a></div>
-      <div class="grid-item-2"><a href="javascript:void(0);" id="btn-kuma" onclick="selectArea('kuma');" class="btn-base area-btn">久万高原町</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-iyo" class="btn-base area-btn">伊予市</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-toon" class="btn-base area-btn">東温市</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-masaki" class="btn-base area-btn">松前町</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-tobe" class="btn-base area-btn">砥部町</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-kuma" class="btn-base area-btn">久万高原町</a></div>
     </div>
     <div id="selectedAreaDisplay" style="color:#008000; font-weight:bold; margin-top:10px; margin-bottom:15px; border-bottom:1px solid #ccc; padding-bottom:5px;">指定しない</div>
 
@@ -853,17 +861,17 @@
 
     <div class="section">6. キーワード・その他</div>
     <form name="Free" class="grid-container">
-      <div class="grid-item-2"><input checked id="u4" name="radio3" type="radio" value="" onclick="onRadioClick()"/><label for="u4" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
-      <div class="grid-item-2"><input id="u2" name="radio3" type="radio" value="&freeWordInput=%E5%AD%90%E8%82%B2%E3%81%A6%E6%94%AF%E6%8F%B4%E6%B1%82%E4%BA%BA" onclick="onRadioClick()"/><label for="u2" class="btn-base chkLabel">子育て支援</label></div>
+      <div class="grid-item-2"><input checked id="u4" name="radio3" type="radio" value=""/><label for="u4" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
+      <div class="grid-item-2"><input id="u2" name="radio3" type="radio" value="&freeWordInput=%E5%AD%90%E8%82%B2%E3%81%A6%E6%94%AF%E6%8F%B4%E6%B1%82%E4%BA%BA"/><label for="u2" class="btn-base chkLabel">子育て支援</label></div>
       
       <div id="senior-warning-msg" class="exclusion-msg" style="flex:100%; display:none;">
         ※エリア指定中は、上記キーワードボタンは使用できません（併用不可）
       </div>
 
-      <div class="grid-item-2"><input id="u6" name="radio3" type="radio" value="&freeWordInput=%E3%82%B7%E3%83%8B%E3%82%A2%E3%80%80%EF%BC%96%EF%BC%90%E6%AD%B3%E4%BB%A5%E4%B8%8A&nOTKNSKFreeWordInput=%E3%83%9F%E3%83%89%E3%83%AB%E3%82%B7%E3%83%8B%E3%82%A2&freeWordRadioBtn=0" onclick="onRadioClick()"/><label for="u6" class="btn-base chkLabel">シニア(60歳~)</label></div>
-      <div class="grid-item-2"><input id="u7" name="radio3" type="radio" value="&freeWordInput=%E3%83%9F%E3%83%89%E3%83%AB%E3%82%B7%E3%83%8B%E3%82%A2&freeWordRadioBtn=0" onclick="onRadioClick()"/><label for="u7" class="btn-base chkLabel">ミドルシニア</label></div>
+      <div class="grid-item-2"><input id="u6" name="radio3" type="radio" value="&freeWordInput=%E3%82%B7%E3%83%8B%E3%82%A2%E3%80%80%EF%BC%96%EF%BC%90%E6%AD%B3%E4%BB%A5%E4%B8%8A&nOTKNSKFreeWordInput=%E3%83%9F%E3%83%89%E3%83%AB%E3%82%B7%E3%83%8B%E3%82%A2&freeWordRadioBtn=0"/><label for="u6" class="btn-base chkLabel">シニア(60歳~)</label></div>
+      <div class="grid-item-2"><input id="u7" name="radio3" type="radio" value="&freeWordInput=%E3%83%9F%E3%83%89%E3%83%AB%E3%82%B7%E3%83%8B%E3%82%A2&freeWordRadioBtn=0"/><label for="u7" class="btn-base chkLabel">ミドルシニア</label></div>
       
-      <div class="grid-item-2" style="flex:100%;"><input id="u5" name="radio3" type="radio" value="" onclick="onRadioClick()"/><label for="u5" class="btn-base chkLabel">入力する</label></div>
+      <div class="grid-item-2" style="flex:100%;"><input id="u5" name="radio3" type="radio" value=""/><label for="u5" class="btn-base chkLabel">入力する</label></div>
     </form>
     <div id="FreeWord" style="display:none;">
       <input class="textarea" id="FreeW" placeholder="全角スペースで区切って入力" type="text" />
@@ -878,13 +886,13 @@
       <div id="current-conditions-text" style="white-space: pre-wrap; margin-top: 8px;"></div>
       
       <div class="save-btn-container">
-        <button class="save-btn" onclick="saveConditions()">この条件を保存</button>
-        <button class="save-btn" onclick="resetAll()">リセット</button>
+        <button class="save-btn">この条件を保存</button>
+        <button class="save-btn">リセット</button>
       </div>
     </div>
 
     <div id="floating-condition-text" class="floating-condition"></div>
-    <a class="searchbutton" href="javascript:void(0);" onclick="executeMySearch()">この条件で検索する</a>
+    <a class="searchbutton" href="#">この条件で検索する</a>
 
     <div class="bottom-info-container">
       
@@ -971,5 +979,3 @@
     </div>
   </div>
 </div>
-</body>
-</html>
