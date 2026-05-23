@@ -1,74 +1,21 @@
 <style type="text/css">
   /* ============================================================
-     お洒落で読みやすいローディング画面（PC・スマホ共通）
-  ============================================================ */
-  #hw-search-tool-root #search-loading-overlay-new {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 10005;
-  }
-  #hw-search-tool-root .loading-modal-content {
-    background: #fff;
-    padding: 35px 25px;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-    max-width: 85%;
-    width: 400px;
-    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-  }
-  #hw-search-tool-root .loading-title {
-    font-size: 22px;
-    font-weight: bold;
-    color: #008000;
-    margin-bottom: 15px;
-    letter-spacing: 0.05em;
-  }
-  #hw-search-tool-root .loading-text {
-    font-size: 16px;
-    color: #333;
-    line-height: 1.6;
-    margin-bottom: 15px;
-    font-weight: bold;
-  }
-  #hw-search-tool-root .loading-subtext {
-    font-size: 14px;
-    color: #d32f2f;
-    font-weight: bold;
-  }
-  #hw-search-tool-root .spinner {
-    margin: 0 auto 20px;
-    width: 55px;
-    height: 55px;
-    border: 6px solid #f0f0f0;
-    border-top: 6px solid #008000;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-  /* ============================================================
      全体スタイル・レイアウト
   ============================================================ */
   #hw-search-tool-root { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 0; background-color: #f9f9f9; text-align: left; }
   #hw-search-tool-root #wrapper { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding-bottom: 80px; box-sizing: border-box; position: relative; overflow-x: hidden; }
   
-  /* トップの案内文エリア */
   #hw-search-tool-root .intro-text { font-size: 15px; color: #333; background: #f4f4f4; padding: 20px; border-radius: 8px; margin-bottom: 25px; line-height: 1.6; }
   #hw-search-tool-root .hwis-guide-box { margin-top: 15px; text-align: center; border-top: 1px dashed #ccc; padding-top: 15px; }
   #hw-search-tool-root .hwis-link-btn { display: inline-block; background: #f0f7ff; color: #0055b3; border: 3px solid #0066cc; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px; box-shadow: 0 4px 8px rgba(0, 102, 204, 0.15); transition: all 0.2s; }
   #hw-search-tool-root .hwis-link-btn:active { background: #e6f0fa; transform: translateY(2px); box-shadow: 0 2px 4px rgba(0, 102, 204, 0.15); }
-
-  /* 右上のヘルプボタン */
   #hw-search-tool-root .floating-help-btn { position: fixed; top: 15px; right: 15px; z-index: 9999; background-color: #ff9800; color: #ffffff !important; font-weight: bold; font-size: 13px; padding: 10px 16px; border-radius: 25px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.3); opacity: 0.95; cursor: pointer; }
   
-  /* モーダル共通 */
+  /* モーダル */
   #hw-search-tool-root .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; }
   #hw-search-tool-root .modal-content-help { background-color: #fff; width: 90%; max-width: 500px; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); max-height: 85vh; overflow-y: auto; position: relative; animation: popIn 0.2s ease-out; }
   #hw-search-tool-root .modal-content-msg { background-color: #fff; width: 85%; max-width: 350px; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center; animation: popIn 0.2s ease-out; }
   @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-  
   #hw-search-tool-root .modal-header { font-size: 19px; font-weight: bold; color: #008000; border-bottom: 2px solid #008000; padding-bottom: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
   #hw-search-tool-root .modal-close-btn { background: #eee; border: none; padding: 8px 15px; cursor: pointer; border-radius: 20px; font-size: 15px; color: #333; font-weight: bold; }
   #hw-search-tool-root .help-section-title { color: #008000; border-left: 6px solid #008000; padding-left: 10px; margin: 25px 0 10px 0; font-size: 17px; font-weight: bold; }
@@ -76,7 +23,6 @@
   #hw-search-tool-root .help-list li { margin-bottom: 8px; }
   #hw-search-tool-root .help-note-item { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #ccc; }
   #hw-search-tool-root .help-note-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-  
   #hw-search-tool-root .msg-title { font-size: 1.2em; font-weight: bold; color: #333; margin-bottom: 12px; }
   #hw-search-tool-root .msg-body { font-size: 15px; color: #444; line-height: 1.6; margin-bottom: 25px; white-space: pre-wrap; }
   #hw-search-tool-root .msg-buttons { display: flex; justify-content: center; gap: 15px; }
@@ -84,18 +30,15 @@
   #hw-search-tool-root .btn-ok { background: #008000; color: #fff; }
   #hw-search-tool-root .btn-cancel { background: #ccc; color: #333; }
 
-  /* 各セクション見出し */
+  /* 見出し・フォーム等 */
   #hw-search-tool-root .section { margin-top: 2.5em; font-weight: bold; border-bottom: 2px solid #008000; padding-bottom: 5px; margin-bottom: 15px; color: #333; font-size: 1.1em; }
   #hw-search-tool-root .sub-section { font-size: 1em; color: #555; margin-bottom: 8px; }
   #hw-search-tool-root .aux-section { background-color: #f0f7f0; border-left: 4px solid #008000; padding: 12px 15px; margin-top: 5px; margin-bottom: 20px; border-radius: 4px; display: none; }
   #hw-search-tool-root .aux-title { font-size: 0.9em; font-weight: bold; color: #008000; margin-bottom: 10px; }
-
-  /* 選択ボタン類 */
   #hw-search-tool-root .grid-container { display: flex; flex-wrap: wrap; gap: 8px; }
   #hw-search-tool-root .grid-item-2 { flex: 1 1 calc(50% - 8px); }
   #hw-search-tool-root .grid-item-full { flex: 1 1 100%; }
   #hw-search-tool-root .btn-base { display: flex; align-items: center; justify-content: center; padding: 5px; text-align: center; cursor: pointer; box-sizing: border-box; font-size: 15px; font-weight: bold; border-radius: 8px; text-decoration: none; min-height: 60px; line-height: 1.3; width: 100%; border: 2px solid transparent; touch-action: manipulation; }
-  
   #hw-search-tool-root .area-btn { background: #fff; color: #008000; border: 2px solid #008000; }
   #hw-search-tool-root .area-btn.active { background: #008000 !important; color: #fff !important; border-color: #008000 !important; box-shadow: 0 0 5px rgba(0,128,0,0.5); }
   #hw-search-tool-root .chkLabel { background: #fff; color: #008000; border: 1px solid #008000; }
@@ -109,10 +52,7 @@
   /* 警告系・お知らせボックス（すべて白背景） */
   #hw-search-tool-root .notice-box { background-color: #ffffff !important; border: 1px solid #d32f2f; padding: 15px; border-radius: 5px; margin-bottom: 15px; font-size: 0.95em; color: #333; line-height: 1.5; }
   #hw-search-tool-root .exclusion-msg { display: none; color: #d32f2f; font-size: 0.9em; font-weight: bold; margin-bottom: 10px; background-color: #ffffff !important; padding: 10px; border-radius: 4px; border: 1px solid #d32f2f; }
-  #hw-search-tool-root .card-caution { font-size: 12px; color: #d32f2f; background-color: #ffffff !important; padding: 10px; border-radius: 6px; margin-top: 5px; margin-bottom: 15px; line-height: 1.5; border: 1px solid #d9a0a0; }
   #hw-search-tool-root .warning-box { background-color: #ffffff !important; border: 1px solid #d9a0a0; padding: 15px; border-radius: 6px; color: #b33939; font-size: 13px; line-height: 1.6; }
-  
-  /* フォーム要素 */
   #hw-search-tool-root input[type="checkbox"], #hw-search-tool-root input[type="radio"] { display: none; }
   #hw-search-tool-root details { margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; overflow: hidden; background: #fff; width: 100%; display: block; }
   #hw-search-tool-root summary { cursor: pointer; padding: 15px; font-weight: bold; background-color: #f0f0f0; list-style: none; position: relative; font-size: 16px; display: block; touch-action: manipulation; }
@@ -121,28 +61,16 @@
   #hw-search-tool-root .details-content { padding: 10px; background: #fafafa; border-top: 1px solid #ccc; }
   #hw-search-tool-root input[type="text"] { width: 100%; padding: 14px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; font-size: 17px; }
   
-  /* 条件保存・表示エリア */
+  /* PC用検索ボタン・保存エリア */
   #hw-search-tool-root .condition-summary { background: #fafafa; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-top: 35px; font-size: 14px; color: #444; line-height: 1.6; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
   #hw-search-tool-root .condition-summary-title { color: #555; margin-bottom: 5px; font-size: 15px; font-weight: bold; border-bottom: 1px solid #eaeaea; padding-bottom: 5px; }
   #hw-search-tool-root .save-btn-container { display: flex; justify-content: space-between; gap: 10px; margin-top: 10px; }
   #hw-search-tool-root .save-btn { flex: 1; padding: 12px; background: #fff; color: #555; border: 1px solid #bbb; border-radius: 6px; cursor: pointer; font-size: 14px; touch-action: manipulation; }
   #hw-search-tool-root .save-btn:active { background: #eee; }
 
-  /* ============================================================
-     ★ 検索アクションエリア（PC/スマホでレイアウト切り替え）
-  ============================================================ */
-  #hw-search-tool-root .search-action-area {
-    margin-top: 20px;
-    width: 100%;
-  }
-  #hw-search-tool-root .floating-condition {
-    display: none; /* デスクトップでは非表示 */
-  }
-  #hw-search-tool-root .searchbutton { 
-    display: block; width: 100%; padding: 20px; background: #008000; color: #fff !important; 
-    text-align: center; font-size: 24px; font-weight: bold; border-radius: 12px; 
-    text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; touch-action: manipulation; 
-  }
+  #hw-search-tool-root .search-action-area { margin-top: 20px; width: 100%; }
+  #hw-search-tool-root .floating-condition { display: none; } /* デスクトップでは非表示 */
+  #hw-search-tool-root .searchbutton { display: block; width: 100%; padding: 20px; background: #008000; color: #fff !important; text-align: center; font-size: 24px; font-weight: bold; border-radius: 12px; margin-top: 15px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; touch-action: manipulation; }
   #hw-search-tool-root .searchbutton:active { background: #006600; transform: translateY(2px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
   /* 下部インフォメーション */
@@ -161,11 +89,7 @@
   #hw-search-tool-root .card-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 10px 20px 15px 20px; -ms-overflow-style: none; scrollbar-width: none; }
   #hw-search-tool-root .card-carousel::-webkit-scrollbar { display: none; }
   #hw-search-tool-root .card-item { flex: 0 0 85%; max-width: 320px; scroll-snap-align: center; background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 20px 30px 25px 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: flex; flex-direction: column; position: relative; }
-  #hw-search-tool-root .card-arrow-left, #hw-search-tool-root .card-arrow-right { position: absolute; top: 50%; transform: translateY(-50%); font-size: 24px; color: #C85A32; opacity: 0.35; pointer-events: none; }
-  #hw-search-tool-root .card-arrow-left { left: 10px; }
-  #hw-search-tool-root .card-arrow-right { right: 10px; }
-  #hw-search-tool-root .card-header-row { display: flex; justify-content: center; align-items: center; margin-bottom: 12px; }
-  #hw-search-tool-root .card-badge { display: inline-block; background-color: #fcece6; color: #C85A32; font-size: 11.5px; font-weight: bold; padding: 4px 10px; border-radius: 20px; }
+  #hw-search-tool-root .card-badge { display: inline-block; background-color: #fcece6; color: #C85A32; font-size: 11.5px; font-weight: bold; padding: 4px 10px; border-radius: 20px; margin-bottom: 12px; }
   #hw-search-tool-root .card-title { font-size: 16px; font-weight: bold; color: #333; margin: 0 0 15px 0; line-height: 1.4; text-align: center; }
   #hw-search-tool-root .card-desc { font-size: 13.5px; color: #555; line-height: 1.6; flex-grow: 1; margin-bottom: 20px; }
   #hw-search-tool-root .card-btn { display: block; width: 100%; background-color: #C85A32; color: #fff !important; text-align: center; padding: 14px 0; border-radius: 8px; font-size: 14px; font-weight: bold; text-decoration: none; transition: opacity 0.2s; box-sizing: border-box; touch-action: manipulation; }
@@ -173,31 +97,59 @@
   #hw-search-tool-root .apply-guide-title { font-size: 16px; color: #333; font-weight: bold; margin: 0 0 15px 0; border-left: 4px solid #008000; padding-left: 10px; }
   #hw-search-tool-root .contact-section { background-color: #fff; text-align: center; padding: 25px 20px; font-size: 16px; font-weight: bold; color: #333; border-top: 1px dashed #ddd; line-height: 1.6; letter-spacing: 0.05em; }
 
+  /* デスクトップ用：スマホ専用の固定ボタンを隠す */
+  #hw-search-tool-root #mobile-sticky-footer { display: none; }
+
   /* ============================================================
      ★ スマホ専用レスポンシブ（追従ボタン・条件表示）
   ============================================================ */
   @media screen and (max-width: 600px) {
-    /* メイン領域の余白を大きく取る（下部固定メニューに被らないため） */
+    /* 画面下部に固定エリアが来るため、メイン領域の余白を大きく取る */
     #hw-search-tool-root #wrapper { padding: 10px 5px; width: 100%; padding-bottom: 160px; }
     #hw-search-tool-root .btn-base { font-size: 14px; padding: 5px; min-height: 55px; }
     #hw-search-tool-root .floating-help-btn { top: 20px; font-size: 12px; padding: 8px 12px; }
     
-    /* スマホの下部固定エリア */
-    #hw-search-tool-root .search-action-area {
-      display: flex; flex-direction: column; position: fixed; bottom: 0; left: 0; width: 100%;
-      z-index: 9990; background: #fff; box-shadow: 0 -3px 10px rgba(0,0,0,0.15); margin: 0;
+    /* PC用のインライン検索ボタンを隠す */
+    #hw-search-tool-root #desktop-search-area { display: none !important; }
+
+    /* スマホの下部固定エリア（条件＋ボタン） */
+    #hw-search-tool-root #mobile-sticky-footer {
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      bottom: 0; left: 0; width: 100%;
+      z-index: 9999;
+      background: #fff;
+      box-shadow: 0 -3px 10px rgba(0,0,0,0.15);
+      /* iPhoneのホームバー対策 */
+      padding-bottom: env(safe-area-inset-bottom);
     }
-    /* 条件表示バー（横スクロール可能） */
+    
+    /* 横スクロール可能な条件表示バー */
     #hw-search-tool-root .floating-condition {
-      display: block; width: 100%; background: #f0f7f0; padding: 12px 15px; font-size: 14px; color: #008000;
-      font-weight: bold; box-sizing: border-box; white-space: nowrap; overflow-x: auto;
-      -webkit-overflow-scrolling: touch; border-bottom: 1px solid #d0e8d0;
+      display: block;
+      width: 100%;
+      background: #f0f7f0;
+      padding: 12px 15px;
+      font-size: 14px;
+      color: #008000;
+      font-weight: bold;
+      box-sizing: border-box;
+      white-space: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-bottom: 1px solid #d0e8d0;
     }
     #hw-search-tool-root .floating-condition::-webkit-scrollbar { display: none; }
     
-    /* 検索ボタン */
-    #hw-search-tool-root .searchbutton {
-      margin: 0; border-radius: 0; box-shadow: none; padding: 16px 20px; font-size: 20px;
+    /* 固定された大きな検索ボタン */
+    #hw-search-tool-root #mobile-sticky-footer .searchbutton {
+      margin: 0;
+      border-radius: 0;
+      box-shadow: none;
+      padding: 16px 20px;
+      font-size: 20px;
+      width: 100%;
     }
   }
 </style>
@@ -206,16 +158,25 @@
 (function() {
   var amp = String.fromCharCode(38);
 
+  /* ============================================================
+     ★ LINEブラウザ強制ジャンプ
+     LINE内ブラウザで開かれた場合、自動で外部ブラウザ（Safari等）を立ち上げます。
+  ============================================================ */
+  if (/Line\//i.test(navigator.userAgent) && location.href.indexOf('openExternalBrowser=1') === -1) {
+      var separator = location.href.indexOf('?') === -1 ? '?' : '&';
+      location.href = location.href + separator + 'openExternalBrowser=1';
+  }
+
   /* エリアデータ（全角スペース） */
   var areaData = {
     "matsuyama_all": { name: "松山市全域", code: "38201", words: "" },
-    "east":  { name: "城東・中央", code: "38201", words: "一番町 二番町 三番町 千舟町 大街道 湊町 道後 石手 祝谷 東野 樽味 桑原 松末" },
-    "west":  { name: "城西・中央", code: "38201", words: "大手町 南江戸 竹原 小栗 土居田 宮西 萱町 本町 花園町 藤原 保免 余戸" },
-    "north": { name: "城北",     code: "38201", words: "潮見 久枝 和気 堀江 吉藤 谷町 御幸 鴨川 平田 山越 問屋町 内宮 安城寺" },
-    "south": { name: "城南",     code: "38201", words: "石井 居相 古川 はなみずき 和泉 森松 井門 天山 朝生田 土居 北井門 小坂" },
-    "joto":  { name: "久米・小野", code: "38201", words: "小野 久米 平井 鷹子 来住 湯の山 南久米 北久米 畑寺 水泥 福音寺 高井" },
-    "josai": { name: "三津・垣生", code: "38201", words: "三津 高浜 味生 生石 垣生 空港通 富久 南吉田 梅津寺 北斎院 南斎院 別府" },
-    "hojo":  { name: "北条・島しょ", code: "38201", words: "北条 浅海 立岩 難波 正岡 河野 由良 睦野 中島 大浦 粟井 柳原 八反地" },
+    "east":  { name: "城東・中央", code: "38201", words: "一番町　二番町　三番町　千舟町　大街道　湊町　道後　石手　祝谷　東野　樽味　桑原　松末" },
+    "west":  { name: "城西・中央", code: "38201", words: "大手町　南江戸　竹原　小栗　土居田　宮西　萱町　本町　花園町　藤原　保免　余戸" },
+    "north": { name: "城北",     code: "38201", words: "潮見　久枝　和気　堀江　吉藤　谷町　御幸　鴨川　平田　山越　問屋町　内宮　安城寺" },
+    "south": { name: "城南",     code: "38201", words: "石井　居相　古川　はなみずき　和泉　森松　井門　天山　朝生田　土居　北井門　小坂" },
+    "joto":  { name: "久米・小野", code: "38201", words: "小野　久米　平井　鷹子　来住　湯の山　南久米　北久米　畑寺　水泥　福音寺　高井" },
+    "josai": { name: "三津・垣生", code: "38201", words: "三津　高浜　味生　生石　垣生　空港通　富久　南吉田　梅津寺　北斎院　南斎院　別府" },
+    "hojo":  { name: "北条・島しょ", code: "38201", words: "北条　浅海　立岩　難波　正岡　河野　由良　睦野　中島　大浦　粟井　柳原　八反地" },
     "iyo":    { name: "伊予市",     code: "38210", words: "" },
     "toon":   { name: "東温市",     code: "38215", words: "" },
     "masaki": { name: "松前町",     code: "38401", words: "" },
@@ -237,7 +198,6 @@
           });
       });
 
-      // エリアボタン登録
       var areaBtns = document.querySelectorAll('#hw-search-tool-root .area-btn');
       areaBtns.forEach(function(btn) {
           btn.addEventListener('click', function(e) {
@@ -246,7 +206,6 @@
           });
       });
 
-      // 各種ボタン登録
       var helpBtn = document.querySelector('#hw-search-tool-root .floating-help-btn');
       if (helpBtn) helpBtn.addEventListener('click', function(e){ e.preventDefault(); openHelp(); });
       
@@ -262,14 +221,14 @@
       var resetBtn = document.querySelector('#hw-search-tool-root .save-btn-container button:nth-child(2)');
       if (resetBtn) resetBtn.addEventListener('click', resetAll);
       
-      // 検索するボタン
-      var searchBtn = document.querySelector('#hw-search-tool-root .searchbutton');
-      if (searchBtn) {
-          searchBtn.addEventListener('click', function(e) {
+      // ★ 修正：PC用・スマホ用のすべての「検索する」ボタンに対応
+      var searchBtns = document.querySelectorAll('#hw-search-tool-root .searchbutton');
+      searchBtns.forEach(function(btn) {
+          btn.addEventListener('click', function(e) {
               e.preventDefault();
               executeMySearch();
           });
-      }
+      });
 
       loadConditionsAuto();
   });
@@ -433,7 +392,7 @@
     updateConditionText();
   }
 
-  /* ★ 修正：フリーワードのスペースをすべて「全角スペース」に統一する処理 */
+  /* ★ 修正：フリーワード内のスペースをすべて全角に統一（末尾スペース削除） */
   function updateAreaDisplay() {
     var display = document.getElementById('selectedAreaDisplay');
     if (selectedAreaKeys.length === 0) {
@@ -446,12 +405,15 @@
       var wordsArray = [];
       selectedAreaKeys.forEach(function(k) {
         names.push(areaData[k].name);
-        if(areaData[k].words) { wordsArray.push(areaData[k].words); }
+        if(areaData[k].words) { 
+            // 登録されている半角スペースも全角に変換して配列に追加
+            wordsArray.push(areaData[k].words.replace(/ /g, '　')); 
+        }
       });
       display.innerText = "選択中: " + names.join("、");
       
-      // すべての単語を全角スペースで結合し、万が一の半角スペースも全角に変換、両端のスペースは削除
-      var combinedWords = wordsArray.join(' ').replace(/ /g, ' ').replace(/^ +| +$/g, '').replace(/ +/g, ' ');
+      // 全角スペースで繋ぎ、連続するスペースを1つにまとめ、両端のスペースは削除
+      var combinedWords = wordsArray.join('　').replace(/　+/g, '　').replace(/^　+|　+$/g, '');
       document.getElementById('FreeW').value = combinedWords;
     }
   }
@@ -551,8 +513,8 @@
     if (conds.length > 0) {
         floatText += " / " + conds.join("・");
     }
-    var floatEl = document.getElementById('floating-condition-text');
-    if(floatEl) floatEl.innerText = floatText;
+    var floatEls = document.querySelectorAll('.floating-condition');
+    floatEls.forEach(function(el){ el.innerText = floatText; });
   }
 
   function saveConditions() {
@@ -597,9 +559,9 @@
   }
 
   /* ============================================================
-     ★ 究極解決版：隠しiframeを使った「自動2ステップ通信」
-     画面の中央にお洒落なロード画面を出しつつ、裏側で確実に
-     ハローワークのセッションを構築してから新しいタブで検索します。
+     ★ 究極解決版：お洒落なロード画面＆確実なキャッシュ構築
+     ボタン押下と「同時に」新しいタブを開き、その中で
+     ローディング画面と2段階通信を完結させます。
   ============================================================ */
   function executeMySearch() {
     var uniqueCodes = [];
@@ -633,75 +595,96 @@
     if (isKeywordSearch) {
         params += collect('Free');
     } else if (fw && fw !== "") {
-        // ★ 検索実行直前にもう一度、半角スペースを全角に変換する念押し処理
-        var fwClean = fw.replace(/ /g, ' ').replace(/^ +| +$/g, '').replace(/ +/g, ' ');
+        // ★ 検索実行直前にもう一度、念押しで半角スペースを全角に変換
+        var fwClean = fw.replace(/ /g, '　').replace(/　+/g, '　').replace(/^　+|　+$/g, '');
         params += amp + "freeWordInput=" + encodeURIComponent(fwClean) + amp + "freeWordRadioBtn=0"; 
     } else {
         params += collect('Free'); 
     }
 
-    // --- ここから2段階通信処理 ---
     var performOpen = function() {
-        // ① お洒落なローディング画面を表示
-        var loadingEl = document.getElementById('search-loading-overlay-new');
-        if(loadingEl) loadingEl.style.display = 'flex';
+        // ① クリックと【同時に】新しいタブを開く（ポップアップブロック回避の絶対条件）
+        var newWin = window.open('', '_blank');
+        if (!newWin) {
+            showMyModal("エラー", "ポップアップブロックが有効になっています。\nブラウザの設定でブロックを解除してから再度お試しください。", false);
+            return;
+        }
 
-        // ② 裏側で通信するための隠しiframeを作成
-        var iframeName = 'hidden_hwis_iframe_' + Date.now();
-        var iframe = document.createElement('iframe');
-        iframe.name = iframeName;
-        iframe.style.display = 'none';
-        document.body.appendChild(iframe);
+        // POST送信用の隠しinputタグ(HTML)を生成
+        var inputsHtml = '';
+        var addHiddenHtml = function(name, value) {
+            var escapedValue = value.replace(/"/g, '&quot;');
+            inputsHtml += '<input type="hidden" name="' + name + '" value="' + escapedValue + '">\n';
+        };
+        addHiddenHtml('action', 'searchBtn');
+        addHiddenHtml('initDisp', ''); 
+        addHiddenHtml('screenId', 'GECA110010');
+        addHiddenHtml('searchClear', '0'); 
+        addHiddenHtml('kjKbnRadioBtn', '1');
+        addHiddenHtml('tatZngyCKBox', '1');
 
-        // ③【ステップ1】隠しiframeに向けて初期画面(GET)を送信（ここでHWISのキャッシュが作られる）
-        var formInit = document.createElement('form');
-        formInit.action = 'https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do';
-        formInit.method = 'GET';
-        formInit.target = iframeName; // iframeの中で開くため画面は切り替わらない
-        
-        var a1 = document.createElement('input'); a1.type='hidden'; a1.name='action'; a1.value='initDisp';
-        var a2 = document.createElement('input'); a2.type='hidden'; a2.name='screenId'; a2.value='GECA110010';
-        formInit.appendChild(a1); formInit.appendChild(a2);
-        document.body.appendChild(formInit);
-        formInit.submit();
-
-        // ④【ステップ2】2.5秒待ってから、本番の検索(POST)を新しいタブで送信
-        setTimeout(function() {
-            var formPost = document.createElement('form');
-            formPost.action = 'https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do';
-            formPost.method = 'POST';
-            formPost.target = '_blank'; // ここで初めて結果が新しいタブで開く
-            
-            var addHidden = function(name, value) {
-                var inp = document.createElement('input');
-                inp.type = 'hidden'; inp.name = name; inp.value = value;
-                formPost.appendChild(inp);
-            };
-            addHidden('action', 'searchBtn');
-            addHidden('initDisp', ''); 
-            addHidden('screenId', 'GECA110010');
-            addHidden('searchClear', '0'); 
-            addHidden('kjKbnRadioBtn', '1');
-            addHidden('tatZngyCKBox', '1');
-
-            var paramArray = params.split('&');
-            for (var i = 0; i < paramArray.length; i++) {
-                if (paramArray[i] !== "") {
-                    var pair = paramArray[i].split('=');
-                    var key = pair[0];
-                    var val = pair.length > 1 ? decodeURIComponent(pair[1]) : "";
-                    addHidden(key, val);
-                }
+        var paramArray = params.split('&');
+        for (var i = 0; i < paramArray.length; i++) {
+            if (paramArray[i] !== "") {
+                var pair = paramArray[i].split('=');
+                var key = pair[0];
+                var val = pair.length > 1 ? decodeURIComponent(pair[1]) : "";
+                addHiddenHtml(key, val);
             }
-            document.body.appendChild(formPost);
-            formPost.submit();
-            
-            // ロード画面を消して、裏で作った不要な要素をお掃除
-            if(loadingEl) loadingEl.style.display = 'none';
-            document.body.removeChild(formInit);
-            document.body.removeChild(formPost);
-            setTimeout(function(){ document.body.removeChild(iframe); }, 1000);
-        }, 2500); // 余裕を持って2.5秒待機（これでロード画面もしっかり読めます）
+        }
+
+        // ② 新しいタブの中に「お洒落なロード画面」と「自動送信用プログラム」を書き込む
+        var loadingPageHtml = `
+            <!DOCTYPE html>
+            <html lang="ja">
+            <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>検索処理中...</title>
+            <style>
+              body { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; background: #f4f8f4; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; flex-direction: column; }
+              .loading-box { background: #fff; padding: 40px 30px; border-radius: 12px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 85%; max-width: 400px; }
+              .spinner { margin: 0 auto 20px; width: 55px; height: 55px; border: 6px solid #f0f0f0; border-top: 6px solid #008000; border-radius: 50%; animation: spin 1s linear infinite; }
+              @keyframes spin { 100% { transform: rotate(360deg); } }
+              .title { font-size: 22px; font-weight: bold; color: #008000; margin-bottom: 15px; letter-spacing: 0.05em; }
+              .desc { font-size: 16px; color: #333; line-height: 1.6; font-weight: bold; margin-bottom: 15px; }
+              .sub { font-size: 14px; color: #d32f2f; font-weight: bold; }
+            </style>
+            </head>
+            <body>
+              <div class="loading-box">
+                <div class="spinner"></div>
+                <div class="title">検索処理中...</div>
+                <div class="desc">ハローワークインターネットサービスに<br>接続しています。</div>
+                <div class="sub">※画面が切り替わるまで少々お待ちください</div>
+              </div>
+              
+              <iframe name="init_frame" style="display:none;"></iframe>
+              <form id="initForm" action="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do" method="GET" target="init_frame">
+                <input type="hidden" name="action" value="initDisp">
+                <input type="hidden" name="screenId" value="GECA110010">
+              </form>
+              
+              <form id="postForm" action="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do" method="POST">
+                 ${inputsHtml}
+              </form>
+              
+              <script>
+                // 1. キャッシュ構築の実行（裏側）
+                document.getElementById('initForm').submit();
+                
+                // 2. 約2.5秒後に本番の検索を実行（画面が検索結果に切り替わる）
+                setTimeout(function() {
+                  document.getElementById('postForm').submit();
+                }, 2500);
+              <\/script>
+            </body>
+            </html>
+        `;
+        
+        newWin.document.open();
+        newWin.document.write(loadingPageHtml);
+        newWin.document.close();
     };
 
     // 余計な確認ポップアップは挟まず、すぐに処理開始
@@ -710,15 +693,6 @@
 
 })();
 </script>
-
-<div id="search-loading-overlay-new" class="modal-overlay">
-  <div class="loading-modal-content">
-     <div class="spinner"></div>
-     <div class="loading-title">検索処理中...</div>
-     <div class="loading-text">ハローワークインターネットサービスに<br>接続しています。</div>
-     <div class="loading-subtext">※画面が切り替わるまで少々お待ちください</div>
-  </div>
-</div>
 
 <div id="hw-search-tool-root">
   <a class="floating-help-btn" href="#">？ 利用方法・注意事項</a>
@@ -741,22 +715,14 @@
 
         <div class="help-section-title">ご利用時の注意事項</div>
         <div class="help-notes">
-          
-          <p class="help-note-item">
-            <strong>【LINE等からのご利用について】</strong><br>
-            LINEアプリ等からご覧の場合でもエラーが起きないよう自動処理を組み込んでいますが、環境によっては「2ページ目」へ進むと条件がリセットされる場合があります。その際は<strong>外部ブラウザ（SafariやChrome）で開き直して</strong>ご利用ください。
-          </p>
-          
           <p class="help-note-item">
             <strong>【検索における網羅性について】</strong><br>
             松山市内の地区指定は主要な町名を抽出するため、すべての求人が表示されるわけではありません。漏れなく確認したい場合は<strong>「松山市全域」</strong>を選択してください。また、職種は大分類です。詳細な小分類は検索結果画面から再選択してください。
           </p>
-
           <p class="help-note-item">
             <strong>【シニア・子育て・ミドル検索について】</strong><br>
             システム制限により、<strong>地区指定（詳細な町名）との併用はできません</strong>のでご了承ください。
           </p>
-
         </div>
 
         <div style="text-align:center; margin-top:20px;">
@@ -963,8 +929,14 @@
       </div>
     </div>
 
-    <div class="search-action-area">
-      <div id="floating-condition-text" class="floating-condition"></div>
+    <div class="search-action-area" id="desktop-search-area">
+      <a class="searchbutton" href="#">この条件で検索する</a>
+    </div>
+
+    <div id="mobile-sticky-footer">
+      <div class="floating-condition">
+        <div id="floating-condition-text"></div>
+      </div>
       <a class="searchbutton" href="#">この条件で検索する</a>
     </div>
 
