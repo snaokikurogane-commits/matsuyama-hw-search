@@ -1,5 +1,54 @@
 <style type="text/css">
   /* ============================================================
+     お洒落で読みやすいローディング画面（PC・スマホ共通）
+  ============================================================ */
+  #hw-search-tool-root #search-loading-overlay-new {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10005;
+  }
+  #hw-search-tool-root .loading-modal-content {
+    background: #fff;
+    padding: 35px 25px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    max-width: 85%;
+    width: 400px;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+  #hw-search-tool-root .loading-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #008000;
+    margin-bottom: 15px;
+    letter-spacing: 0.05em;
+  }
+  #hw-search-tool-root .loading-text {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    font-weight: bold;
+  }
+  #hw-search-tool-root .loading-subtext {
+    font-size: 14px;
+    color: #d32f2f;
+    font-weight: bold;
+  }
+  #hw-search-tool-root .spinner {
+    margin: 0 auto 20px;
+    width: 55px;
+    height: 55px;
+    border: 6px solid #f0f0f0;
+    border-top: 6px solid #008000;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+  /* ============================================================
      全体スタイル・レイアウト
   ============================================================ */
   #hw-search-tool-root { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 0; background-color: #f9f9f9; text-align: left; }
@@ -72,16 +121,29 @@
   #hw-search-tool-root .details-content { padding: 10px; background: #fafafa; border-top: 1px solid #ccc; }
   #hw-search-tool-root input[type="text"] { width: 100%; padding: 14px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; font-size: 17px; }
   
-  /* 検索ボタン（PC・スマホ共通デザイン） */
-  #hw-search-tool-root .searchbutton { display: block; width: 100%; padding: 20px; background: #008000; color: #fff !important; text-align: center; font-size: 24px; font-weight: bold; border-radius: 12px; margin-top: 15px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; touch-action: manipulation; }
-  #hw-search-tool-root .searchbutton:active { background: #006600; transform: translateY(2px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-  
-  /* 条件保存・表示 */
+  /* 条件保存・表示エリア */
   #hw-search-tool-root .condition-summary { background: #fafafa; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-top: 35px; font-size: 14px; color: #444; line-height: 1.6; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
   #hw-search-tool-root .condition-summary-title { color: #555; margin-bottom: 5px; font-size: 15px; font-weight: bold; border-bottom: 1px solid #eaeaea; padding-bottom: 5px; }
   #hw-search-tool-root .save-btn-container { display: flex; justify-content: space-between; gap: 10px; margin-top: 10px; }
   #hw-search-tool-root .save-btn { flex: 1; padding: 12px; background: #fff; color: #555; border: 1px solid #bbb; border-radius: 6px; cursor: pointer; font-size: 14px; touch-action: manipulation; }
   #hw-search-tool-root .save-btn:active { background: #eee; }
+
+  /* ============================================================
+     ★ 検索アクションエリア（PC/スマホでレイアウト切り替え）
+  ============================================================ */
+  #hw-search-tool-root .search-action-area {
+    margin-top: 20px;
+    width: 100%;
+  }
+  #hw-search-tool-root .floating-condition {
+    display: none; /* デスクトップでは非表示 */
+  }
+  #hw-search-tool-root .searchbutton { 
+    display: block; width: 100%; padding: 20px; background: #008000; color: #fff !important; 
+    text-align: center; font-size: 24px; font-weight: bold; border-radius: 12px; 
+    text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; touch-action: manipulation; 
+  }
+  #hw-search-tool-root .searchbutton:active { background: #006600; transform: translateY(2px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
   /* 下部インフォメーション */
   #hw-search-tool-root .bottom-info-container { margin-top: 40px; background: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; }
@@ -111,57 +173,31 @@
   #hw-search-tool-root .apply-guide-title { font-size: 16px; color: #333; font-weight: bold; margin: 0 0 15px 0; border-left: 4px solid #008000; padding-left: 10px; }
   #hw-search-tool-root .contact-section { background-color: #fff; text-align: center; padding: 25px 20px; font-size: 16px; font-weight: bold; color: #333; border-top: 1px dashed #ddd; line-height: 1.6; letter-spacing: 0.05em; }
 
-  /* デスクトップ用：スマホ専用の固定ボタンを隠す */
-  #hw-search-tool-root #mobile-sticky-footer { display: none; }
-
   /* ============================================================
      ★ スマホ専用レスポンシブ（追従ボタン・条件表示）
   ============================================================ */
   @media screen and (max-width: 600px) {
-    /* 画面下部に固定エリアが来るため、メイン領域の余白を大きく取る */
+    /* メイン領域の余白を大きく取る（下部固定メニューに被らないため） */
     #hw-search-tool-root #wrapper { padding: 10px 5px; width: 100%; padding-bottom: 160px; }
     #hw-search-tool-root .btn-base { font-size: 14px; padding: 5px; min-height: 55px; }
     #hw-search-tool-root .floating-help-btn { top: 20px; font-size: 12px; padding: 8px 12px; }
     
-    /* PC用のインライン検索ボタンを隠す */
-    #hw-search-tool-root #desktop-search-area { display: none !important; }
-
-    /* スマホの下部固定エリア（条件＋ボタン） */
-    #hw-search-tool-root #mobile-sticky-footer {
-      display: flex;
-      flex-direction: column;
-      position: fixed;
-      bottom: 0; left: 0; width: 100%;
-      z-index: 9999;
-      background: #fff;
-      box-shadow: 0 -3px 10px rgba(0,0,0,0.15);
+    /* スマホの下部固定エリア */
+    #hw-search-tool-root .search-action-area {
+      display: flex; flex-direction: column; position: fixed; bottom: 0; left: 0; width: 100%;
+      z-index: 9990; background: #fff; box-shadow: 0 -3px 10px rgba(0,0,0,0.15); margin: 0;
     }
-    
-    /* 横スクロール可能な条件表示バー */
+    /* 条件表示バー（横スクロール可能） */
     #hw-search-tool-root .floating-condition {
-      display: block;
-      width: 100%;
-      background: #f0f7f0;
-      padding: 12px 15px;
-      font-size: 14px;
-      color: #008000;
-      font-weight: bold;
-      box-sizing: border-box;
-      white-space: nowrap;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      border-bottom: 1px solid #d0e8d0;
+      display: block; width: 100%; background: #f0f7f0; padding: 12px 15px; font-size: 14px; color: #008000;
+      font-weight: bold; box-sizing: border-box; white-space: nowrap; overflow-x: auto;
+      -webkit-overflow-scrolling: touch; border-bottom: 1px solid #d0e8d0;
     }
     #hw-search-tool-root .floating-condition::-webkit-scrollbar { display: none; }
     
-    /* 固定された大きな検索ボタン */
-    #hw-search-tool-root #mobile-sticky-footer .searchbutton {
-      margin: 0;
-      border-radius: 0;
-      box-shadow: none;
-      padding: 16px 20px;
-      font-size: 20px;
-      width: 100%;
+    /* 検索ボタン */
+    #hw-search-tool-root .searchbutton {
+      margin: 0; border-radius: 0; box-shadow: none; padding: 16px 20px; font-size: 20px;
     }
   }
 </style>
@@ -170,15 +206,7 @@
 (function() {
   var amp = String.fromCharCode(38);
 
-  /* ============================================================
-     ★ 新規追加：LINEブラウザ強制ジャンプ
-  ============================================================ */
-  // LINEからアクセスされた場合、自動的に外部ブラウザ(Safari/Chrome)で開き直す
-  if (/Line\//i.test(navigator.userAgent) && location.href.indexOf('openExternalBrowser=1') === -1) {
-      var separator = location.href.indexOf('?') === -1 ? '?' : '&';
-      location.href = location.href + separator + 'openExternalBrowser=1';
-  }
-
+  /* エリアデータ（全角スペース） */
   var areaData = {
     "matsuyama_all": { name: "松山市全域", code: "38201", words: "" },
     "east":  { name: "城東・中央", code: "38201", words: "一番町 二番町 三番町 千舟町 大街道 湊町 道後 石手 祝谷 東野 樽味 桑原 松末" },
@@ -234,14 +262,14 @@
       var resetBtn = document.querySelector('#hw-search-tool-root .save-btn-container button:nth-child(2)');
       if (resetBtn) resetBtn.addEventListener('click', resetAll);
       
-      // ★ 修正：PC用・スマホ用のすべての「検索する」ボタンに対応
-      var searchBtns = document.querySelectorAll('#hw-search-tool-root .searchbutton');
-      searchBtns.forEach(function(btn) {
-          btn.addEventListener('click', function(e) {
+      // 検索するボタン
+      var searchBtn = document.querySelector('#hw-search-tool-root .searchbutton');
+      if (searchBtn) {
+          searchBtn.addEventListener('click', function(e) {
               e.preventDefault();
               executeMySearch();
           });
-      });
+      }
 
       loadConditionsAuto();
   });
@@ -405,7 +433,7 @@
     updateConditionText();
   }
 
-  /* ★修正：フリーワード内のスペースをすべて全角に統一（末尾スペース削除） */
+  /* ★ 修正：フリーワードのスペースをすべて「全角スペース」に統一する処理 */
   function updateAreaDisplay() {
     var display = document.getElementById('selectedAreaDisplay');
     if (selectedAreaKeys.length === 0) {
@@ -422,8 +450,8 @@
       });
       display.innerText = "選択中: " + names.join("、");
       
-      // 全角スペースで繋ぎ、もし半角が混じっていたら全角に変換、両端のスペースは削除
-      var combinedWords = wordsArray.join(' ').replace(/ /g, ' ').replace(/^ +| +$/g, '');
+      // すべての単語を全角スペースで結合し、万が一の半角スペースも全角に変換、両端のスペースは削除
+      var combinedWords = wordsArray.join(' ').replace(/ /g, ' ').replace(/^ +| +$/g, '').replace(/ +/g, ' ');
       document.getElementById('FreeW').value = combinedWords;
     }
   }
@@ -523,8 +551,8 @@
     if (conds.length > 0) {
         floatText += " / " + conds.join("・");
     }
-    var floatEls = document.querySelectorAll('.floating-condition');
-    floatEls.forEach(function(el){ el.innerText = floatText; });
+    var floatEl = document.getElementById('floating-condition-text');
+    if(floatEl) floatEl.innerText = floatText;
   }
 
   function saveConditions() {
@@ -569,9 +597,9 @@
   }
 
   /* ============================================================
-     ★ 究極解決版：お洒落なロード画面＆確実なキャッシュ構築
-     ボタン押下直後に「新しいタブ(about:blank)」を開き、
-     その中でローディング画面と2ステップ通信を完結させます。
+     ★ 究極解決版：隠しiframeを使った「自動2ステップ通信」
+     画面の中央にお洒落なロード画面を出しつつ、裏側で確実に
+     ハローワークのセッションを構築してから新しいタブで検索します。
   ============================================================ */
   function executeMySearch() {
     var uniqueCodes = [];
@@ -605,94 +633,75 @@
     if (isKeywordSearch) {
         params += collect('Free');
     } else if (fw && fw !== "") {
-        params += amp + "freeWordInput=" + encodeURIComponent(fw) + amp + "freeWordRadioBtn=0"; 
+        // ★ 検索実行直前にもう一度、半角スペースを全角に変換する念押し処理
+        var fwClean = fw.replace(/ /g, ' ').replace(/^ +| +$/g, '').replace(/ +/g, ' ');
+        params += amp + "freeWordInput=" + encodeURIComponent(fwClean) + amp + "freeWordRadioBtn=0"; 
     } else {
         params += collect('Free'); 
     }
 
+    // --- ここから2段階通信処理 ---
     var performOpen = function() {
-        // ① ボタン押下と【同時に】新しいタブを開く（ポップアップブロック回避の絶対条件）
-        var newWin = window.open('', '_blank');
-        if (!newWin) {
-            showMyModal("エラー", "ポップアップブロックが有効になっています。\nブラウザの設定でブロックを解除してから再度お試しください。", false);
-            return;
-        }
+        // ① お洒落なローディング画面を表示
+        var loadingEl = document.getElementById('search-loading-overlay-new');
+        if(loadingEl) loadingEl.style.display = 'flex';
 
-        // POST送信用の隠しinputタグ(HTML)を生成
-        var inputsHtml = '';
-        var addHiddenHtml = function(name, value) {
-            var escapedValue = value.replace(/"/g, '&quot;'); // " をエスケープ
-            inputsHtml += '<input type="hidden" name="' + name + '" value="' + escapedValue + '">\n';
-        };
-        addHiddenHtml('action', 'searchBtn');
-        addHiddenHtml('initDisp', ''); 
-        addHiddenHtml('screenId', 'GECA110010');
-        addHiddenHtml('searchClear', '0'); 
-        addHiddenHtml('kjKbnRadioBtn', '1');
-        addHiddenHtml('tatZngyCKBox', '1');
+        // ② 裏側で通信するための隠しiframeを作成
+        var iframeName = 'hidden_hwis_iframe_' + Date.now();
+        var iframe = document.createElement('iframe');
+        iframe.name = iframeName;
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
 
-        var paramArray = params.split('&');
-        for (var i = 0; i < paramArray.length; i++) {
-            if (paramArray[i] !== "") {
-                var pair = paramArray[i].split('=');
-                var key = pair[0];
-                var val = pair.length > 1 ? decodeURIComponent(pair[1]) : "";
-                addHiddenHtml(key, val);
-            }
-        }
-
-        // ② 新しいタブの中に、お洒落な「ローディング画面」と「自動送信用プログラム」を直接書き込む
-        var loadingPageHtml = `
-            <!DOCTYPE html>
-            <html lang="ja">
-            <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>検索処理中...</title>
-            <style>
-              body { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; background: #f4f8f4; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; flex-direction: column; }
-              .loading-box { background: #fff; padding: 40px 30px; border-radius: 12px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 85%; max-width: 400px; }
-              .spinner { margin: 0 auto 20px; width: 50px; height: 50px; border: 5px solid #f0f0f0; border-top: 5px solid #008000; border-radius: 50%; animation: spin 1s linear infinite; }
-              @keyframes spin { 100% { transform: rotate(360deg); } }
-              .title { font-size: 22px; font-weight: bold; color: #008000; margin-bottom: 15px; letter-spacing: 0.05em; }
-              .desc { font-size: 16px; color: #333; line-height: 1.6; font-weight: bold; margin-bottom: 15px; }
-              .sub { font-size: 13px; color: #d32f2f; font-weight: bold; }
-            </style>
-            </head>
-            <body>
-              <div class="loading-box">
-                <div class="spinner"></div>
-                <div class="title">検索処理中...</div>
-                <div class="desc">ハローワークインターネットサービスに<br>接続しています。</div>
-                <div class="sub">※画面が切り替わるまで少々お待ちください</div>
-              </div>
-              
-              <iframe name="init_frame" style="display:none;"></iframe>
-              <form id="initForm" action="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do" method="GET" target="init_frame">
-                <input type="hidden" name="action" value="initDisp">
-                <input type="hidden" name="screenId" value="GECA110010">
-              </form>
-              
-              <form id="postForm" action="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do" method="POST">
-                 ${inputsHtml}
-              </form>
-              
-              <script>
-                // 1. キャッシュ構築の実行（裏側）
-                document.getElementById('initForm').submit();
-                
-                // 2. 約2秒後に本番の検索を実行（画面が切り替わる）
-                setTimeout(function() {
-                  document.getElementById('postForm').submit();
-                }, 2200);
-              <\/script>
-            </body>
-            </html>
-        `;
+        // ③【ステップ1】隠しiframeに向けて初期画面(GET)を送信（ここでHWISのキャッシュが作られる）
+        var formInit = document.createElement('form');
+        formInit.action = 'https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do';
+        formInit.method = 'GET';
+        formInit.target = iframeName; // iframeの中で開くため画面は切り替わらない
         
-        newWin.document.open();
-        newWin.document.write(loadingPageHtml);
-        newWin.document.close();
+        var a1 = document.createElement('input'); a1.type='hidden'; a1.name='action'; a1.value='initDisp';
+        var a2 = document.createElement('input'); a2.type='hidden'; a2.name='screenId'; a2.value='GECA110010';
+        formInit.appendChild(a1); formInit.appendChild(a2);
+        document.body.appendChild(formInit);
+        formInit.submit();
+
+        // ④【ステップ2】2.5秒待ってから、本番の検索(POST)を新しいタブで送信
+        setTimeout(function() {
+            var formPost = document.createElement('form');
+            formPost.action = 'https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do';
+            formPost.method = 'POST';
+            formPost.target = '_blank'; // ここで初めて結果が新しいタブで開く
+            
+            var addHidden = function(name, value) {
+                var inp = document.createElement('input');
+                inp.type = 'hidden'; inp.name = name; inp.value = value;
+                formPost.appendChild(inp);
+            };
+            addHidden('action', 'searchBtn');
+            addHidden('initDisp', ''); 
+            addHidden('screenId', 'GECA110010');
+            addHidden('searchClear', '0'); 
+            addHidden('kjKbnRadioBtn', '1');
+            addHidden('tatZngyCKBox', '1');
+
+            var paramArray = params.split('&');
+            for (var i = 0; i < paramArray.length; i++) {
+                if (paramArray[i] !== "") {
+                    var pair = paramArray[i].split('=');
+                    var key = pair[0];
+                    var val = pair.length > 1 ? decodeURIComponent(pair[1]) : "";
+                    addHidden(key, val);
+                }
+            }
+            document.body.appendChild(formPost);
+            formPost.submit();
+            
+            // ロード画面を消して、裏で作った不要な要素をお掃除
+            if(loadingEl) loadingEl.style.display = 'none';
+            document.body.removeChild(formInit);
+            document.body.removeChild(formPost);
+            setTimeout(function(){ document.body.removeChild(iframe); }, 1000);
+        }, 2500); // 余裕を持って2.5秒待機（これでロード画面もしっかり読めます）
     };
 
     // 余計な確認ポップアップは挟まず、すぐに処理開始
@@ -701,6 +710,15 @@
 
 })();
 </script>
+
+<div id="search-loading-overlay-new" class="modal-overlay">
+  <div class="loading-modal-content">
+     <div class="spinner"></div>
+     <div class="loading-title">検索処理中...</div>
+     <div class="loading-text">ハローワークインターネットサービスに<br>接続しています。</div>
+     <div class="loading-subtext">※画面が切り替わるまで少々お待ちください</div>
+  </div>
+</div>
 
 <div id="hw-search-tool-root">
   <a class="floating-help-btn" href="#">？ 利用方法・注意事項</a>
@@ -726,7 +744,7 @@
           
           <p class="help-note-item">
             <strong>【LINE等からのご利用について】</strong><br>
-            LINEアプリからご覧の場合、検索結果の「2ページ目」へ進もうとすると、入力した条件がリセットされる場合があります。自動で回避する仕組みを導入していますが、もしエラーが出た場合は<strong>外部ブラウザ（SafariやChrome）で開き直して</strong>ご利用ください。
+            LINEアプリ等からご覧の場合でもエラーが起きないよう自動処理を組み込んでいますが、環境によっては「2ページ目」へ進むと条件がリセットされる場合があります。その際は<strong>外部ブラウザ（SafariやChrome）で開き直して</strong>ご利用ください。
           </p>
           
           <p class="help-note-item">
@@ -770,7 +788,7 @@
       <div class="notice-box">
         <strong style="color: #d32f2f;">⚠️ ご利用時のご注意</strong><br>
         <span style="color: #333; font-weight: normal;">
-          LINEなどのアプリからご覧の場合、検索結果の「2ページ目」へ進もうとすると、<span style="color: #d32f2f; font-weight: bold;">入力した条件がリセットされる</span>場合があります。<br>
+          検索結果の「2ページ目」へ進もうとすると、<span style="color: #d32f2f; font-weight: bold;">入力した条件がリセットされる</span>場合があります。<br>
           もし条件が消えてしまった場合は、お手数ですが下にある「ハローワークインターネットサービスへ」ボタンから公式サイトを開き、再度条件を入力して検索をお願いいたします。
         </span>
       </div>
@@ -945,11 +963,7 @@
       </div>
     </div>
 
-    <div id="desktop-search-area">
-      <a class="searchbutton" href="#">この条件で検索する</a>
-    </div>
-
-    <div id="mobile-sticky-footer">
+    <div class="search-action-area">
       <div id="floating-condition-text" class="floating-condition"></div>
       <a class="searchbutton" href="#">この条件で検索する</a>
     </div>
