@@ -146,7 +146,6 @@
     "kuma":   { name: "久万高原町", code: "38386", words: "" }
   };
 
-  // ※「その他(99)」を削除済みのリスト
   var jobData = {
     "01": { name: "営業", subs: {"0100":"こだわらない","0101":"不動産","0102":"自動車営業","0103":"金融・保険営業","0104":"その他の商品・サービス"} },
     "02": { name: "販売", subs: {"0200":"こだわらない","0201":"コンビニ・スーパー","0202":"アパレル・医薬品・化粧品","0203":"ガソリンスタンド","0204":"店長","0205":"レジ係","0206":"その他"} },
@@ -325,7 +324,6 @@
           info.innerHTML = '最大<strong>5つ</strong>まで選択できます。';
           wrap.appendChild(info);
 
-          // ★スクロール用ボックスを新設
           var scrollBox = document.createElement('div');
           scrollBox.style.maxHeight = '45vh';
           scrollBox.style.overflowY = 'auto';
@@ -356,7 +354,6 @@
               label.style.paddingLeft = '15px';
               label.innerText = subName;
 
-              // 「こだわらない」排他制御
               input.addEventListener('change', function() {
                   var pCode = this.dataset.parentCode;
                   var isAnyChecked = this.value.endsWith('00') && this.checked;
@@ -488,7 +485,6 @@
           info.innerHTML = '最大<strong>5つ</strong>まで選択できます。';
           wrap.appendChild(info);
 
-          // ★スクロール用ボックスを新設
           var scrollBox = document.createElement('div');
           scrollBox.style.maxHeight = '45vh';
           scrollBox.style.overflowY = 'auto';
@@ -600,7 +596,6 @@
        }
   }
 
-  // ============== 職種・特集の同時選択ブロック ==============
   function updateCrossExclusion() {
       var isJobSelected = Object.keys(selectedJobs).length > 0;
       var isFeatureSelected = Object.keys(selectedFeatures).length > 0;
@@ -625,8 +620,6 @@
       var featureMsg = document.getElementById('feature-cross-warning-msg');
       if (featureMsg) featureMsg.style.display = isJobSelected ? 'block' : 'none';
   }
-
-  // ============================================
 
   function updateExclusion() {
     var isKeywordSearchIntent = document.getElementById('u2').checked || 
@@ -769,6 +762,8 @@
         
         var jyoukenChecks = document.querySelectorAll('input[name="jyoukenBox"]');
         jyoukenChecks.forEach(function(c) { c.checked = false; });
+        var hakenChecks = document.querySelectorAll('input[name="hakenBox"]');
+        hakenChecks.forEach(function(c) { c.checked = false; });
         
         document.getElementById('FreeW').value = "";
         document.getElementById('FreeWord').style.display = 'none';
@@ -791,6 +786,13 @@
 
     var emp = document.querySelector('#hw-search-tool-root input[name="radioEmp"]:checked');
     var empText = emp ? document.querySelector('#hw-search-tool-root label[for="' + emp.id + '"]').innerText : "";
+    
+    var hakenText = [];
+    if(document.getElementById('h1').checked) hakenText.push("有期派遣除く");
+    if(document.getElementById('h2').checked) hakenText.push("無期派遣除く");
+    if(hakenText.length > 0) {
+        empText += " （" + hakenText.join("・") + "）";
+    }
     text += "【雇用形態】 " + empText + "\n";
 
     var jobNames = [];
@@ -828,7 +830,7 @@
         if(lbl) jyoukenNames.push(lbl.innerText); 
     });
     var jText = jyoukenNames.length > 0 ? jyoukenNames.join("、") : "指定しない";
-    text += "【条件】 " + jText + "\n";
+    text += "【条件・時間】 " + jText + "\n";
 
     var kw = document.querySelector('#hw-search-tool-root input[name="radioKw"]:checked');
     var kwText = "";
@@ -955,23 +957,53 @@
         addHiddenInput('searchClear', '0'); 
         addHiddenInput('kjKbnRadioBtn', '1'); 
 
+        // エリア
         if (uniqueCodes.length > 0) {
             addHiddenInput('tDFK1CmbBox', '38'); 
             addHiddenInput('siku1Hidden', uniqueCodes.join(",")); 
         }
 
+        // 雇用形態 ＋ 派遣除外ロジック
         var emp = document.querySelector('input[name="radioEmp"]:checked');
-        if(emp && emp.value !== "") {
-            var parts = emp.value.split(','); 
-            parts.forEach(function(p) {
-                var kv = p.split('=');
-                if(kv.length === 2) addHiddenInput(kv[0], kv[1]);
-            });
+        var isYuukiExc = document.getElementById('h1').checked;
+        var isMukiExc = document.getElementById('h2').checked;
+
+        if (isYuukiExc || isMukiExc) {
+            var allowedCodes = [];
+            if (emp.id === 's1') {
+                allowedCodes.push("20260101003"); 
+            } else if (emp.id === 's2') {
+                allowedCodes.push("20260101003"); 
+                allowedCodes.push("20260101004"); 
+                if (!isYuukiExc) allowedCodes.push("20260101005"); 
+                if (!isMukiExc) allowedCodes.push("20260101006"); 
+            } else if (emp.id === 's3') {
+                allowedCodes.push("20260101008"); 
+                if (!isYuukiExc) allowedCodes.push("20260101009"); 
+                if (!isMukiExc) allowedCodes.push("20260101010"); 
+            } else {
+                allowedCodes.push("20260101003"); 
+                allowedCodes.push("20260101004"); 
+                allowedCodes.push("20260101008"); 
+                if (!isYuukiExc) { allowedCodes.push("20260101005"); allowedCodes.push("20260101009"); }
+                if (!isMukiExc) { allowedCodes.push("20260101006"); allowedCodes.push("20260101010"); }
+            }
+            allowedCodes.forEach(function(code) { addHiddenInput('jyoukenBox', code); });
+        } else {
+            if(emp && emp.value !== "") {
+                var parts = emp.value.split(','); 
+                parts.forEach(function(p) {
+                    var kv = p.split('=');
+                    if(kv.length === 2) addHiddenInput(kv[0], kv[1]);
+                });
+            }
         }
 
+        // 新着
         var arr = document.querySelector('input[name="radioArrive"]:checked');
         if(arr && arr.value !== "") addHiddenInput('jyoukenBox', arr.value);
 
+        // 職種
         for (var code in selectedJobs) {
             addHiddenInput('daiEasyShokusyuBox', code);
             selectedJobs[code].forEach(function(subCode) {
@@ -979,6 +1011,7 @@
             });
         }
         
+        // 特集求人
         for (var fCode in selectedFeatures) {
             addHiddenInput('daiTokusyuBox', fCode);
             selectedFeatures[fCode].forEach(function(fSubCode) {
@@ -986,11 +1019,11 @@
             });
         }
 
+        // 詳しい条件・就業時間
         var jyoukenChecks = document.querySelectorAll('input[name="jyoukenBox"]:checked');
-        jyoukenChecks.forEach(function(chk) {
-            addHiddenInput('jyoukenBox', chk.value);
-        });
+        jyoukenChecks.forEach(function(chk) { addHiddenInput('jyoukenBox', chk.value); });
 
+        // フリーワード
         if(combinedFw !== "") {
             addHiddenInput('freeWordInput', combinedFw);
             addHiddenInput('freeWordRadioBtn', '0'); 
@@ -1096,7 +1129,7 @@
        <div class="modal-header">
          <span id="job-modal-title">職種詳細</span>
        </div>
-       <div id="job-modal-body" style="padding: 0 20px 20px 20px; overflow-y: hidden; flex: 1; display: flex; flex-direction: column;"></div>
+       <div id="job-modal-body" style="padding: 0 20px 20px 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column;"></div>
        
        <div style="position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px; background: #fff; box-shadow: 0 -2px 5px rgba(0,0,0,0.1); border-radius: 0 0 12px 12px; display: flex; gap: 10px; box-sizing: border-box; z-index: 10;">
          <button class="btn-cancel" id="job-btn-cancel">キャンセル</button>
@@ -1110,7 +1143,7 @@
        <div class="modal-header">
          <span id="feature-modal-title" style="color: #d35400;">特集求人 詳細</span>
        </div>
-       <div id="feature-modal-body" style="padding: 0 20px 20px 20px; overflow-y: hidden; flex: 1; display: flex; flex-direction: column;"></div>
+       <div id="feature-modal-body" style="padding: 0 20px 20px 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column;"></div>
        
        <div style="position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px; background: #fff; box-shadow: 0 -2px 5px rgba(0,0,0,0.1); border-radius: 0 0 12px 12px; display: flex; gap: 10px; box-sizing: border-box; z-index: 10;">
          <button class="btn-cancel" id="feature-btn-cancel">キャンセル</button>
@@ -1132,7 +1165,11 @@
 
   <div id="wrapper">
 
-    <div class="intro-text">
+    <div class="intro-text" style="margin-bottom: 15px; padding-bottom: 5px;">
+      <div style="background-color: #e8f5e9; border-left: 5px solid #4caf50; padding: 12px; margin-bottom: 15px; border-radius: 4px;">
+        <span style="font-weight: bold; color: #2e7d32; font-size: 15px;">【お知らせ】検索機能をリニューアルしました</span><br>
+        <span style="font-size: 13px; color: #333; line-height: 1.5; display: inline-block; margin-top: 5px;">一部のデザインや機能をアップデートしました。基本的な使い勝手はこれまでと変わりませんので、安心してご利用ください！</span>
+      </div>
       <div style="font-weight: bold; margin-bottom: 15px; color: #333;">
         ハローワーク松山管轄の求人情報を、簡単な操作で検索することができます。
       </div>
@@ -1145,7 +1182,7 @@
       </div>
     </div>
 
-    <div class="section">1. 地区を選択</div>
+    <div class="section" style="margin-top: 1em;">1. 地区を選択</div>
     <div class="notice-box">
       <strong>【エリア選択時のご注意】</strong><br>
       ・ハローワークの仕様上、同時に選択できる地域は<strong style="color: #d32f2f;">5つまで</strong>です。<br>
@@ -1183,6 +1220,12 @@
       <div class="grid-item-2"><input id="s1" name="radioEmp" type="radio" value="ippanCKBox=1,jyoukenBox=20260101003"/><label for="s1" class="btn-base chkLabel">正社員</label></div>
       <div class="grid-item-2"><input id="s2" name="radioEmp" type="radio" value="ippanCKBox=1"/><label for="s2" class="btn-base chkLabel">フルタイム</label></div>
       <div class="grid-item-2"><input id="s3" name="radioEmp" type="radio" value="ippanCKBox=2"/><label for="s3" class="btn-base chkLabel">パート</label></div>
+    </form>
+    
+    <div class="sub-section" style="margin-top:10px;">▼ 派遣求人の除外（任意）</div>
+    <form name="hakenForm" class="grid-container">
+      <div class="grid-item-2"><input id="h1" name="hakenBox" type="checkbox" value="yuuki"/><label for="h1" class="btn-base chkLabel">有期派遣を除く</label></div>
+      <div class="grid-item-2"><input id="h2" name="hakenBox" type="checkbox" value="muki"/><label for="h2" class="btn-base chkLabel">無期派遣を除く</label></div>
     </form>
 
     <div class="section">3. 新着区分</div>
@@ -1250,6 +1293,16 @@
       <div class="grid-item-2"><input id="j10" name="jyoukenBox" type="checkbox" value="20260101031"/><label for="j10" class="btn-base chkLabel">駅近(徒歩10分以内)</label></div>
       <div class="grid-item-2"><input id="j11" name="jyoukenBox" type="checkbox" value="20260101032"/><label for="j11" class="btn-base chkLabel">トライアル雇用併用</label></div>
       <div class="grid-item-2"><input id="j12" name="jyoukenBox" type="checkbox" value="20260101033"/><label for="j12" class="btn-base chkLabel">UIJターン歓迎</label></div>
+    </form>
+    
+    <div class="sub-section" style="margin-top:20px;">▼ 就業時間の希望（任意）</div>
+    <p style="font-size:0.85em; color:#d32f2f; margin-top:0;">※就業時間を指定すると求人数がグッと減る傾向があります。</p>
+    <form name="timeForm" class="grid-container">
+      <div class="grid-item-2"><input id="t_time1" name="jyoukenBox" type="checkbox" value="20260101018"/><label for="t_time1" class="btn-base chkLabel">8時以降開始</label></div>
+      <div class="grid-item-2"><input id="t_time2" name="jyoukenBox" type="checkbox" value="20260101019"/><label for="t_time2" class="btn-base chkLabel">10時以降開始</label></div>
+      <div class="grid-item-2"><input id="t_time3" name="jyoukenBox" type="checkbox" value="20260101020"/><label for="t_time3" class="btn-base chkLabel">17時以前に終業</label></div>
+      <div class="grid-item-2"><input id="t_time4" name="jyoukenBox" type="checkbox" value="20260101021"/><label for="t_time4" class="btn-base chkLabel">18時以前に終業</label></div>
+      <div class="grid-item-full"><input id="t_time5" name="jyoukenBox" type="checkbox" value="20260101022"/><label for="t_time5" class="btn-base chkLabel">22時以後勤務なし</label></div>
     </form>
 
     <div class="section">7. キーワード・その他</div>
