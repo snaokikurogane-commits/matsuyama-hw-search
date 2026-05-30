@@ -146,6 +146,7 @@
     "kuma":   { name: "久万高原町", code: "38386", words: "" }
   };
 
+  // ※「その他(99)」を削除済みのリスト
   var jobData = {
     "01": { name: "営業", subs: {"0100":"こだわらない","0101":"不動産","0102":"自動車営業","0103":"金融・保険営業","0104":"その他の商品・サービス"} },
     "02": { name: "販売", subs: {"0200":"こだわらない","0201":"コンビニ・スーパー","0202":"アパレル・医薬品・化粧品","0203":"ガソリンスタンド","0204":"店長","0205":"レジ係","0206":"その他"} },
@@ -162,8 +163,7 @@
     "13": { name: "清掃・軽作業", subs: {"1300":"こだわらない","1301":"清掃","1302":"包装・ピッキング","1303":"洗い場（食器）","1304":"その他"} },
     "14": { name: "建設・土木", subs: {"1400":"こだわらない","1401":"建設","1402":"土木","1403":"施工管理","1404":"製図・CADオペレーター","1405":"建築塗装"} },
     "15": { name: "農林水産", subs: {"1500":"こだわらない","1501":"農業（造園・酪農などを含む）","1502":"林業","1503":"漁業"} },
-    "16": { name: "理容・美容", subs: {"1600":"こだわらない","1601":"理容師","1602":"美容師","1603":"理容・美容補助","1604":"エステティシャン","1605":"その他"} },
-    "99": { name: "その他", subs: {"9901":"その他"} }
+    "16": { name: "理容・美容", subs: {"1600":"こだわらない","1601":"理容師","1602":"美容師","1603":"理容・美容補助","1604":"エステティシャン","1605":"その他"} }
   };
 
   var featureData = {
@@ -258,11 +258,9 @@
           btn.addEventListener('click', function() { document.getElementById('help-modal').style.display = 'none'; });
       });
 
-      // 職種モーダルボタン
+      // モーダルボタン
       document.getElementById('job-btn-cancel').addEventListener('click', closeJobModal);
       document.getElementById('job-btn-apply').addEventListener('click', applyJobModal);
-
-      // 特集モーダルボタン
       document.getElementById('feature-btn-cancel').addEventListener('click', closeFeatureModal);
       document.getElementById('feature-btn-apply').addEventListener('click', applyFeatureModal);
 
@@ -316,7 +314,7 @@
   function initJobModals() {
       var container = document.getElementById('job-modal-body');
       for(var code in jobData) {
-          if(code === "0" || code === "99" || !jobData[code].subs) continue;
+          if(code === "0" || !jobData[code].subs) continue;
           
           var wrap = document.createElement('div');
           wrap.id = 'job-sub-wrap-' + code;
@@ -326,6 +324,15 @@
           info.className = 'notice-box';
           info.innerHTML = '最大<strong>5つ</strong>まで選択できます。';
           wrap.appendChild(info);
+
+          // ★スクロール用ボックスを新設
+          var scrollBox = document.createElement('div');
+          scrollBox.style.maxHeight = '45vh';
+          scrollBox.style.overflowY = 'auto';
+          scrollBox.style.border = '1px solid #e0e0e0';
+          scrollBox.style.borderRadius = '8px';
+          scrollBox.style.padding = '8px';
+          scrollBox.style.backgroundColor = '#fafafa';
 
           var grid = document.createElement('div');
           grid.className = 'grid-container';
@@ -386,7 +393,8 @@
               item.appendChild(label);
               grid.appendChild(item);
           }
-          wrap.appendChild(grid);
+          scrollBox.appendChild(grid);
+          wrap.appendChild(scrollBox);
           container.appendChild(wrap);
           jobModalDOMs[code] = wrap;
       }
@@ -467,7 +475,6 @@
 
   // ============== ★特集モーダル処理 ==============
   function initFeatureModals() {
-      // 処理内容は職種モーダルと同じロジック
       var container = document.getElementById('feature-modal-body');
       for(var code in featureData) {
           if(!featureData[code].subs) continue;
@@ -480,6 +487,15 @@
           info.className = 'notice-box';
           info.innerHTML = '最大<strong>5つ</strong>まで選択できます。';
           wrap.appendChild(info);
+
+          // ★スクロール用ボックスを新設
+          var scrollBox = document.createElement('div');
+          scrollBox.style.maxHeight = '45vh';
+          scrollBox.style.overflowY = 'auto';
+          scrollBox.style.border = '1px solid #e0e0e0';
+          scrollBox.style.borderRadius = '8px';
+          scrollBox.style.padding = '8px';
+          scrollBox.style.backgroundColor = '#fafafa';
 
           var grid = document.createElement('div');
           grid.className = 'grid-container';
@@ -516,7 +532,8 @@
               item.appendChild(label);
               grid.appendChild(item);
           }
-          wrap.appendChild(grid);
+          scrollBox.appendChild(grid);
+          wrap.appendChild(scrollBox);
           container.appendChild(wrap);
           featureModalDOMs[code] = wrap;
       }
@@ -583,12 +600,11 @@
        }
   }
 
-  // ============== ★職種・特集の同時選択ブロック ==============
+  // ============== 職種・特集の同時選択ブロック ==============
   function updateCrossExclusion() {
       var isJobSelected = Object.keys(selectedJobs).length > 0;
       var isFeatureSelected = Object.keys(selectedFeatures).length > 0;
 
-      // 特集を選んでいる場合、職種をロック
       document.querySelectorAll('.job-btn, .job-btn-all').forEach(function(btn) {
           if (isFeatureSelected) {
               btn.classList.add('disabled');
@@ -599,7 +615,6 @@
       var jobMsg = document.getElementById('job-cross-warning-msg');
       if (jobMsg) jobMsg.style.display = isFeatureSelected ? 'block' : 'none';
 
-      // 職種を選んでいる場合、特集をロック
       document.querySelectorAll('.feature-btn, .feature-btn-all').forEach(function(btn) {
           if (isJobSelected) {
               btn.classList.add('disabled');
@@ -769,7 +784,6 @@
     });
   }
 
-  // ★テキスト更新（小分類名の取得）
   function updateConditionText() {
     var text = "";
     var area = document.getElementById('selectedAreaDisplay').innerText.replace("選択中: ", "");
@@ -1082,7 +1096,7 @@
        <div class="modal-header">
          <span id="job-modal-title">職種詳細</span>
        </div>
-       <div id="job-modal-body" style="padding: 0 20px 20px 20px; overflow-y: auto; flex: 1;"></div>
+       <div id="job-modal-body" style="padding: 0 20px 20px 20px; overflow-y: hidden; flex: 1; display: flex; flex-direction: column;"></div>
        
        <div style="position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px; background: #fff; box-shadow: 0 -2px 5px rgba(0,0,0,0.1); border-radius: 0 0 12px 12px; display: flex; gap: 10px; box-sizing: border-box; z-index: 10;">
          <button class="btn-cancel" id="job-btn-cancel">キャンセル</button>
@@ -1096,7 +1110,7 @@
        <div class="modal-header">
          <span id="feature-modal-title" style="color: #d35400;">特集求人 詳細</span>
        </div>
-       <div id="feature-modal-body" style="padding: 0 20px 20px 20px; overflow-y: auto; flex: 1;"></div>
+       <div id="feature-modal-body" style="padding: 0 20px 20px 20px; overflow-y: hidden; flex: 1; display: flex; flex-direction: column;"></div>
        
        <div style="position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px; background: #fff; box-shadow: 0 -2px 5px rgba(0,0,0,0.1); border-radius: 0 0 12px 12px; display: flex; gap: 10px; box-sizing: border-box; z-index: 10;">
          <button class="btn-cancel" id="feature-btn-cancel">キャンセル</button>
@@ -1203,7 +1217,6 @@
           <div class="grid-item-2"><a href="#" id="btn-job-16" class="btn-base job-btn">理容・美容</a></div>
           <div class="grid-item-2"><a href="#" id="btn-job-07" class="btn-base job-btn">管理・専門職</a></div>
           <div class="grid-item-2"><a href="#" id="btn-job-15" class="btn-base job-btn">農林水産</a></div>
-          <div class="grid-item-2"><a href="#" id="btn-job-99" class="btn-base job-btn">その他</a></div>
         </div>
       </div>
     </details>
@@ -1329,7 +1342,7 @@
               <span class="card-badge">初めてご利用の方</span>
             </div>
             <h4 class="card-title">新規マイページ開設</h4>
-            <p class="card-desc">ハローワークのご利用が初めての方はこちら。スマホから「求職登録」と「マイページ開設」が同時に完了します。</p>
+            <p class="card-desc">ハローワークのご利用が初めての方はこちら。スマホから「求職登録」と「マイページ開設」が同時に完了します。<br><br>スマホやパソコンから24時間いつでも登録可能です。ハローワークの開庁時間外でも、ご自宅にいながら事前に求職登録を完了させることができます。</p>
             <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA020020.do?screenId=GEAA020020&action=execRedirect&nextScreenId=GEAA010010" target="_blank" class="card-btn">新規登録・開設はこちら</a>
           </div>
 
@@ -1355,7 +1368,7 @@
               <span class="card-badge">すでに登録済みの方</span>
             </div>
             <h4 class="card-title">マイページにログイン</h4>
-            <p class="card-desc">すでにマイページをお持ちの方はこちら。ご登録のメールアドレスとパスワードでログインしてご利用ください。</p>
+            <p class="card-desc">すでにマイページをお持ちの方はこちら。ご登録のメールアドレスとパスワードでログインしてご利用ください。<br><br>お気に入り登録した求人の確認や、応募履歴の振り返り、ハローワークからの『おすすめ求人』のチェックなど、日々の就職活動の管理に幅広くご活用ください。</p>
             <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA040010.do?action=initDisp&screenId=GEAA040010" target="_blank" class="card-btn">ログイン画面へ</a>
           </div>
         </div>
