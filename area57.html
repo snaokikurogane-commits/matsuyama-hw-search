@@ -32,6 +32,7 @@
   #hw-search-tool-root .btn-cancel { background: #ccc; color: #333; border: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
   #hw-search-tool-root .section { margin-top: 2.5em; font-weight: bold; border-bottom: 2px solid #008000; padding-bottom: 5px; margin-bottom: 15px; color: #333; font-size: 1.1em; }
+  #hw-search-tool-root .section-feature { border-bottom: 2px solid #d35400; color: #d35400; }
   #hw-search-tool-root .sub-section { font-size: 1em; color: #555; margin-bottom: 8px; }
   
   #hw-search-tool-root .grid-container { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -46,18 +47,23 @@
   #hw-search-tool-root .chkLabel { background: #fff; color: #008000; border: 1px solid #008000; }
   #hw-search-tool-root input:checked + .chkLabel { background: #d0f0c0 !important; border: 2px solid #008000 !important; color: #008000 !important; }
   
-  /* 職種ボタンのスタイル */
-  #hw-search-tool-root .job-btn-all { background: #fff; color: #333; border: 2px solid #aaa; }
-  #hw-search-tool-root .job-btn-all.active { background: #eee !important; border-color: #666 !important; }
+  /* 職種・特集ボタンのスタイル */
+  #hw-search-tool-root .job-btn-all, #hw-search-tool-root .feature-btn-all { background: #fff; color: #333; border: 2px solid #aaa; }
+  #hw-search-tool-root .job-btn-all.active, #hw-search-tool-root .feature-btn-all.active { background: #eee !important; border-color: #666 !important; }
   #hw-search-tool-root .job-btn { background: #fff; color: #e6006b; border: 2px solid #e6006b; }
   #hw-search-tool-root .job-btn.active { background: #e6006b !important; color: #fff !important; box-shadow: 0 0 5px rgba(230,0,107,0.5); }
+  #hw-search-tool-root .feature-btn { background: #fff; color: #d35400; border: 2px solid #d35400; }
+  #hw-search-tool-root .feature-btn.active { background: #d35400 !important; color: #fff !important; box-shadow: 0 0 5px rgba(211,84,0,0.5); }
   
   #hw-search-tool-root .btn-base.disabled { background-color: #e0e0e0 !important; color: #999 !important; border-color: #ccc !important; pointer-events: none; opacity: 0.7; }
-  #hw-search-tool-root .area-btn.disabled { background-color: #e0e0e0 !important; color: #999 !important; border-color: #ccc !important; }
   
+  /* こだわらない用ロック時のスタイル */
+  #hw-search-tool-root .chkLabel.locked { background-color: #f0f0f0 !important; color: #aaa !important; border-color: #ddd !important; pointer-events: none; opacity: 0.6; }
+
   #hw-search-tool-root .notice-box { background-color: #ffffff !important; border: 1px solid #d32f2f; padding: 12px; border-radius: 5px; margin-bottom: 15px; font-size: 0.9em; color: #333; line-height: 1.5; }
   #hw-search-tool-root .notice-box strong { color: #d32f2f; }
   #hw-search-tool-root .exclusion-msg { display: none; color: #d32f2f; font-size: 0.9em; font-weight: bold; margin-bottom: 10px; background-color: #ffffff !important; padding: 10px; border-radius: 4px; border: 1px solid #d32f2f; }
+  #hw-search-tool-root .cross-exclusion-msg { display: none; color: #d32f2f; font-size: 0.9em; font-weight: bold; margin-top: 10px; background-color: #fff3f3 !important; padding: 10px; border-radius: 4px; border: 1px dashed #d32f2f; text-align: center; }
 
   #hw-search-tool-root input[type="checkbox"], #hw-search-tool-root input[type="radio"] { display: none; }
   
@@ -79,7 +85,7 @@
 
   #hw-search-tool-root .floating-condition { display: none; }
 
-  /* マイページ・自主応募セクションのCSS復活 */
+  /* マイページ・自主応募セクション */
   #hw-search-tool-root .bottom-info-container { margin-top: 40px; background: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; }
   #hw-search-tool-root .mypage-cta-section { padding: 30px 0 20px 0; background-color: #fafafa; }
   #hw-search-tool-root .mypage-cta-header { padding: 0 20px; text-align: center; }
@@ -160,15 +166,31 @@
     "99": { name: "その他", subs: {"9901":"その他"} }
   };
 
+  var featureData = {
+    "20260101001": { name: "医療・保健", subs: {"20260101002":"看護師、准看護師", "20260101003":"保健師、助産師", "20260101004":"リハビリ(PT,OT,ST,CO)", "20260101005":"歯科衛生士・歯科技工士", "20260101006":"栄養士、管理栄養士", "20260101007":"診療放射線、臨床工学、臨床検査", "20260101008":"薬剤師", "20260101009":"医師、歯科医師", "20260101010":"あはき・柔整", "20260101011":"資格不問(看護助手など)"} },
+    "20260101012": { name: "介護", subs: {"20260101013":"介護福祉士・ケアマネジャー", "20260101014":"介護スタッフ(入所型)", "20260101015":"介護スタッフ(通所型)", "20260101016":"介護スタッフ(訪問型)", "20260101017":"資格不問・初心者歓迎"} },
+    "20260101018": { name: "福祉・保育", subs: {"20260101019":"サービス管理責任者", "20260101020":"保育士", "20260101021":"幼稚園教諭", "20260101022":"保育教諭", "20260101023":"障害者支援スタッフ", "20260101024":"児童福祉支援スタッフ", "20260101025":"資格不問・初心者歓迎"} },
+    "20260101026": { name: "建設", subs: {"20260101027":"建設", "20260101028":"土木・採掘", "20260101029":"電気・通信", "20260101030":"設計・施工管理・測量", "20260101031":"初心者歓迎"} },
+    "20260101032": { name: "警備", subs: {"20260101033":"施設警備員", "20260101034":"交通誘導員", "20260101035":"その他警備員・保安員", "20260101036":"初心者歓迎"} },
+    "20260101037": { name: "運輸", subs: {"20260101038":"配送・集荷", "20260101039":"貨物自動車", "20260101040":"バス", "20260101041":"乗用車", "20260101042":"機械(フォークリフト等)", "20260101043":"初心者歓迎"} }
+  };
+
   var matsuyamaGroup = ["matsuyama_all", "east", "west", "north", "south", "joto", "josai", "hojo"];
   var selectedAreaKeys = [];
   var selectedJobs = {}; 
+  var selectedFeatures = {};
+  
   var currentEditingJobCode = null;
-  var jobModalDOMs = {}; // ラグ解消用：事前生成DOM
+  var currentEditingFeatureCode = null;
+  
+  var jobModalDOMs = {};
+  var featureModalDOMs = {};
 
   document.addEventListener('DOMContentLoaded', function() {
-      initJobModals(); // 職種モーダルの裏側を事前生成（爆速化）
-      setupAutoTab('kNo1', 'kNo2', 5); // 番号検索のオートフォーカス
+      initJobModals();
+      initFeatureModals();
+      
+      setupAutoTab('kNo1', 'kNo2', 5);
       setupAutoTab('jNo1', 'jNo2', 4);
       setupAutoTab('jNo2', 'jNo3', 6);
 
@@ -185,10 +207,12 @@
           if(input.type === 'text') input.addEventListener('keyup', updateConditionText);
       });
 
+      // エリア
       document.querySelectorAll('#hw-search-tool-root .area-btn').forEach(function(btn) {
           btn.addEventListener('click', function(e) { e.preventDefault(); selectArea(this.id.replace('btn-', '')); });
       });
 
+      // 職種ボタン
       document.querySelectorAll('.job-btn').forEach(function(btn) {
           btn.addEventListener('click', function(e) {
               e.preventDefault();
@@ -198,11 +222,31 @@
       });
       document.getElementById('btn-job-0').addEventListener('click', function(e) {
           e.preventDefault();
+          if(this.classList.contains('disabled')) return;
           selectedJobs = {};
           renderJobButtons();
+          updateCrossExclusion();
           updateConditionText();
       });
 
+      // 特集ボタン
+      document.querySelectorAll('.feature-btn').forEach(function(btn) {
+          btn.addEventListener('click', function(e) {
+              e.preventDefault();
+              if(this.classList.contains('disabled')) return;
+              openFeatureModal(this.id.replace('btn-feature-', ''));
+          });
+      });
+      document.getElementById('btn-feature-0').addEventListener('click', function(e) {
+          e.preventDefault();
+          if(this.classList.contains('disabled')) return;
+          selectedFeatures = {};
+          renderFeatureButtons();
+          updateCrossExclusion();
+          updateConditionText();
+      });
+
+      // ヘルプ
       var helpBtn = document.querySelector('#hw-search-tool-root .floating-help-btn');
       if (helpBtn) {
           helpBtn.addEventListener('click', function(e) {
@@ -214,9 +258,15 @@
           btn.addEventListener('click', function() { document.getElementById('help-modal').style.display = 'none'; });
       });
 
+      // 職種モーダルボタン
       document.getElementById('job-btn-cancel').addEventListener('click', closeJobModal);
       document.getElementById('job-btn-apply').addEventListener('click', applyJobModal);
 
+      // 特集モーダルボタン
+      document.getElementById('feature-btn-cancel').addEventListener('click', closeFeatureModal);
+      document.getElementById('feature-btn-apply').addEventListener('click', applyFeatureModal);
+
+      // 検索・保存
       document.querySelector('#hw-search-tool-root .save-btn-container button:nth-child(1)').addEventListener('click', saveConditions);
       document.querySelector('#hw-search-tool-root .save-btn-container button:nth-child(2)').addEventListener('click', resetAll);
       document.getElementById('mainSearchBtn').addEventListener('click', function(e) { e.preventDefault(); executeMySearch(); });
@@ -225,7 +275,6 @@
       loadConditionsAuto();
   });
 
-  // 番号自動遷移
   function setupAutoTab(currentId, nextId, maxLength) {
       var current = document.getElementById(currentId);
       if(current) {
@@ -263,7 +312,7 @@
     btnCancel.onclick = function() { overlay.style.display = 'none'; if(callback) callback(false); };
   }
 
-  // 職種モーダル（ラグ解消：事前生成）
+  // ============== 職種モーダル処理 ==============
   function initJobModals() {
       var container = document.getElementById('job-modal-body');
       for(var code in jobData) {
@@ -288,24 +337,48 @@
 
               var input = document.createElement('input');
               input.type = 'checkbox';
-              input.id = 'sub-' + subCode;
+              input.id = 'job-sub-' + subCode;
               input.value = subCode;
               input.dataset.parentCode = code;
 
               var label = document.createElement('label');
-              label.htmlFor = 'sub-' + subCode;
+              label.htmlFor = 'job-sub-' + subCode;
               label.className = 'btn-base chkLabel';
               label.style.textAlign = 'left';
               label.style.justifyContent = 'flex-start';
               label.style.paddingLeft = '15px';
               label.innerText = subName;
 
+              // 「こだわらない」排他制御
               input.addEventListener('change', function() {
                   var pCode = this.dataset.parentCode;
-                  var checkedBoxes = document.querySelectorAll('#job-sub-wrap-' + pCode + ' input[type="checkbox"]:checked');
-                  if(checkedBoxes.length > 5) {
-                      this.checked = false;
-                      showMyModal("選択できません", "小分類は5つまでしか選択できません。", false);
+                  var isAnyChecked = this.value.endsWith('00') && this.checked;
+                  var allInputs = document.querySelectorAll('#job-sub-wrap-' + pCode + ' input[type="checkbox"]');
+                  
+                  if (isAnyChecked) {
+                      allInputs.forEach(function(inp) {
+                          if (inp.value !== this.value) {
+                              inp.checked = false;
+                              var lbl = document.querySelector('label[for="' + inp.id + '"]');
+                              if (lbl) lbl.classList.add('locked');
+                          }
+                      }.bind(this));
+                  } else {
+                      var anyInput = document.querySelector('#job-sub-wrap-' + pCode + ' input[value$="00"]');
+                      if (anyInput) {
+                          if (!anyInput.checked) {
+                              allInputs.forEach(function(inp) {
+                                  var lbl = document.querySelector('label[for="' + inp.id + '"]');
+                                  if (lbl) lbl.classList.remove('locked');
+                              });
+                          }
+                      }
+                      
+                      var checkedBoxes = document.querySelectorAll('#job-sub-wrap-' + pCode + ' input[type="checkbox"]:checked');
+                      if(checkedBoxes.length > 5) {
+                          this.checked = false;
+                          showMyModal("選択できません", "小分類は5つまでしか選択できません。", false);
+                      }
                   }
               });
 
@@ -334,7 +407,19 @@
           wrap.style.display = 'block';
           var currentSelected = selectedJobs[code] || [];
           var inputs = wrap.querySelectorAll('input[type="checkbox"]');
-          inputs.forEach(function(input) { input.checked = (currentSelected.indexOf(input.value) !== -1); });
+          var isAnySelected = currentSelected.some(function(v) { return v.endsWith('00'); });
+          
+          inputs.forEach(function(input) { 
+              input.checked = (currentSelected.indexOf(input.value) !== -1); 
+              var lbl = document.querySelector('label[for="' + input.id + '"]');
+              if(lbl) {
+                  if (isAnySelected && !input.value.endsWith('00')) {
+                      lbl.classList.add('locked');
+                  } else {
+                      lbl.classList.remove('locked');
+                  }
+              }
+          });
       }
       document.getElementById('job-modal-overlay').style.display = 'flex';
   }
@@ -361,6 +446,7 @@
           }
       }
       renderJobButtons();
+      updateCrossExclusion();
       closeJobModal();
       updateConditionText();
   }
@@ -378,6 +464,154 @@
            }
        }
   }
+
+  // ============== ★特集モーダル処理 ==============
+  function initFeatureModals() {
+      // 処理内容は職種モーダルと同じロジック
+      var container = document.getElementById('feature-modal-body');
+      for(var code in featureData) {
+          if(!featureData[code].subs) continue;
+          
+          var wrap = document.createElement('div');
+          wrap.id = 'feature-sub-wrap-' + code;
+          wrap.style.display = 'none';
+
+          var info = document.createElement('div');
+          info.className = 'notice-box';
+          info.innerHTML = '最大<strong>5つ</strong>まで選択できます。';
+          wrap.appendChild(info);
+
+          var grid = document.createElement('div');
+          grid.className = 'grid-container';
+
+          for(var subCode in featureData[code].subs) {
+              var subName = featureData[code].subs[subCode];
+              var item = document.createElement('div');
+              item.className = 'grid-item-full';
+
+              var input = document.createElement('input');
+              input.type = 'checkbox';
+              input.id = 'feature-sub-' + subCode;
+              input.value = subCode;
+              input.dataset.parentCode = code;
+
+              var label = document.createElement('label');
+              label.htmlFor = 'feature-sub-' + subCode;
+              label.className = 'btn-base chkLabel';
+              label.style.textAlign = 'left';
+              label.style.justifyContent = 'flex-start';
+              label.style.paddingLeft = '15px';
+              label.innerText = subName;
+
+              input.addEventListener('change', function() {
+                  var pCode = this.dataset.parentCode;
+                  var checkedBoxes = document.querySelectorAll('#feature-sub-wrap-' + pCode + ' input[type="checkbox"]:checked');
+                  if(checkedBoxes.length > 5) {
+                      this.checked = false;
+                      showMyModal("選択できません", "小分類は5つまでしか選択できません。", false);
+                  }
+              });
+
+              item.appendChild(input);
+              item.appendChild(label);
+              grid.appendChild(item);
+          }
+          wrap.appendChild(grid);
+          container.appendChild(wrap);
+          featureModalDOMs[code] = wrap;
+      }
+  }
+
+  function openFeatureModal(code) {
+      if (!selectedFeatures[code] && Object.keys(selectedFeatures).length >= 1) {
+          showMyModal("選択できません", "特集求人の大分類は1つのみ選択可能です。（小分類は5つまで選べます）", false);
+          return;
+      }
+      currentEditingFeatureCode = code;
+      document.getElementById('feature-modal-title').innerText = featureData[code].name;
+      
+      for(var c in featureModalDOMs) { featureModalDOMs[c].style.display = 'none'; }
+      
+      var wrap = featureModalDOMs[code];
+      if(wrap) {
+          wrap.style.display = 'block';
+          var currentSelected = selectedFeatures[code] || [];
+          var inputs = wrap.querySelectorAll('input[type="checkbox"]');
+          inputs.forEach(function(input) { input.checked = (currentSelected.indexOf(input.value) !== -1); });
+      }
+      document.getElementById('feature-modal-overlay').style.display = 'flex';
+  }
+
+  function closeFeatureModal() {
+      document.getElementById('feature-modal-overlay').style.display = 'none';
+      if(currentEditingFeatureCode && featureModalDOMs[currentEditingFeatureCode]) {
+          featureModalDOMs[currentEditingFeatureCode].style.display = 'none';
+      }
+      currentEditingFeatureCode = null;
+  }
+
+  function applyFeatureModal() {
+      if(!currentEditingFeatureCode) return;
+      var wrap = featureModalDOMs[currentEditingFeatureCode];
+      if(wrap) {
+          var checkedBoxes = wrap.querySelectorAll('input[type="checkbox"]:checked');
+          if (checkedBoxes.length === 0) {
+              delete selectedFeatures[currentEditingFeatureCode];
+          } else {
+              var arr = [];
+              checkedBoxes.forEach(function(cb) { arr.push(cb.value); });
+              selectedFeatures[currentEditingFeatureCode] = arr;
+          }
+      }
+      renderFeatureButtons();
+      updateCrossExclusion();
+      closeFeatureModal();
+      updateConditionText();
+  }
+
+  function renderFeatureButtons() {
+       document.querySelectorAll('.feature-btn').forEach(function(btn) { btn.classList.remove('active'); });
+       document.getElementById('btn-feature-0').classList.remove('active');
+
+       if (Object.keys(selectedFeatures).length === 0) {
+           document.getElementById('btn-feature-0').classList.add('active');
+       } else {
+           for (var code in selectedFeatures) {
+               var btn = document.getElementById('btn-feature-' + code);
+               if(btn) btn.classList.add('active');
+           }
+       }
+  }
+
+  // ============== ★職種・特集の同時選択ブロック ==============
+  function updateCrossExclusion() {
+      var isJobSelected = Object.keys(selectedJobs).length > 0;
+      var isFeatureSelected = Object.keys(selectedFeatures).length > 0;
+
+      // 特集を選んでいる場合、職種をロック
+      document.querySelectorAll('.job-btn, .job-btn-all').forEach(function(btn) {
+          if (isFeatureSelected) {
+              btn.classList.add('disabled');
+          } else {
+              btn.classList.remove('disabled');
+          }
+      });
+      var jobMsg = document.getElementById('job-cross-warning-msg');
+      if (jobMsg) jobMsg.style.display = isFeatureSelected ? 'block' : 'none';
+
+      // 職種を選んでいる場合、特集をロック
+      document.querySelectorAll('.feature-btn, .feature-btn-all').forEach(function(btn) {
+          if (isJobSelected) {
+              btn.classList.add('disabled');
+          } else {
+              btn.classList.remove('disabled');
+          }
+      });
+      var featureMsg = document.getElementById('feature-cross-warning-msg');
+      if (featureMsg) featureMsg.style.display = isJobSelected ? 'block' : 'none';
+  }
+
+  // ============================================
 
   function updateExclusion() {
     var isKeywordSearchIntent = document.getElementById('u2').checked || 
@@ -499,6 +733,7 @@
         if(!result) return;
         selectedAreaKeys = [];
         selectedJobs = {};
+        selectedFeatures = {};
         
         var btns = document.getElementsByClassName('area-btn');
         for(var i=0; btns.length > i; i++) btns[i].classList.remove('active');
@@ -510,22 +745,31 @@
         
         document.getElementById('area-warning-msg').style.display = 'none';
         document.getElementById('senior-warning-msg').style.display = 'none';
+        document.getElementById('job-cross-warning-msg').style.display = 'none';
+        document.getElementById('feature-cross-warning-msg').style.display = 'none';
 
         document.getElementById('s4').checked = true;
         document.getElementById('t3').checked = true;
         document.getElementById('u4').checked = true; 
+        
+        var jyoukenChecks = document.querySelectorAll('input[name="jyoukenBox"]');
+        jyoukenChecks.forEach(function(c) { c.checked = false; });
         
         document.getElementById('FreeW').value = "";
         document.getElementById('FreeWord').style.display = 'none';
         
         updateAreaDisplay();
         renderJobButtons();
+        renderFeatureButtons();
+        updateCrossExclusion();
+        
         localStorage.removeItem('hw_search_conditions'); 
         updateExclusion();
         updateConditionText();
     });
   }
 
+  // ★テキスト更新（小分類名の取得）
   function updateConditionText() {
     var text = "";
     var area = document.getElementById('selectedAreaDisplay').innerText.replace("選択中: ", "");
@@ -541,11 +785,36 @@
         jobText = "指定しない";
     } else {
         for (var c in selectedJobs) {
-            jobNames.push(jobData[c].name + "(" + selectedJobs[c].length + ")");
+            var subNames = [];
+            selectedJobs[c].forEach(function(sc) { subNames.push(jobData[c].subs[sc]); });
+            jobNames.push(jobData[c].name + "（" + subNames.join("、") + "）");
         }
-        jobText = jobNames.join("、");
+        jobText = jobNames.join(" ／ ");
     }
     text += "【職種】 " + jobText + "\n";
+    
+    var featureNames = [];
+    var featureText = "";
+    if (Object.keys(selectedFeatures).length === 0) {
+        featureText = "指定しない";
+    } else {
+        for (var fc in selectedFeatures) {
+            var fSubNames = [];
+            selectedFeatures[fc].forEach(function(fsc) { fSubNames.push(featureData[fc].subs[fsc]); });
+            featureNames.push(featureData[fc].name + "（" + fSubNames.join("、") + "）");
+        }
+        featureText = featureNames.join(" ／ ");
+    }
+    text += "【特集（重点分野）】 " + featureText + "\n";
+
+    var jyoukenNames = [];
+    var jyoukenChecks = document.querySelectorAll('#hw-search-tool-root input[name="jyoukenBox"]:checked');
+    jyoukenChecks.forEach(function(c){ 
+        var lbl = document.querySelector('#hw-search-tool-root label[for="' + c.id + '"]');
+        if(lbl) jyoukenNames.push(lbl.innerText); 
+    });
+    var jText = jyoukenNames.length > 0 ? jyoukenNames.join("、") : "指定しない";
+    text += "【条件】 " + jText + "\n";
 
     var kw = document.querySelector('#hw-search-tool-root input[name="radioKw"]:checked');
     var kwText = "";
@@ -562,7 +831,9 @@
     document.getElementById('current-conditions-text').innerText = text;
     
     var floatText = "🔍 " + area;
-    if (jobText !== "指定しない") floatText += " / " + jobNames.join("・");
+    if (Object.keys(selectedJobs).length > 0) floatText += " / " + Object.keys(selectedJobs).map(k=>jobData[k].name).join("・");
+    if (Object.keys(selectedFeatures).length > 0) floatText += " / 特集:" + Object.keys(selectedFeatures).map(k=>featureData[k].name).join("・"); 
+    if (jyoukenNames.length > 0) floatText += " / " + jyoukenNames.join("・");
     if (kwText !== "") floatText += " / " + kwText;
     var floatEl = document.getElementById('floating-condition-text');
     if(floatEl) floatEl.innerText = floatText;
@@ -573,7 +844,8 @@
         areaKeys: selectedAreaKeys, 
         radios: {}, checkboxes: {}, 
         freeWord: document.getElementById('FreeW').value,
-        jobs: selectedJobs
+        jobs: selectedJobs,
+        features: selectedFeatures
     };
     var radios = document.querySelectorAll('#hw-search-tool-root input[type="radio"]');
     radios.forEach(function(r) { if(r.checked) state.radios[r.name] = r.id; });
@@ -597,6 +869,10 @@
 
         if (state.jobs) { selectedJobs = state.jobs; }
         renderJobButtons();
+        
+        if (state.features) { selectedFeatures = state.features; }
+        renderFeatureButtons();
+        updateCrossExclusion();
 
         for(var name in state.radios) {
             var el = document.getElementById(state.radios[name]);
@@ -665,13 +941,11 @@
         addHiddenInput('searchClear', '0'); 
         addHiddenInput('kjKbnRadioBtn', '1'); 
 
-        // エリア
         if (uniqueCodes.length > 0) {
             addHiddenInput('tDFK1CmbBox', '38'); 
             addHiddenInput('siku1Hidden', uniqueCodes.join(",")); 
         }
 
-        // 雇用形態
         var emp = document.querySelector('input[name="radioEmp"]:checked');
         if(emp && emp.value !== "") {
             var parts = emp.value.split(','); 
@@ -681,22 +955,31 @@
             });
         }
 
-        // 新着
         var arr = document.querySelector('input[name="radioArrive"]:checked');
         if(arr && arr.value !== "") addHiddenInput('jyoukenBox', arr.value);
 
-        // 職種（16分類パラメータ）
         for (var code in selectedJobs) {
             addHiddenInput('daiEasyShokusyuBox', code);
             selectedJobs[code].forEach(function(subCode) {
                 addHiddenInput('easyShokusyuBox', subCode);
             });
         }
+        
+        for (var fCode in selectedFeatures) {
+            addHiddenInput('daiTokusyuBox', fCode);
+            selectedFeatures[fCode].forEach(function(fSubCode) {
+                addHiddenInput('tokusyuBox', fSubCode);
+            });
+        }
 
-        // フリーワード（町名・キーワード）
+        var jyoukenChecks = document.querySelectorAll('input[name="jyoukenBox"]:checked');
+        jyoukenChecks.forEach(function(chk) {
+            addHiddenInput('jyoukenBox', chk.value);
+        });
+
         if(combinedFw !== "") {
             addHiddenInput('freeWordInput', combinedFw);
-            addHiddenInput('freeWordRadioBtn', '0'); // OR検索（町名を複数拾うため）
+            addHiddenInput('freeWordRadioBtn', '0'); 
         }
 
         document.body.appendChild(form);
@@ -808,6 +1091,20 @@
     </div>
   </div>
 
+  <div id="feature-modal-overlay" class="modal-overlay">
+    <div class="modal-content-help" style="padding: 0; padding-bottom: 70px; overflow: hidden; display: flex; flex-direction: column; max-height: 85vh;">
+       <div class="modal-header">
+         <span id="feature-modal-title" style="color: #d35400;">特集求人 詳細</span>
+       </div>
+       <div id="feature-modal-body" style="padding: 0 20px 20px 20px; overflow-y: auto; flex: 1;"></div>
+       
+       <div style="position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px; background: #fff; box-shadow: 0 -2px 5px rgba(0,0,0,0.1); border-radius: 0 0 12px 12px; display: flex; gap: 10px; box-sizing: border-box; z-index: 10;">
+         <button class="btn-cancel" id="feature-btn-cancel">キャンセル</button>
+         <button class="btn-ok" id="feature-btn-apply" style="background: #d35400;">決定</button>
+       </div>
+    </div>
+  </div>
+
   <div id="msg-modal-overlay" class="modal-overlay">
     <div class="modal-content-msg">
       <div id="msg-modal-title" class="msg-title"></div>
@@ -827,7 +1124,7 @@
       </div>
       <div class="hwis-guide-box" style="border-top: 1px dashed #ccc; padding-top: 15px; text-align: center;">
         <p style="font-size: 14px; color: #444; margin-bottom: 10px; line-height: 1.6; font-weight: bold;">
-          学歴不問、土日祝休みなど、より詳細な条件で検索したい場合は、以下の公式サイトをご利用ください。<br>
+          より詳細な条件で検索したい場合は、以下の公式サイトをご利用ください。<br>
           <span style="color: #d32f2f; font-size: 13px; font-weight: normal;">※リンク先の「かんたん検索」画面を下へスクロールし、<br>【もっと詳しい条件を入力する】から検索してください。</span>
         </p>
         <a href="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=initDisp&screenId=GECA110010" target="_blank" class="hwis-link-btn">ハローワークインターネットサービスへ</a>
@@ -882,6 +1179,9 @@
 
     <div class="section">4. 職種から探す</div>
     <p style="font-size:0.9em; color:#e6006b; font-weight:bold; margin-top: 0;">※大分類は最大3つ、小分類は最大5つまで選択できます。</p>
+    <div id="job-cross-warning-msg" class="cross-exclusion-msg">
+      ※特集（重点分野）を選択中は、システムエラー防止のため職種は選択できません。
+    </div>
     <details>
       <summary>▼ 職種一覧を見る（タップで詳細選択）</summary>
       <div class="details-content">
@@ -908,7 +1208,38 @@
       </div>
     </details>
 
-    <div class="section">5. キーワード・その他</div>
+    <div class="section section-feature">5. 🌟 注目の特集求人（重点分野）</div>
+    <p style="font-size:0.9em; color:#d35400; font-weight:bold; margin-top: 0;">ハローワーク松山が現在特に力を入れている分野です。<br>※大分類は1つのみ、小分類は最大5つまで選択できます。</p>
+    <div id="feature-cross-warning-msg" class="cross-exclusion-msg">
+      ※職種を選択中は、システムエラー防止のため特集は選択できません。
+    </div>
+    <div class="grid-container" style="background: #fff8f3; padding: 15px; border-radius: 8px; border: 1px solid #f9e7d9; margin-bottom: 20px;">
+      <div class="grid-item-full"><a href="#" id="btn-feature-0" class="btn-base feature-btn-all active">指定しない</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-feature-20260101001" class="btn-base feature-btn">医療・保健</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-feature-20260101012" class="btn-base feature-btn">介護</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-feature-20260101018" class="btn-base feature-btn">福祉・保育</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-feature-20260101026" class="btn-base feature-btn">建設</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-feature-20260101032" class="btn-base feature-btn">警備</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-feature-20260101037" class="btn-base feature-btn">運輸</a></div>
+    </div>
+
+    <div class="section">6. 条件を選ぶ</div>
+    <form name="jyoukenForm" class="grid-container">
+      <div class="grid-item-2"><input id="j1" name="jyoukenBox" type="checkbox" value="20260101024"/><label for="j1" class="btn-base chkLabel">経験不問</label></div>
+      <div class="grid-item-2"><input id="j2" name="jyoukenBox" type="checkbox" value="20260101025"/><label for="j2" class="btn-base chkLabel">学歴不問</label></div>
+      <div class="grid-item-2"><input id="j3" name="jyoukenBox" type="checkbox" value="20260101026"/><label for="j3" class="btn-base chkLabel">資格不問</label></div>
+      <div class="grid-item-2"><input id="j4" name="jyoukenBox" type="checkbox" value="20260101016"/><label for="j4" class="btn-base chkLabel">完全週休2日(土日休)</label></div>
+      <div class="grid-item-2"><input id="j5" name="jyoukenBox" type="checkbox" value="20260101023"/><label for="j5" class="btn-base chkLabel">時間外労働なし</label></div>
+      <div class="grid-item-2"><input id="j6" name="jyoukenBox" type="checkbox" value="20260101027"/><label for="j6" class="btn-base chkLabel">転勤なし</label></div>
+      <div class="grid-item-2"><input id="j7" name="jyoukenBox" type="checkbox" value="20260101028"/><label for="j7" class="btn-base chkLabel">通勤手当あり</label></div>
+      <div class="grid-item-2"><input id="j8" name="jyoukenBox" type="checkbox" value="20260101029"/><label for="j8" class="btn-base chkLabel">マイカー通勤可</label></div>
+      <div class="grid-item-2"><input id="j9" name="jyoukenBox" type="checkbox" value="20260101030"/><label for="j9" class="btn-base chkLabel">書類選考なし</label></div>
+      <div class="grid-item-2"><input id="j10" name="jyoukenBox" type="checkbox" value="20260101031"/><label for="j10" class="btn-base chkLabel">駅近(徒歩10分以内)</label></div>
+      <div class="grid-item-2"><input id="j11" name="jyoukenBox" type="checkbox" value="20260101032"/><label for="j11" class="btn-base chkLabel">トライアル雇用併用</label></div>
+      <div class="grid-item-2"><input id="j12" name="jyoukenBox" type="checkbox" value="20260101033"/><label for="j12" class="btn-base chkLabel">UIJターン歓迎</label></div>
+    </form>
+
+    <div class="section">7. キーワード・その他</div>
     <div id="senior-warning-msg" class="exclusion-msg">
       ※詳細エリア（町名）指定中は、文字数上限保護のため<strong>キーワードやフリーワードは入力できません</strong>（併用不可）
     </div>
