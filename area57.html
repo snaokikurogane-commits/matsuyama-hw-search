@@ -234,6 +234,7 @@
           }
       });
 
+      // 自動セット解除ボタン
       var clearAutosetBtn = document.getElementById('clear-autoset-btn');
       if (clearAutosetBtn) {
           clearAutosetBtn.addEventListener('click', function(e) {
@@ -720,8 +721,8 @@
   function updateExclusion() {
     var isKeywordSearchIntent = document.getElementById('u2').checked || 
                                 document.getElementById('u6').checked || 
-                                document.getElementById('u7').checked ||
-                                document.getElementById('u5').checked;
+                                document.getElementById('u7').checked;
+                                // u5 はロック対象から除外
 
     var isDetailAreaSelected = false;
     for(var i=0; i<selectedAreaKeys.length; i++){
@@ -740,10 +741,11 @@
         }
     });
 
-    var kwInputs = [ document.getElementById('u2'), document.getElementById('u6'), document.getElementById('u7'), document.getElementById('u5') ];
+    // シニア等の固定キーワードのみ無効化（「自分で入力する(u5)」は無効化しない）
+    var kwInputs = [ document.getElementById('u2'), document.getElementById('u6'), document.getElementById('u7') ];
     var kwLabels = [
         document.querySelector('label[for="u2"]'), document.querySelector('label[for="u6"]'),
-        document.querySelector('label[for="u7"]'), document.querySelector('label[for="u5"]')
+        document.querySelector('label[for="u7"]')
     ];
     kwLabels.forEach(function(lbl, idx) {
         if(lbl && kwInputs[idx]) {
@@ -756,13 +758,13 @@
     });
 
     var freeWordContainer = document.getElementById('FreeWord');
-    var freeWordInput = document.getElementById('FreeW');
-    if (isDetailAreaSelected) {
-        if (document.getElementById('u5').checked) { document.getElementById('u4').checked = true; }
-        freeWordContainer.style.display = 'none';
-        freeWordInput.value = '';
+    var u5 = document.getElementById('u5');
+    // u5にチェックが入っていれば、エリア選択の有無に関わらず入力欄を表示
+    if (u5 && u5.checked) { 
+        freeWordContainer.style.display = 'block'; 
     } else {
-        if (document.getElementById('u5').checked) { freeWordContainer.style.display = 'block'; }
+        freeWordContainer.style.display = 'none';
+        document.getElementById('FreeW').value = '';
     }
     
     var seniorWarning = document.getElementById('senior-warning-msg');
@@ -770,7 +772,7 @@
     if(areaWarning) areaWarning.style.display = isKeywordSearchIntent ? 'block' : 'none';
     if(seniorWarning) {
         seniorWarning.style.display = isDetailAreaSelected ? 'block' : 'none';
-        if(isDetailAreaSelected) seniorWarning.innerHTML = '※詳細エリア（町名）指定中は、文字数上限保護のため<strong>キーワードやフリーワードは入力できません</strong>（併用不可）';
+        if(isDetailAreaSelected) seniorWarning.innerHTML = '※詳細エリア（町名）指定中は、文字数上限保護のため<strong>特定のキーワード（シニア・子育て等）は併用できません。</strong>自由にキーワードを追加したい場合は「自分で入力する」を選んでください。';
     }
     updateCharCount();
   }
@@ -1400,6 +1402,9 @@
     </form>
 
     <div class="section">7. キーワード・その他</div>
+    <div id="senior-warning-msg" class="exclusion-msg">
+      ※詳細エリア（町名）指定中は、文字数上限保護のため<strong>特定のキーワード（シニア・子育て等）は併用できません。</strong>自由にキーワードを追加したい場合は「自分で入力する」を選んでください。
+    </div>
 
     <form name="kwForm" class="grid-container">
       <div class="grid-item-2"><input checked id="u4" name="radioKw" type="radio" value=""/><label for="u4" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
@@ -1413,7 +1418,7 @@
       <div id="area-badge-container" style="display:none; background-color:#f0f7ff; border:1px solid #cce5ff; padding:12px; border-radius:6px; margin-bottom:10px; font-size:13px; color:#0055b3; line-height: 1.5; position: relative;">
          <div style="font-weight:bold; margin-bottom:4px; color:#004085;">自動セット中の町名（検索時に追加されます）</div>
          <div id="area-badge-text" style="word-break: break-all; margin-bottom: 8px;"></div>
-         <button id="clear-autoset-btn" style="background: #fff; color: #0055b3; border: 1px solid #0055b3; padding: 5px 10px; border-radius: 4px; font-size: 12px; cursor: pointer; font-weight: bold;">自動セットを解除</button>
+         <button id="clear-autoset-btn" style="background: #fff; color: #0055b3; border: 1px solid #0055b3; padding: 6px 12px; border-radius: 4px; font-size: 13px; cursor: pointer; font-weight: bold; width: 100%; box-sizing: border-box; text-align: center;">自動セットを解除してエリアをリセット</button>
       </div>
       <div style="background: #fff3e0; padding: 10px; border-radius: 6px; border: 1px solid #ffcc80; margin-bottom: 10px; font-size: 12.5px; color: #e65100; line-height: 1.5;">
         ※仕様上、全体で50文字までしか入力できません。<br>特定の町名だけを探したい場合や自由にキーワードを組み合わせたい場合は、上の【自動セットを解除】を押し、下の入力欄に「一番町 事務」のように全角スペースで区切って直接ご入力ください。
