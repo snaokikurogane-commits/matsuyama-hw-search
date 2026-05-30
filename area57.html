@@ -199,19 +199,52 @@
               if (this.name === 'radioKw') {
                   var u5 = document.getElementById('u5');
                   document.getElementById('FreeWord').style.display = (u5 && u5.checked) ? 'block' : 'none';
+                  
+                  if (this.id !== 'u4' && this.id !== 'u5') {
+                      var areaWords = "";
+                      selectedAreaKeys.forEach(function(k) {
+                          if (areaData[k].words) areaWords += areaData[k].words + "　";
+                      });
+                      areaWords = areaWords.trim();
+                      var fwArr = [];
+                      if (areaWords) fwArr.push(areaWords);
+                      fwArr.push(this.value);
+                      if (fwArr.join("　").length > 50) {
+                          showMyModal("文字数オーバー", "選択したキーワードとエリアの合計が50文字を超えてしまいます。\nエリア指定を減らすか、指定しないを選んでください。", false);
+                          document.getElementById('u4').checked = true;
+                          document.getElementById('FreeWord').style.display = 'none';
+                      }
+                  }
               }
               updateExclusion();
               updateConditionText();
           });
-          if(input.type === 'text') input.addEventListener('keyup', updateConditionText);
+          if(input.type === 'text') {
+              input.addEventListener('input', updateCharCount);
+              input.addEventListener('keyup', updateConditionText);
+          }
       });
 
-      // エリア
+      // 自動セット解除ボタン
+      var clearAutosetBtn = document.getElementById('clear-autoset-btn');
+      if (clearAutosetBtn) {
+          clearAutosetBtn.addEventListener('click', function(e) {
+              e.preventDefault();
+              selectedAreaKeys = []; 
+              var allBtns = document.getElementsByClassName('area-btn');
+              for(var i=0; i<allBtns.length; i++) allBtns[i].classList.remove('active');
+              updateAreaDisplay();
+              updateExclusion();
+              updateConditionText();
+              var freeW = document.getElementById('FreeW');
+              if (freeW) freeW.focus();
+          });
+      }
+
       document.querySelectorAll('#hw-search-tool-root .area-btn').forEach(function(btn) {
           btn.addEventListener('click', function(e) { e.preventDefault(); selectArea(this.id.replace('btn-', '')); });
       });
 
-      // 職種ボタン
       document.querySelectorAll('.job-btn').forEach(function(btn) {
           btn.addEventListener('click', function(e) {
               e.preventDefault();
@@ -228,7 +261,6 @@
           updateConditionText();
       });
 
-      // 特集ボタン
       document.querySelectorAll('.feature-btn').forEach(function(btn) {
           btn.addEventListener('click', function(e) {
               e.preventDefault();
@@ -245,7 +277,6 @@
           updateConditionText();
       });
 
-      // ヘルプ
       var helpBtn = document.querySelector('#hw-search-tool-root .floating-help-btn');
       if (helpBtn) {
           helpBtn.addEventListener('click', function(e) {
@@ -257,13 +288,11 @@
           btn.addEventListener('click', function() { document.getElementById('help-modal').style.display = 'none'; });
       });
 
-      // モーダルボタン
       document.getElementById('job-btn-cancel').addEventListener('click', closeJobModal);
       document.getElementById('job-btn-apply').addEventListener('click', applyJobModal);
       document.getElementById('feature-btn-cancel').addEventListener('click', closeFeatureModal);
       document.getElementById('feature-btn-apply').addEventListener('click', applyFeatureModal);
 
-      // 検索・保存
       document.querySelector('#hw-search-tool-root .save-btn-container button:nth-child(1)').addEventListener('click', saveConditions);
       document.querySelector('#hw-search-tool-root .save-btn-container button:nth-child(2)').addEventListener('click', resetAll);
       document.getElementById('mainSearchBtn').addEventListener('click', function(e) { e.preventDefault(); executeMySearch(); });
@@ -309,7 +338,67 @@
     btnCancel.onclick = function() { overlay.style.display = 'none'; if(callback) callback(false); };
   }
 
-  // ============== 職種モーダル処理 ==============
+  function updateCharCount() {
+    var areaWords = "";
+    var uniqueCodes = [];
+    selectedAreaKeys.forEach(function(k) {
+        var c = areaData[k].code;
+        if(uniqueCodes.indexOf(c) === -1) uniqueCodes.push(c);
+        if (areaData[k].words) areaWords += areaData[k].words + "　";
+    });
+    areaWords = areaWords.trim();
+
+    var kw = document.querySelector('input[name="radioKw"]:checked');
+    var kwVal = (kw && kw.id !== 'u4' && kw.id !== 'u5') ? kw.value : "";
+    
+    var manualKw = document.getElementById('FreeW').value.trim();
+    if (kw && kw.id !== 'u5') manualKw = "";
+
+    var fwArr = [];
+    if (areaWords) fwArr.push(areaWords);
+    if (kwVal) fwArr.push(kwVal);
+    
+    var autoText = fwArr.join("　");
+    var autoLen = autoText.length;
+
+    var spaceLen = (autoLen > 0 && manualKw.length > 0) ? 1 : 0;
+    var currentTotal = autoLen + spaceLen + manualKw.length;
+    var remain = 50 - currentTotal;
+
+    var countEl = document.getElementById('char-count');
+    if (countEl) {
+        countEl.innerText = "残り入力：" + (remain < 0 ? 0 : remain) + "文字";
+        countEl.style.color = remain <= 10 ? "#d32f2f" : "#008000";
+    }
+
+    var badgeContainer = document.getElementById('area-badge-container');
+    var badgeText = document.getElementById('area-badge-text');
+    if (areaWords && badgeContainer && badgeText) {
+        badgeContainer.style.display = 'block';
+        badgeText.innerText = areaWords + " （計" + areaWords.length + "文字）";
+    } else if (badgeContainer) {
+        badgeContainer.style.display = 'none';
+    }
+
+    var freeW = document.getElementById('FreeW');
+    if (freeW) {
+        var spaceNeeded = (autoLen > 0) ? 1 : 0;
+        var maxManual = 50 - autoLen - spaceNeeded;
+        if (maxManual < 0) maxManual = 0;
+        
+        freeW.maxLength = maxManual;
+        
+        if (freeW.value.length > maxManual) {
+            freeW.value = freeW.value.substring(0, maxManual);
+            var newTotal = autoLen + spaceNeeded + freeW.value.length;
+            var newRemain = 50 - newTotal;
+            if (countEl) {
+                countEl.innerText = "残り入力：" + (newRemain < 0 ? 0 : newRemain) + "文字";
+            }
+        }
+    }
+  }
+
   function initJobModals() {
       var container = document.getElementById('job-modal-body');
       for(var code in jobData) {
@@ -470,7 +559,6 @@
        }
   }
 
-  // ============== ★特集モーダル処理 ==============
   function initFeatureModals() {
       var container = document.getElementById('feature-modal-body');
       for(var code in featureData) {
@@ -676,6 +764,7 @@
         seniorWarning.style.display = isDetailAreaSelected ? 'block' : 'none';
         if(isDetailAreaSelected) seniorWarning.innerHTML = '※詳細エリア（町名）指定中は、文字数上限保護のため<strong>キーワードやフリーワードは入力できません</strong>（併用不可）';
     }
+    updateCharCount();
   }
 
   function selectArea(key) {
@@ -700,12 +789,26 @@
 
     if (nextSelectedKeys.length > selectedAreaKeys.length) { 
         var uniqueCodes = [];
+        var testAreaWords = "";
         nextSelectedKeys.forEach(function(k) {
             var c = areaData[k].code;
             if(uniqueCodes.indexOf(c) === -1) uniqueCodes.push(c);
+            if (areaData[k].words) testAreaWords += areaData[k].words + "　";
         });
+        testAreaWords = testAreaWords.trim();
+        
         if (uniqueCodes.length > 5) {
             showMyModal("選択できません", "ハローワークの仕様上、同時に選択できる地域（市区町村）は5つまでです。", false);
+            return;
+        }
+
+        var kw = document.querySelector('input[name="radioKw"]:checked');
+        var kwVal = (kw && kw.id !== 'u4' && kw.id !== 'u5') ? kw.value : "";
+        var fwArr = [];
+        if (testAreaWords) fwArr.push(testAreaWords);
+        if (kwVal) fwArr.push(kwVal);
+        if (fwArr.join("　").length > 50) {
+            showMyModal("文字数オーバー", "選択したエリアとキーワードの合計が50文字を超えてしまいます。\n組み合わせを減らしてください。", false);
             return;
         }
     }
@@ -751,8 +854,6 @@
         var allLabels = document.getElementsByTagName('label');
         for(var i=0; i<allLabels.length; i++) allLabels[i].classList.remove('disabled');
         
-        document.getElementById('area-warning-msg').style.display = 'none';
-        document.getElementById('senior-warning-msg').style.display = 'none';
         document.getElementById('job-cross-warning-msg').style.display = 'none';
         document.getElementById('feature-cross-warning-msg').style.display = 'none';
 
@@ -957,13 +1058,11 @@
         addHiddenInput('searchClear', '0'); 
         addHiddenInput('kjKbnRadioBtn', '1'); 
 
-        // エリア
         if (uniqueCodes.length > 0) {
             addHiddenInput('tDFK1CmbBox', '38'); 
             addHiddenInput('siku1Hidden', uniqueCodes.join(",")); 
         }
 
-        // 雇用形態 ＋ 派遣除外ロジック
         var emp = document.querySelector('input[name="radioEmp"]:checked');
         var isYuukiExc = document.getElementById('h1').checked;
         var isMukiExc = document.getElementById('h2').checked;
@@ -999,11 +1098,9 @@
             }
         }
 
-        // 新着
         var arr = document.querySelector('input[name="radioArrive"]:checked');
         if(arr && arr.value !== "") addHiddenInput('jyoukenBox', arr.value);
 
-        // 職種
         for (var code in selectedJobs) {
             addHiddenInput('daiEasyShokusyuBox', code);
             selectedJobs[code].forEach(function(subCode) {
@@ -1011,7 +1108,6 @@
             });
         }
         
-        // 特集求人
         for (var fCode in selectedFeatures) {
             addHiddenInput('daiTokusyuBox', fCode);
             selectedFeatures[fCode].forEach(function(fSubCode) {
@@ -1019,11 +1115,9 @@
             });
         }
 
-        // 詳しい条件・就業時間
         var jyoukenChecks = document.querySelectorAll('input[name="jyoukenBox"]:checked');
         jyoukenChecks.forEach(function(chk) { addHiddenInput('jyoukenBox', chk.value); });
 
-        // フリーワード
         if(combinedFw !== "") {
             addHiddenInput('freeWordInput', combinedFw);
             addHiddenInput('freeWordRadioBtn', '0'); 
@@ -1129,7 +1223,7 @@
        <div class="modal-header">
          <span id="job-modal-title">職種詳細</span>
        </div>
-       <div id="job-modal-body" style="padding: 0 20px 20px 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column;"></div>
+       <div id="job-modal-body" style="padding: 0 20px 20px 20px; overflow-y: hidden; flex: 1; display: flex; flex-direction: column;"></div>
        
        <div style="position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px; background: #fff; box-shadow: 0 -2px 5px rgba(0,0,0,0.1); border-radius: 0 0 12px 12px; display: flex; gap: 10px; box-sizing: border-box; z-index: 10;">
          <button class="btn-cancel" id="job-btn-cancel">キャンセル</button>
@@ -1143,7 +1237,7 @@
        <div class="modal-header">
          <span id="feature-modal-title" style="color: #d35400;">特集求人 詳細</span>
        </div>
-       <div id="feature-modal-body" style="padding: 0 20px 20px 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column;"></div>
+       <div id="feature-modal-body" style="padding: 0 20px 20px 20px; overflow-y: hidden; flex: 1; display: flex; flex-direction: column;"></div>
        
        <div style="position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px; background: #fff; box-shadow: 0 -2px 5px rgba(0,0,0,0.1); border-radius: 0 0 12px 12px; display: flex; gap: 10px; box-sizing: border-box; z-index: 10;">
          <button class="btn-cancel" id="feature-btn-cancel">キャンセル</button>
@@ -1167,8 +1261,8 @@
 
     <div class="intro-text" style="margin-bottom: 15px; padding-bottom: 5px;">
       <div style="background-color: #e8f5e9; border-left: 5px solid #4caf50; padding: 12px; margin-bottom: 15px; border-radius: 4px;">
-        <span style="font-weight: bold; color: #2e7d32; font-size: 15px;">【お知らせ】検索機能をリニューアルしました</span><br>
-        <span style="font-size: 13px; color: #333; line-height: 1.5; display: inline-block; margin-top: 5px;">一部のデザインや機能をアップデートしました。基本的な使い勝手はこれまでと変わりませんので、安心してご利用ください！</span>
+        <span style="font-weight: bold; color: #2e7d32; font-size: 15px;">【お知らせ：簡易求人検索リニューアルのご案内】</span><br>
+        <span style="font-size: 13px; color: #333; line-height: 1.5; display: inline-block; margin-top: 5px;">ハローワークインターネットサービスの最新仕様に合わせ、検索時のエラーや表示トラブルを防ぐための機能調整を行いました。これに伴い、一部の細かい条件指定を簡素化しております。あらかじめご了承ください。</span>
       </div>
       <div style="font-weight: bold; margin-bottom: 15px; color: #333;">
         ハローワーク松山管轄の求人情報を、簡単な操作で検索することができます。
@@ -1187,10 +1281,6 @@
       <strong>【エリア選択時のご注意】</strong><br>
       ・ハローワークの仕様上、同時に選択できる地域は<strong style="color: #d32f2f;">5つまで</strong>です。<br>
       ・松山市内の地区指定は、主要なエリア（町名）を抽出します。抜け漏れなく探したい場合は<strong style="color: #d32f2f;">「松山市全域」</strong>を推奨します。
-    </div>
-    
-    <div id="area-warning-msg" class="exclusion-msg">
-      ※「シニア」「子育て」等を選択中は、詳細エリア指定はできません（併用不可）
     </div>
 
     <div class="sub-section">▼松山市内（1つのみ選択可）</div>
@@ -1306,9 +1396,6 @@
     </form>
 
     <div class="section">7. キーワード・その他</div>
-    <div id="senior-warning-msg" class="exclusion-msg">
-      ※詳細エリア（町名）指定中は、文字数上限保護のため<strong>キーワードやフリーワードは入力できません</strong>（併用不可）
-    </div>
 
     <form name="kwForm" class="grid-container">
       <div class="grid-item-2"><input checked id="u4" name="radioKw" type="radio" value=""/><label for="u4" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
@@ -1318,8 +1405,20 @@
       
       <div class="grid-item-2" style="flex:100%;"><input id="u5" name="radioKw" type="radio" value="manual"/><label for="u5" class="btn-base chkLabel">自分で入力する</label></div>
     </form>
-    <div id="FreeWord" style="display:none;">
-      <input class="textarea" id="FreeW" placeholder="全角スペースで区切って入力（その他の町名など）" type="text" />
+    <div id="FreeWord" style="display:none; margin-top: 15px;">
+      <div id="area-badge-container" style="display:none; background-color:#f0f7ff; border:1px solid #cce5ff; padding:12px; border-radius:6px; margin-bottom:10px; font-size:13px; color:#0055b3; line-height: 1.5; position: relative;">
+         <div style="font-weight:bold; margin-bottom:4px; color:#004085;">自動セット中の町名（検索時に追加されます）</div>
+         <div id="area-badge-text" style="word-break: break-all; margin-bottom: 8px;"></div>
+         <button id="clear-autoset-btn" style="background: #fff; color: #0055b3; border: 1px solid #0055b3; padding: 5px 10px; border-radius: 4px; font-size: 12px; cursor: pointer; font-weight: bold;">自動セットを解除</button>
+      </div>
+      <div style="background: #fff3e0; padding: 10px; border-radius: 6px; border: 1px solid #ffcc80; margin-bottom: 10px; font-size: 12.5px; color: #e65100; line-height: 1.5;">
+        ※仕様上、全体で50文字までしか入力できません。<br>特定の町名だけを探したい場合や自由にキーワードを組み合わせたい場合は、上の【自動セットを解除】を押し、下の入力欄に「一番町 事務」のように全角スペースで区切って直接ご入力ください。
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+        <span style="font-size:13px; font-weight:bold; color:#333;">追加のキーワード</span>
+        <span id="char-count" style="font-size:13px; font-weight:bold; color:#008000;">残り入力：50文字</span>
+      </div>
+      <input class="textarea" id="FreeW" placeholder="全角スペースで区切って入力（町名など）" type="text" />
     </div>
 
     <div class="condition-summary">
@@ -1340,6 +1439,16 @@
        <div style="background-color: #f4f8f4; border-top: 4px solid #008000; padding: 20px;">
           <h3 style="margin: 0 0 10px 0; color: #333; font-size: 16px;">求人番号・事業所番号で直接検索</h3>
           <p style="font-size: 13px; color: #555; margin-bottom: 15px; line-height: 1.5;">番号がわかっている場合は、ここから一発で検索できます。<br><strong style="color: #d32f2f;">※上の条件（エリアなど）はすべて無視されます。</strong></p>
+
+          <div style="background: #fff; border: 1px solid #d0e8d0; padding: 12px; border-radius: 6px; margin-bottom: 20px;">
+             <div style="font-weight: bold; color: #008000; font-size: 14px; margin-bottom: 5px;">💡 求人の詳しい「場所（地図）」を確認するには？</div>
+             <div style="font-size: 13px; color: #444; line-height: 1.6;">
+                検索結果から気になる求人を見つけたら、以下の手順で周辺地図を視覚的に確認できます。<br>
+                1. 求人の下部にある<strong>【詳細を表示】</strong>ボタンを押す<br>
+                2. 画面を少し下にスクロールし、<strong>「仕事内容」</strong>欄を見つける<br>
+                3. 「就業場所」の横にある<strong>【地図を表示】</strong>を押す
+             </div>
+          </div>
           
           <div style="margin-bottom: 15px;">
              <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px; color: #333;">【求人番号】</div>
