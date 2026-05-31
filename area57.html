@@ -304,12 +304,14 @@
       document.getElementById('feature-btn-cancel').addEventListener('click', closeFeatureModal);
       document.getElementById('feature-btn-apply').addEventListener('click', applyFeatureModal);
 
-      document.querySelector('#hw-search-tool-root .save-btn-container button:nth-child(1)').addEventListener('click', saveConditions);
-      document.querySelector('#hw-search-tool-root .save-btn-container button:nth-child(2)').addEventListener('click', resetAll);
+      // ★保存とリセットのボタンイベントをID指定で明確に割り当て（左リセット、右保存）
+      document.getElementById('btn-reset-cond').addEventListener('click', resetAll);
+      document.getElementById('btn-save-cond').addEventListener('click', saveConditions);
+      
       document.getElementById('mainSearchBtn').addEventListener('click', function(e) { e.preventDefault(); executeMySearch(); });
       document.getElementById('numberSearchBtn').addEventListener('click', function(e) { e.preventDefault(); executeNumberSearch(); });
 
-      // 番号検索のリセットボタン処理を追加
+      // 番号検索のリセットボタン処理
       document.getElementById('numberResetBtn').addEventListener('click', function(e) {
           e.preventDefault();
           document.getElementById('kNo1').value = "";
@@ -1454,8 +1456,8 @@
       <div id="current-conditions-text"></div>
       
       <div class="save-btn-container">
-        <button class="save-btn">この条件を保存</button>
-        <button class="save-btn">リセット</button>
+        <button class="save-btn" id="btn-reset-cond">リセット</button>
+        <button class="save-btn" id="btn-save-cond" style="border-color: #008000; color: #008000; font-weight: bold; background: #f4fcf4;">この条件を保存</button>
       </div>
     </div>
 
