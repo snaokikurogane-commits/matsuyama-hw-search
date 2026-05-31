@@ -33,7 +33,6 @@
   #hw-search-tool-root .help-note-item { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #ccc; }
   #hw-search-tool-root .help-note-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
   
-  /* 修正：white-space: pre-wrapを外し、HTMLテーブルが綺麗に表示されるように変更 */
   #hw-search-tool-root .msg-title { font-size: 1.2em; font-weight: bold; color: #333; margin-bottom: 12px; }
   #hw-search-tool-root .msg-body { font-size: 15px; color: #444; line-height: 1.6; margin-bottom: 25px; }
   
@@ -91,7 +90,6 @@
   #hw-search-tool-root .save-btn { flex: 1; padding: 12px; background: #fff; color: #555; border: 1px solid #bbb; border-radius: 6px; cursor: pointer; font-size: 14px; touch-action: manipulation; }
   #hw-search-tool-root .save-btn:active { background: #eee; }
 
-  /* 左固定・見やすい表形式のための新規CSS */
   #hw-search-tool-root .cond-table { width: 100%; border-collapse: collapse; text-align: left; background: #fff; border-radius: 6px; overflow: hidden; border: 1px solid #e0e0e0; }
   #hw-search-tool-root .cond-table th { width: 32%; background: #f0f7f0; color: #008000; font-weight: bold; padding: 10px 8px; border-bottom: 1px solid #e0e0e0; font-size: 13px; vertical-align: top; }
   #hw-search-tool-root .cond-table td { width: 68%; padding: 10px 8px; border-bottom: 1px solid #e0e0e0; color: #333; font-size: 13px; line-height: 1.5; vertical-align: top; }
@@ -311,6 +309,16 @@
       document.getElementById('mainSearchBtn').addEventListener('click', function(e) { e.preventDefault(); executeMySearch(); });
       document.getElementById('numberSearchBtn').addEventListener('click', function(e) { e.preventDefault(); executeNumberSearch(); });
 
+      // 番号検索のリセットボタン処理を追加
+      document.getElementById('numberResetBtn').addEventListener('click', function(e) {
+          e.preventDefault();
+          document.getElementById('kNo1').value = "";
+          document.getElementById('kNo2').value = "";
+          document.getElementById('jNo1').value = "";
+          document.getElementById('jNo2').value = "";
+          document.getElementById('jNo3').value = "";
+      });
+
       loadConditionsAuto();
   });
 
@@ -330,7 +338,6 @@
     var overlay = document.getElementById('msg-modal-overlay');
     document.getElementById('msg-modal-title').innerText = title;
     
-    // innerHTMLに変更して表形式（タグ）を表示できるように修正
     document.getElementById('msg-modal-text').innerHTML = text;
     
     var btnOk = document.getElementById('msg-btn-ok');
@@ -894,7 +901,6 @@
     });
   }
 
-  // ★変更箇所：表示を見やすい表形式（HTMLタグ）に変更
   function updateConditionText() {
     var html = '<table class="cond-table">';
     
@@ -963,10 +969,8 @@
 
     html += '</table>';
 
-    // HTMLとして挿入
     document.getElementById('current-conditions-text').innerHTML = html;
     
-    // フローティング用はテキストのみを抽出して生成
     var floatText = "🔍 " + area;
     if (Object.keys(selectedJobs).length > 0) floatText += " / " + Object.keys(selectedJobs).map(k=>jobData[k].name).join("・");
     if (Object.keys(selectedFeatures).length > 0) floatText += " / 特集:" + Object.keys(selectedFeatures).map(k=>featureData[k].name).join("・"); 
@@ -1148,7 +1152,6 @@
         document.body.removeChild(form);
     };
 
-    // ★変更箇所：画面下部に生成されているHTMLの表をそのままモーダルへ流用
     var currentConditionsHtml = document.getElementById('current-conditions-text').innerHTML;
     var confirmMsg = "<div style='text-align:left; margin-bottom:15px; max-height:45vh; overflow-y:auto; border-radius:6px; box-shadow:inset 0 0 5px rgba(0,0,0,0.1);'>" + currentConditionsHtml + "</div><div style='font-weight:bold; font-size:15px; color:#333;'>上記の条件で検索を開きますか？</div>";
 
@@ -1374,7 +1377,7 @@
       </div>
     </details>
 
-    <div class="section section-feature">5. 🌟 注目の特集求人（重点分野）</div>
+    <div class="section section-feature">5. 注目の特集求人（重点分野）</div>
     <p style="font-size:0.9em; color:#d35400; font-weight:bold; margin-top: 0;">ハローワーク松山が現在特に力を入れている分野です。<br>※大分類は1つのみ、小分類は最大5つまで選択できます。</p>
     <div id="feature-cross-warning-msg" class="cross-exclusion-msg">
       ※職種を選択中は、システムエラー防止のため特集は選択できません。
@@ -1406,7 +1409,7 @@
     </form>
     
     <div class="sub-section" style="margin-top:20px;">▼ 就業時間の希望（任意）</div>
-    <p style="font-size:0.85em; color:#d32f2f; margin-top:0;">※就業時間を指定すると求人数がグッと減る傾向があります。</p>
+    <p style="font-size:0.85em; color:#d32f2f; margin-top:0;">※就業時間を指定すると求人数が減る可能性があります。あらかじめご了承ください。</p>
     <form name="timeForm" class="grid-container">
       <div class="grid-item-2"><input id="t_time1" name="jyoukenBox" type="checkbox" value="20260101018"/><label for="t_time1" class="btn-base chkLabel">8時以降開始</label></div>
       <div class="grid-item-2"><input id="t_time2" name="jyoukenBox" type="checkbox" value="20260101019"/><label for="t_time2" class="btn-base chkLabel">10時以降開始</label></div>
@@ -1462,10 +1465,10 @@
     <div class="bottom-info-container" style="margin-top: 40px; box-shadow: 0 4px 10px rgba(0,128,0,0.1);">
        <div style="background-color: #f4f8f4; border-top: 4px solid #008000; padding: 20px;">
           <h3 style="margin: 0 0 10px 0; color: #333; font-size: 16px;">求人番号・事業所番号で直接検索</h3>
-          <p style="font-size: 13px; color: #555; margin-bottom: 15px; line-height: 1.5;">番号がわかっている場合は、ここから一発で検索できます。<br><strong style="color: #d32f2f;">※上の条件（エリアなど）はすべて無視されます。</strong></p>
+          <p style="font-size: 13px; color: #555; margin-bottom: 15px; line-height: 1.5;">番号がわかっている場合は、ここから直接検索できます。<br><strong style="color: #d32f2f;">※上の条件（エリアなど）はすべて無視されます。</strong></p>
 
           <div style="background: #fff; border: 1px solid #d0e8d0; padding: 12px; border-radius: 6px; margin-bottom: 20px;">
-             <div style="font-weight: bold; color: #008000; font-size: 14px; margin-bottom: 5px;">💡 求人の詳しい「場所（地図）」を確認するには？</div>
+             <div style="font-weight: bold; color: #008000; font-size: 14px; margin-bottom: 5px;">求人の詳しい「場所（地図）」を確認するには？</div>
              <div style="font-size: 13px; color: #444; line-height: 1.6;">
                 検索結果から気になる求人を見つけたら、以下の手順で周辺地図を視覚的に確認できます。<br>
                 1. 求人の下部にある<strong>【詳細を表示】</strong>ボタンを押す<br>
@@ -1494,7 +1497,10 @@
              </div>
           </div>
 
-          <button id="numberSearchBtn" style="width: 100%; background: #008000; color: #fff; border: none; padding: 15px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">番号で検索する</button>
+          <div style="display: flex; gap: 10px;">
+            <button id="numberResetBtn" style="flex: 1; background: #fff; color: #555; border: 1px solid #bbb; padding: 15px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">リセット</button>
+            <button id="numberSearchBtn" style="flex: 2; background: #008000; color: #fff; border: none; padding: 15px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">番号で検索する</button>
+          </div>
        </div>
     </div>
 
