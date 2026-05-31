@@ -1138,7 +1138,10 @@
         document.body.removeChild(form);
     };
 
-    showMyModal("検索確認", "上に表示されている条件で\nハローワークの検索を開きますか？", true, function(result){
+    var currentConditions = document.getElementById('current-conditions-text').innerText;
+    var confirmMsg = "▼ 現在選択中の条件\n" + currentConditions + "\n\n上記の条件で検索を開きますか？";
+
+    showMyModal("検索確認", confirmMsg, true, function(result){
         if(result) performOpen();
     });
   }
