@@ -33,8 +33,10 @@
   #hw-search-tool-root .help-note-item { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #ccc; }
   #hw-search-tool-root .help-note-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
   
+  /* 修正：white-space: pre-wrapを外し、HTMLテーブルが綺麗に表示されるように変更 */
   #hw-search-tool-root .msg-title { font-size: 1.2em; font-weight: bold; color: #333; margin-bottom: 12px; }
-  #hw-search-tool-root .msg-body { font-size: 15px; color: #444; line-height: 1.6; margin-bottom: 25px; white-space: pre-wrap; }
+  #hw-search-tool-root .msg-body { font-size: 15px; color: #444; line-height: 1.6; margin-bottom: 25px; }
+  
   #hw-search-tool-root .msg-buttons { display: flex; justify-content: center; gap: 10px; width: 100%; box-sizing: border-box; }
   #hw-search-tool-root .btn-ok, #hw-search-tool-root .btn-cancel { flex: 1; padding: 12px 0; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; box-sizing: border-box; width: 100%; }
   #hw-search-tool-root .btn-ok { background: #008000; color: #fff; border: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
@@ -56,7 +58,6 @@
   #hw-search-tool-root .chkLabel { background: #fff; color: #008000; border: 1px solid #008000; }
   #hw-search-tool-root input:checked + .chkLabel { background: #d0f0c0 !important; border: 2px solid #008000 !important; color: #008000 !important; }
   
-  /* 職種・特集ボタンのスタイル */
   #hw-search-tool-root .job-btn-all, #hw-search-tool-root .feature-btn-all { background: #fff; color: #333; border: 2px solid #aaa; }
   #hw-search-tool-root .job-btn-all.active, #hw-search-tool-root .feature-btn-all.active { background: #eee !important; border-color: #666 !important; }
   #hw-search-tool-root .job-btn { background: #fff; color: #e6006b; border: 2px solid #e6006b; }
@@ -65,8 +66,6 @@
   #hw-search-tool-root .feature-btn.active { background: #d35400 !important; color: #fff !important; box-shadow: 0 0 5px rgba(211,84,0,0.5); }
   
   #hw-search-tool-root .btn-base.disabled { background-color: #e0e0e0 !important; color: #999 !important; border-color: #ccc !important; pointer-events: none; opacity: 0.7; }
-  
-  /* こだわらない用ロック時のスタイル */
   #hw-search-tool-root .chkLabel.locked { background-color: #f0f0f0 !important; color: #aaa !important; border-color: #ddd !important; pointer-events: none; opacity: 0.6; }
 
   #hw-search-tool-root .notice-box { background-color: #ffffff !important; border: 1px solid #d32f2f; padding: 12px; border-radius: 5px; margin-bottom: 15px; font-size: 0.9em; color: #333; line-height: 1.5; }
@@ -87,10 +86,16 @@
   #hw-search-tool-root .searchbutton { display: block; width: 100%; padding: 20px; background: #008000; color: #fff !important; text-align: center; font-size: 24px; font-weight: bold; border-radius: 12px; margin-top: 15px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; touch-action: manipulation; }
   
   #hw-search-tool-root .condition-summary { background: #fafafa; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-top: 35px; font-size: 14px; color: #444; line-height: 1.6; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-  #hw-search-tool-root .condition-summary-title { color: #555; margin-bottom: 5px; font-size: 15px; font-weight: bold; border-bottom: 1px solid #eaeaea; padding-bottom: 5px; }
-  #hw-search-tool-root .save-btn-container { display: flex; justify-content: space-between; gap: 10px; margin-top: 10px; }
+  #hw-search-tool-root .condition-summary-title { color: #555; margin-bottom: 5px; font-size: 15px; font-weight: bold; padding-bottom: 5px; }
+  #hw-search-tool-root .save-btn-container { display: flex; justify-content: space-between; gap: 10px; margin-top: 15px; }
   #hw-search-tool-root .save-btn { flex: 1; padding: 12px; background: #fff; color: #555; border: 1px solid #bbb; border-radius: 6px; cursor: pointer; font-size: 14px; touch-action: manipulation; }
   #hw-search-tool-root .save-btn:active { background: #eee; }
+
+  /* 左固定・見やすい表形式のための新規CSS */
+  #hw-search-tool-root .cond-table { width: 100%; border-collapse: collapse; text-align: left; background: #fff; border-radius: 6px; overflow: hidden; border: 1px solid #e0e0e0; }
+  #hw-search-tool-root .cond-table th { width: 32%; background: #f0f7f0; color: #008000; font-weight: bold; padding: 10px 8px; border-bottom: 1px solid #e0e0e0; font-size: 13px; vertical-align: top; }
+  #hw-search-tool-root .cond-table td { width: 68%; padding: 10px 8px; border-bottom: 1px solid #e0e0e0; color: #333; font-size: 13px; line-height: 1.5; vertical-align: top; }
+  #hw-search-tool-root .cond-table tr:last-child th, #hw-search-tool-root .cond-table tr:last-child td { border-bottom: none; }
 
   #hw-search-tool-root .floating-condition { display: none; }
 
@@ -219,7 +224,7 @@
                       if (areaWords) fwArr.push(areaWords);
                       fwArr.push(this.value);
                       if (fwArr.join("　").length > 50) {
-                          showMyModal("文字数オーバー", "選択したキーワードとエリアの合計が50文字を超えてしまいます。\nエリア指定を減らすか、指定しないを選んでください。", false);
+                          showMyModal("文字数オーバー", "選択したキーワードとエリアの合計が50文字を超えてしまいます。<br>エリア指定を減らすか、指定しないを選んでください。", false);
                           document.getElementById('u4').checked = true;
                           document.getElementById('FreeWord').style.display = 'none';
                       }
@@ -234,7 +239,6 @@
           }
       });
 
-      // 自動セット解除ボタン
       var clearAutosetBtn = document.getElementById('clear-autoset-btn');
       if (clearAutosetBtn) {
           clearAutosetBtn.addEventListener('click', function(e) {
@@ -325,7 +329,10 @@
   function showMyModal(title, text, isConfirm, callback) {
     var overlay = document.getElementById('msg-modal-overlay');
     document.getElementById('msg-modal-title').innerText = title;
-    document.getElementById('msg-modal-text').innerText = text;
+    
+    // innerHTMLに変更して表形式（タグ）を表示できるように修正
+    document.getElementById('msg-modal-text').innerHTML = text;
+    
     var btnOk = document.getElementById('msg-btn-ok');
     var btnCancel = document.getElementById('msg-btn-cancel');
     var newOk = btnOk.cloneNode(true);
@@ -634,7 +641,7 @@
 
   function openFeatureModal(code) {
       if (!selectedFeatures[code] && Object.keys(selectedFeatures).length >= 1) {
-          showMyModal("選択できません", "特集求人の大分類は1つのみ選択可能です。（小分類は5つまで選べます）", false);
+          showMyModal("選択できません", "特集求人の大分類は1つのみ選択可能です。<br>（小分類は5つまで選べます）", false);
           return;
       }
       currentEditingFeatureCode = code;
@@ -722,7 +729,6 @@
     var isKeywordSearchIntent = document.getElementById('u2').checked || 
                                 document.getElementById('u6').checked || 
                                 document.getElementById('u7').checked;
-                                // u5 はロック対象から除外
 
     var isDetailAreaSelected = false;
     for(var i=0; i<selectedAreaKeys.length; i++){
@@ -741,7 +747,6 @@
         }
     });
 
-    // シニア等の固定キーワードのみ無効化（「自分で入力する(u5)」は無効化しない）
     var kwInputs = [ document.getElementById('u2'), document.getElementById('u6'), document.getElementById('u7') ];
     var kwLabels = [
         document.querySelector('label[for="u2"]'), document.querySelector('label[for="u6"]'),
@@ -759,7 +764,6 @@
 
     var freeWordContainer = document.getElementById('FreeWord');
     var u5 = document.getElementById('u5');
-    // u5にチェックが入っていれば、エリア選択の有無に関わらず入力欄を表示
     if (u5 && u5.checked) { 
         freeWordContainer.style.display = 'block'; 
     } else {
@@ -818,7 +822,7 @@
         if (testAreaWords) fwArr.push(testAreaWords);
         if (kwVal) fwArr.push(kwVal);
         if (fwArr.join("　").length > 50) {
-            showMyModal("文字数オーバー", "選択したエリアとキーワードの合計が50文字を超えてしまいます。\n組み合わせを減らしてください。", false);
+            showMyModal("文字数オーバー", "選択したエリアとキーワードの合計が50文字を超えてしまいます。<br>組み合わせを減らしてください。", false);
             return;
         }
     }
@@ -850,7 +854,7 @@
   }
   
   function resetAll() {
-    showMyModal("確認", "選択した条件をすべてリセットしますか？\n（保存されている条件も消去されます）", true, function(result){
+    showMyModal("確認", "選択した条件をすべてリセットしますか？<br>（保存されている条件も消去されます）", true, function(result){
         if(!result) return;
         selectedAreaKeys = [];
         selectedJobs = {};
@@ -890,21 +894,23 @@
     });
   }
 
+  // ★変更箇所：表示を見やすい表形式（HTMLタグ）に変更
   function updateConditionText() {
-    var text = "";
+    var html = '<table class="cond-table">';
+    
     var area = document.getElementById('selectedAreaDisplay').innerText.replace("選択中: ", "");
-    text += "【エリア】 " + area + "\n";
+    html += '<tr><th>エリア</th><td>' + area + '</td></tr>';
 
     var emp = document.querySelector('#hw-search-tool-root input[name="radioEmp"]:checked');
     var empText = emp ? document.querySelector('#hw-search-tool-root label[for="' + emp.id + '"]').innerText : "";
-    
     var hakenText = [];
     if(document.getElementById('h1').checked) hakenText.push("有期派遣除く");
     if(document.getElementById('h2').checked) hakenText.push("無期派遣除く");
     if(hakenText.length > 0) {
-        empText += " （" + hakenText.join("・") + "）";
+        empText += " <br><span style='font-size:0.9em;color:#666;'>(" + hakenText.join("・") + ")</span>";
     }
-    text += "【雇用形態】 " + empText + "\n";
+    if(empText === "") empText = "指定しない";
+    html += '<tr><th>雇用形態</th><td>' + empText + '</td></tr>';
 
     var jobNames = [];
     var jobText = "";
@@ -914,11 +920,11 @@
         for (var c in selectedJobs) {
             var subNames = [];
             selectedJobs[c].forEach(function(sc) { subNames.push(jobData[c].subs[sc]); });
-            jobNames.push(jobData[c].name + "（" + subNames.join("、") + "）");
+            jobNames.push("・" + jobData[c].name + "<br><span style='font-size:0.9em;color:#666;'>" + subNames.join("、") + "</span>");
         }
-        jobText = jobNames.join(" ／ ");
+        jobText = jobNames.join("<br>");
     }
-    text += "【職種】 " + jobText + "\n";
+    html += '<tr><th>職種</th><td>' + jobText + '</td></tr>';
     
     var featureNames = [];
     var featureText = "";
@@ -928,11 +934,11 @@
         for (var fc in selectedFeatures) {
             var fSubNames = [];
             selectedFeatures[fc].forEach(function(fsc) { fSubNames.push(featureData[fc].subs[fsc]); });
-            featureNames.push(featureData[fc].name + "（" + fSubNames.join("、") + "）");
+            featureNames.push("・" + featureData[fc].name + "<br><span style='font-size:0.9em;color:#666;'>" + fSubNames.join("、") + "</span>");
         }
-        featureText = featureNames.join(" ／ ");
+        featureText = featureNames.join("<br>");
     }
-    text += "【特集（重点分野）】 " + featureText + "\n";
+    html += '<tr><th>特集求人</th><td>' + featureText + '</td></tr>';
 
     var jyoukenNames = [];
     var jyoukenChecks = document.querySelectorAll('#hw-search-tool-root input[name="jyoukenBox"]:checked');
@@ -940,8 +946,8 @@
         var lbl = document.querySelector('#hw-search-tool-root label[for="' + c.id + '"]');
         if(lbl) jyoukenNames.push(lbl.innerText); 
     });
-    var jText = jyoukenNames.length > 0 ? jyoukenNames.join("、") : "指定しない";
-    text += "【条件・時間】 " + jText + "\n";
+    var jText = jyoukenNames.length > 0 ? jyoukenNames.join("、<br>") : "指定しない";
+    html += '<tr><th>条件・時間</th><td>' + jText + '</td></tr>';
 
     var kw = document.querySelector('#hw-search-tool-root input[name="radioKw"]:checked');
     var kwText = "";
@@ -952,16 +958,20 @@
     if(manualKw && kw && kw.id === 'u5') { 
         kwText = manualKw;
     }
-    if(kwText !== "") { text += "【キーワード】 " + kwText; } 
-    else { text += "【キーワード】 指定しない"; }
+    if(kwText === "") { kwText = "指定しない"; }
+    html += '<tr><th>キーワード</th><td>' + kwText + '</td></tr>';
 
-    document.getElementById('current-conditions-text').innerText = text;
+    html += '</table>';
+
+    // HTMLとして挿入
+    document.getElementById('current-conditions-text').innerHTML = html;
     
+    // フローティング用はテキストのみを抽出して生成
     var floatText = "🔍 " + area;
     if (Object.keys(selectedJobs).length > 0) floatText += " / " + Object.keys(selectedJobs).map(k=>jobData[k].name).join("・");
     if (Object.keys(selectedFeatures).length > 0) floatText += " / 特集:" + Object.keys(selectedFeatures).map(k=>featureData[k].name).join("・"); 
     if (jyoukenNames.length > 0) floatText += " / " + jyoukenNames.join("・");
-    if (kwText !== "") floatText += " / " + kwText;
+    if (kwText !== "指定しない") floatText += " / " + kwText;
     var floatEl = document.getElementById('floating-condition-text');
     if(floatEl) floatEl.innerText = floatText;
   }
@@ -980,7 +990,7 @@
     checks.forEach(function(c) { state.checkboxes[c.id] = c.checked; });
 
     localStorage.setItem('hw_search_conditions', JSON.stringify(state));
-    showMyModal("保存完了", "現在の検索条件をブラウザに保存しました。\n次回開いた時に自動で読み込まれます。", false);
+    showMyModal("保存完了", "現在の検索条件をブラウザに保存しました。<br>次回開いた時に自動で読み込まれます。", false);
   }
 
   function loadConditionsAuto() {
@@ -1047,7 +1057,7 @@
     var combinedFw = fwArr.join("　");
     
     if(combinedFw.length > 50) {
-        showMyModal("文字数オーバー", "エリア指定（町名）やフリーワードの文字数が上限（50文字）を超えています。\n条件を少し減らしてください。\n\n【現在の文字数：" + combinedFw.length + "文字】", false);
+        showMyModal("文字数オーバー", "エリア指定（町名）やフリーワードの文字数が上限（50文字）を超えています。<br>条件を少し減らしてください。<br><br>【現在の文字数：" + combinedFw.length + "文字】", false);
         return;
     }
 
@@ -1138,8 +1148,9 @@
         document.body.removeChild(form);
     };
 
-    var currentConditions = document.getElementById('current-conditions-text').innerText;
-    var confirmMsg = "▼ 現在選択中の条件\n" + currentConditions + "\n\n上記の条件で検索を開きますか？";
+    // ★変更箇所：画面下部に生成されているHTMLの表をそのままモーダルへ流用
+    var currentConditionsHtml = document.getElementById('current-conditions-text').innerHTML;
+    var confirmMsg = "<div style='text-align:left; margin-bottom:15px; max-height:45vh; overflow-y:auto; border-radius:6px; box-shadow:inset 0 0 5px rgba(0,0,0,0.1);'>" + currentConditionsHtml + "</div><div style='font-weight:bold; font-size:15px; color:#333;'>上記の条件で検索を開きますか？</div>";
 
     showMyModal("検索確認", confirmMsg, true, function(result){
         if(result) performOpen();
@@ -1187,7 +1198,7 @@
         document.body.removeChild(form);
     };
 
-    showMyModal("検索確認", "入力した番号で直接求人を検索しますか？\n（※エリアなどの条件はすべて無視されます）", true, function(result){
+    showMyModal("検索確認", "入力した番号で直接求人を検索しますか？<br>（※エリアなどの条件はすべて無視されます）", true, function(result){
         if(result) performOpen();
     });
   }
@@ -1435,8 +1446,9 @@
 
     <div class="condition-summary">
       <div class="condition-summary-title">現在の検索条件</div>
-      <p style="font-size:0.85em; color:#666; margin:0 0 5px 0;">※「この条件を保存」ボタンを押すと、次回開いた時にも同じ条件が自動でセットされます。</p>
-      <div id="current-conditions-text" style="white-space: pre-wrap; margin-top: 8px;"></div>
+      <p style="font-size:0.85em; color:#666; margin:0 0 10px 0;">※「この条件を保存」ボタンを押すと、次回開いた時にも同じ条件が自動でセットされます。</p>
+      
+      <div id="current-conditions-text"></div>
       
       <div class="save-btn-container">
         <button class="save-btn">この条件を保存</button>
