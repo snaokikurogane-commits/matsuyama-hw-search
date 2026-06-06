@@ -1,15 +1,18 @@
 <style type="text/css">
-  #hw-search-tool-root { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 0; background-color: #f9f9f9; text-align: left; }
-  #hw-search-tool-root #wrapper { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding-bottom: 80px; box-sizing: border-box; position: relative; overflow-x: hidden; }
+  /* 背景とスマホサイズ枠（プレビュー用）の自動調整 */
+  #hw-search-tool-root { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 0; background-color: #f0f2f5; text-align: left; display: flex; justify-content: center; padding: 20px 0; }
+  
+  /* max-widthを480pxに設定し、PCで見てもスマホサイズになるよう固定 */
+  #hw-search-tool-root #wrapper { width: 100%; max-width: 480px; margin: 0 auto; padding: 20px 15px; background-color: #ffffff; box-shadow: 0 8px 25px rgba(0,0,0,0.1); padding-bottom: 90px; box-sizing: border-box; position: relative; overflow-x: hidden; border-radius: 12px; }
   
   #hw-search-tool-root .intro-text { font-size: 15px; color: #333; background: #f4f4f4; padding: 20px; border-radius: 8px; margin-bottom: 25px; line-height: 1.6; }
   #hw-search-tool-root .hwis-guide-box { margin-top: 5px; text-align: center; }
   #hw-search-tool-root .hwis-link-btn { display: inline-block; background: #f0f7ff; color: #0055b3; border: 3px solid #0066cc; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px; box-shadow: 0 4px 8px rgba(0, 102, 204, 0.15); transition: all 0.2s; }
   
-  #hw-search-tool-root .floating-help-btn { position: fixed; top: 15px; right: 15px; z-index: 9999; background-color: #ff9800; color: #ffffff !important; font-weight: bold; font-size: 13px; padding: 10px 16px; border-radius: 25px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.3); opacity: 0.95; cursor: pointer; }
+  #hw-search-tool-root .floating-help-btn { position: absolute; top: 15px; right: 15px; z-index: 9999; background-color: #ff9800; color: #ffffff !important; font-weight: bold; font-size: 12px; padding: 8px 14px; border-radius: 25px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.3); opacity: 0.95; cursor: pointer; }
   
   #hw-search-tool-root .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; }
-  #hw-search-tool-root .modal-content-help { background-color: #fff; width: 90%; max-width: 500px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative; animation: popIn 0.2s ease-out; }
+  #hw-search-tool-root .modal-content-help { background-color: #fff; width: 90%; max-width: 450px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative; animation: popIn 0.2s ease-out; }
   #hw-search-tool-root .modal-content-msg { background-color: #fff; width: 85%; max-width: 350px; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center; animation: popIn 0.2s ease-out; }
   @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   
@@ -40,7 +43,7 @@
   #hw-search-tool-root .grid-item-2 { flex: 1 1 calc(50% - 8px); }
   #hw-search-tool-root .grid-item-full { flex: 1 1 100%; }
 
-  #hw-search-tool-root .btn-base { display: flex; align-items: center; justify-content: center; padding: 5px; text-align: center; cursor: pointer; box-sizing: border-box; font-size: 15px; font-weight: bold; border-radius: 8px; text-decoration: none; min-height: 60px; line-height: 1.3; width: 100%; border: 2px solid transparent; touch-action: manipulation; }
+  #hw-search-tool-root .btn-base { display: flex; align-items: center; justify-content: center; padding: 5px; text-align: center; cursor: pointer; box-sizing: border-box; font-size: 14.5px; font-weight: bold; border-radius: 8px; text-decoration: none; min-height: 60px; line-height: 1.3; width: 100%; border: 2px solid transparent; touch-action: manipulation; }
   
   #hw-search-tool-root .area-btn { background: #fff; color: #008000; border: 2px solid #008000; }
   #hw-search-tool-root .area-btn.active { background: #008000 !important; color: #fff !important; border-color: #008000 !important; box-shadow: 0 0 5px rgba(0,128,0,0.5); }
@@ -66,14 +69,14 @@
   #hw-search-tool-root input[type="checkbox"], #hw-search-tool-root input[type="radio"] { display: none; }
   
   #hw-search-tool-root details { margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; overflow: hidden; background: #fff; width: 100%; display: block; }
-  #hw-search-tool-root summary { cursor: pointer; padding: 15px; font-weight: bold; background-color: #f0f0f0; list-style: none; position: relative; font-size: 16px; display: block; touch-action: manipulation; }
+  #hw-search-tool-root summary { cursor: pointer; padding: 15px; font-weight: bold; background-color: #f0f0f0; list-style: none; position: relative; font-size: 15px; display: block; touch-action: manipulation; }
   #hw-search-tool-root summary::after { content: "▼"; position: absolute; right: 20px; transition: transform 0.3s; color: #666; }
   #hw-search-tool-root details[open] summary::after { transform: rotate(180deg); }
   #hw-search-tool-root .details-content { padding: 10px; background: #fafafa; border-top: 1px solid #ccc; }
   
   #hw-search-tool-root input[type="text"] { width: 100%; padding: 14px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; }
   
-  #hw-search-tool-root .searchbutton { display: block; width: 100%; padding: 20px; background: #008000; color: #fff !important; text-align: center; font-size: 24px; font-weight: bold; border-radius: 12px; margin-top: 15px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; touch-action: manipulation; }
+  #hw-search-tool-root .searchbutton { display: block; width: 100%; padding: 20px; background: #008000; color: #fff !important; text-align: center; font-size: 22px; font-weight: bold; border-radius: 12px; margin-top: 15px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; touch-action: manipulation; }
   
   #hw-search-tool-root .condition-summary { background: #fafafa; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-top: 35px; font-size: 14px; color: #444; line-height: 1.6; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
   #hw-search-tool-root .condition-summary-title { color: #555; margin-bottom: 5px; font-size: 15px; font-weight: bold; padding-bottom: 5px; }
@@ -104,21 +107,23 @@
   #hw-search-tool-root .mypage-cta-desc { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 10px; }
   #hw-search-tool-root .swipe-hint { font-size: 15px; color: #C85A32; font-weight: bold; margin-bottom: 15px; }
   
-  /* PC用カローセルボタン */
-  #hw-search-tool-root .carousel-container { position: relative; display: flex; align-items: center; justify-content: center; }
+  /* 横幅を広げたカローセル（PC・スマホ両対応） */
+  #hw-search-tool-root .carousel-container { position: relative; display: flex; align-items: center; justify-content: center; margin: 0 -5px; }
   #hw-search-tool-root .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.95); border: 1px solid #d0d0d0; color: #C85A32; font-size: 18px; font-weight: bold; width: 44px; height: 44px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.15); transition: background 0.2s; padding: 0; }
   #hw-search-tool-root .carousel-btn:hover { background: #fdfdfd; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
   #hw-search-tool-root .carousel-btn.left { left: 5px; }
   #hw-search-tool-root .carousel-btn.right { right: 5px; }
 
-  #hw-search-tool-root .card-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 10px 15px 15px 15px; -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth; width: 100%; box-sizing: border-box; }
+  #hw-search-tool-root .card-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; padding: 10px 5px 15px 5px; -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth; width: 100%; box-sizing: border-box; }
   #hw-search-tool-root .card-carousel::-webkit-scrollbar { display: none; }
   
   /* スマホでのチラ見せ効果用スペーサー */
-  #hw-search-tool-root .card-carousel::after { content: ""; flex: 0 0 1px; }
-  #hw-search-tool-root .card-carousel::before { content: ""; flex: 0 0 1px; }
+  #hw-search-tool-root .card-carousel::after { content: ""; flex: 0 0 5px; }
+  #hw-search-tool-root .card-carousel::before { content: ""; flex: 0 0 5px; }
 
-  #hw-search-tool-root .card-item { flex: 0 0 88%; max-width: 320px; scroll-snap-align: center; background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 20px 25px 25px 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: flex; flex-direction: column; position: relative; box-sizing: border-box; }
+  /* 細長さを解消するため、幅(92%)を広げパディングを調整 */
+  #hw-search-tool-root .card-item { flex: 0 0 92%; scroll-snap-align: center; background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 20px 18px 25px 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: flex; flex-direction: column; position: relative; box-sizing: border-box; }
+  
   #hw-search-tool-root .card-header-row { display: flex; justify-content: center; align-items: center; margin-bottom: 12px; }
   #hw-search-tool-root .card-badge { display: inline-block; background-color: #fcece6; color: #C85A32; font-size: 11.5px; font-weight: bold; padding: 4px 10px; border-radius: 20px; }
   #hw-search-tool-root .card-title { font-size: 16px; font-weight: bold; color: #333; margin: 0 0 15px 0; line-height: 1.4; text-align: center; }
@@ -131,19 +136,17 @@
   #hw-search-tool-root .warning-box { background-color: #ffffff !important; border: 1px solid #d9a0a0; padding: 15px; border-radius: 6px; color: #b33939; font-size: 13px; line-height: 1.6; }
   #hw-search-tool-root .contact-section { background-color: #fff; text-align: center; padding: 25px 20px; font-size: 16px; font-weight: bold; color: #333; border-top: 1px dashed #ddd; line-height: 1.6; letter-spacing: 0.05em; }
 
-  @media screen and (min-width: 601px) {
-    #hw-search-tool-root .card-item { flex: 0 0 calc(50% - 15px); }
-  }
-
   @media screen and (max-width: 600px) {
-    #hw-search-tool-root #wrapper { padding: 10px 5px; width: 100%; padding-bottom: 140px; }
+    #hw-search-tool-root { padding: 0; background-color: #f9f9f9; }
+    #hw-search-tool-root #wrapper { padding: 15px 10px; width: 100%; max-width: 100%; padding-bottom: 140px; box-shadow: none; border-radius: 0; }
     #hw-search-tool-root .btn-base { font-size: 14px; padding: 5px; min-height: 55px; }
     #hw-search-tool-root .searchbutton { position: fixed; bottom: 0; left: 0; width: 100%; margin: 0; border-radius: 0; z-index: 999; padding: 20px 20px; box-shadow: 0 -5px 15px rgba(0,0,0,0.2); }
-    #hw-search-tool-root .floating-help-btn { top: 20px; font-size: 12px; padding: 8px 12px; }
+    #hw-search-tool-root .floating-help-btn { top: 15px; right: 10px; font-size: 12px; padding: 8px 12px; }
     
     #hw-search-tool-root .floating-condition { display: block; position: fixed; bottom: 70px; left: 0; width: 100%; background: #f4f8f4; padding: 10px 15px; font-size: 14px; color: #2e7d32; font-weight: bold; z-index: 998; box-sizing: border-box; white-space: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; text-align: left; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); pointer-events: auto; }
     #hw-search-tool-root .floating-condition::-webkit-scrollbar { display: none; }
-    /* スマホではスワイプで十分なためスクロールボタンを非表示 */
+    
+    /* スマホではスワイプで十分なためスクロール矢印ボタンを非表示 */
     #hw-search-tool-root .carousel-btn { display: none; }
   }
 </style>
@@ -327,19 +330,19 @@
           document.getElementById('jNo3').value = "";
       });
 
-      // カルーセルの左右ボタンスクロール処理
+      // カルーセルの左右ボタンスクロール処理（PC向け）
       var carousel = document.getElementById('card-carousel');
       var btnLeft = document.getElementById('carousel-left');
       var btnRight = document.getElementById('carousel-right');
       if (carousel && btnLeft && btnRight) {
           btnLeft.addEventListener('click', function(e) {
               e.preventDefault();
-              var scrollAmount = carousel.clientWidth * 0.8;
+              var scrollAmount = carousel.clientWidth * 0.9;
               carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
           });
           btnRight.addEventListener('click', function(e) {
               e.preventDefault();
-              var scrollAmount = carousel.clientWidth * 0.8;
+              var scrollAmount = carousel.clientWidth * 0.9;
               carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
           });
       }
@@ -1406,9 +1409,10 @@
     <div class="section section-feature">5. 注目の特集求人（重点分野）</div>
     <p style="font-size:0.9em; color:#d35400; font-weight:bold; margin-top: 0; line-height: 1.5;">ハローワーク松山が現在特に力を入れている分野です。<br>※大分類は1つのみ、小分類は最大5つまで選択できます。</p>
     
-    <div style="background-color: #fff9f6; border: 1px dashed #d35400; padding: 10px; border-radius: 6px; margin-bottom: 15px; font-size: 13.5px; color: #333;">
+    <div style="background-color: #fff9f6; border: 1px dashed #d35400; padding: 12px; border-radius: 6px; margin-bottom: 15px; font-size: 13.5px; color: #333; line-height: 1.5;">
       💡 <strong>ハローワーク松山には、各分野の「専門窓口」があります！</strong><br>
-      対象分野でのお仕事探しをプロが個別にサポートします。詳しくは<a href="https://page.line.me/039qicol/showcase/1740470974131477" target="_blank" style="color: #0055b3; font-weight: bold; text-decoration: underline;">こちら（専門窓口ナビ）</a>をご確認ください。
+      対象分野でのお仕事探しについて、詳しくは<a href="https://page.line.me/039qicol/showcase/1740470974131477" target="_blank" style="color: #0055b3; font-weight: bold; text-decoration: underline;">こちら（専門窓口ナビ）</a>をご確認ください。<br>
+      <span style="font-size: 12px; color: #d32f2f;">※専門窓口でのご相談は【担当制・予約制】となります。</span>
     </div>
 
     <div id="feature-cross-warning-msg" class="cross-exclusion-msg">
