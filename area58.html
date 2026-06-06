@@ -1,0 +1,1622 @@
+<style type="text/css">
+  #hw-search-tool-root { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 0; background-color: #f9f9f9; text-align: left; }
+  #hw-search-tool-root #wrapper { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding-bottom: 80px; box-sizing: border-box; position: relative; overflow-x: hidden; }
+  
+  #hw-search-tool-root .intro-text { font-size: 15px; color: #333; background: #f4f4f4; padding: 20px; border-radius: 8px; margin-bottom: 25px; line-height: 1.6; }
+  #hw-search-tool-root .hwis-guide-box { margin-top: 5px; text-align: center; }
+  #hw-search-tool-root .hwis-link-btn { display: inline-block; background: #f0f7ff; color: #0055b3; border: 3px solid #0066cc; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px; box-shadow: 0 4px 8px rgba(0, 102, 204, 0.15); transition: all 0.2s; }
+  
+  #hw-search-tool-root .floating-help-btn { position: fixed; top: 15px; right: 15px; z-index: 9999; background-color: #ff9800; color: #ffffff !important; font-weight: bold; font-size: 13px; padding: 10px 16px; border-radius: 25px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.3); opacity: 0.95; cursor: pointer; }
+  
+  #hw-search-tool-root .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; }
+  #hw-search-tool-root .modal-content-help { background-color: #fff; width: 90%; max-width: 500px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative; animation: popIn 0.2s ease-out; }
+  #hw-search-tool-root .modal-content-msg { background-color: #fff; width: 85%; max-width: 350px; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center; animation: popIn 0.2s ease-out; }
+  @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  
+  #hw-search-tool-root .modal-header { font-size: 18px; font-weight: bold; color: #333; border-bottom: 1px solid #ccc; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: #f9f9f9; border-radius: 12px 12px 0 0; }
+  #hw-search-tool-root .modal-close-btn { background: #eee; border: none; padding: 8px 15px; cursor: pointer; border-radius: 20px; font-size: 15px; color: #333; font-weight: bold; }
+  
+  #hw-search-tool-root .help-section-title { color: #008000; border-left: 6px solid #008000; padding-left: 10px; margin: 20px 0 10px 0; font-size: 17px; font-weight: bold; }
+  #hw-search-tool-root .help-list { padding-left: 20px; margin-top: 5px; font-size: 14.5px; color: #333; line-height: 1.6; }
+  #hw-search-tool-root .help-list li { margin-bottom: 8px; }
+  
+  #hw-search-tool-root .help-notes { background: #ffffff; padding: 5px 10px; }
+  #hw-search-tool-root .help-note-item { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #ccc; }
+  #hw-search-tool-root .help-note-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  
+  #hw-search-tool-root .msg-title { font-size: 1.2em; font-weight: bold; color: #333; margin-bottom: 12px; }
+  #hw-search-tool-root .msg-body { font-size: 15px; color: #444; line-height: 1.6; margin-bottom: 25px; }
+  
+  #hw-search-tool-root .msg-buttons { display: flex; justify-content: center; gap: 10px; width: 100%; box-sizing: border-box; }
+  #hw-search-tool-root .btn-ok, #hw-search-tool-root .btn-cancel { flex: 1; padding: 12px 0; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; box-sizing: border-box; width: 100%; }
+  #hw-search-tool-root .btn-ok { background: #008000; color: #fff; border: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+  #hw-search-tool-root .btn-cancel { background: #ccc; color: #333; border: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+
+  #hw-search-tool-root .section { margin-top: 2.5em; font-weight: bold; border-bottom: 2px solid #008000; padding-bottom: 5px; margin-bottom: 15px; color: #333; font-size: 1.1em; }
+  #hw-search-tool-root .section-feature { border-bottom: 2px solid #d35400; color: #d35400; }
+  #hw-search-tool-root .sub-section { font-size: 1em; color: #555; margin-bottom: 8px; }
+  
+  #hw-search-tool-root .grid-container { display: flex; flex-wrap: wrap; gap: 8px; }
+  #hw-search-tool-root .grid-item-2 { flex: 1 1 calc(50% - 8px); }
+  #hw-search-tool-root .grid-item-full { flex: 1 1 100%; }
+
+  #hw-search-tool-root .btn-base { display: flex; align-items: center; justify-content: center; padding: 5px; text-align: center; cursor: pointer; box-sizing: border-box; font-size: 15px; font-weight: bold; border-radius: 8px; text-decoration: none; min-height: 60px; line-height: 1.3; width: 100%; border: 2px solid transparent; touch-action: manipulation; }
+  
+  #hw-search-tool-root .area-btn { background: #fff; color: #008000; border: 2px solid #008000; }
+  #hw-search-tool-root .area-btn.active { background: #008000 !important; color: #fff !important; border-color: #008000 !important; box-shadow: 0 0 5px rgba(0,128,0,0.5); }
+  
+  #hw-search-tool-root .chkLabel { background: #fff; color: #008000; border: 1px solid #008000; }
+  #hw-search-tool-root input:checked + .chkLabel { background: #d0f0c0 !important; border: 2px solid #008000 !important; color: #008000 !important; }
+  
+  #hw-search-tool-root .job-btn-all, #hw-search-tool-root .feature-btn-all { background: #fff; color: #333; border: 2px solid #aaa; }
+  #hw-search-tool-root .job-btn-all.active, #hw-search-tool-root .feature-btn-all.active { background: #eee !important; border-color: #666 !important; }
+  #hw-search-tool-root .job-btn { background: #fff; color: #e6006b; border: 2px solid #e6006b; }
+  #hw-search-tool-root .job-btn.active { background: #e6006b !important; color: #fff !important; box-shadow: 0 0 5px rgba(230,0,107,0.5); }
+  #hw-search-tool-root .feature-btn { background: #fff; color: #d35400; border: 2px solid #d35400; }
+  #hw-search-tool-root .feature-btn.active { background: #d35400 !important; color: #fff !important; box-shadow: 0 0 5px rgba(211,84,0,0.5); }
+  
+  #hw-search-tool-root .btn-base.disabled { background-color: #e0e0e0 !important; color: #999 !important; border-color: #ccc !important; pointer-events: none; opacity: 0.7; }
+  #hw-search-tool-root .chkLabel.locked { background-color: #f0f0f0 !important; color: #aaa !important; border-color: #ddd !important; pointer-events: none; opacity: 0.6; }
+
+  #hw-search-tool-root .notice-box { background-color: #ffffff !important; border: 1px solid #d32f2f; padding: 12px; border-radius: 5px; margin-bottom: 15px; font-size: 0.9em; color: #333; line-height: 1.5; }
+  #hw-search-tool-root .notice-box strong { color: #d32f2f; }
+  #hw-search-tool-root .exclusion-msg { display: none; color: #d32f2f; font-size: 0.9em; font-weight: bold; margin-bottom: 10px; background-color: #ffffff !important; padding: 10px; border-radius: 4px; border: 1px solid #d32f2f; }
+  #hw-search-tool-root .cross-exclusion-msg { display: none; color: #d32f2f; font-size: 0.9em; font-weight: bold; margin-top: 10px; background-color: #fff3f3 !important; padding: 10px; border-radius: 4px; border: 1px dashed #d32f2f; text-align: center; }
+
+  #hw-search-tool-root input[type="checkbox"], #hw-search-tool-root input[type="radio"] { display: none; }
+  
+  #hw-search-tool-root details { margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; overflow: hidden; background: #fff; width: 100%; display: block; }
+  #hw-search-tool-root summary { cursor: pointer; padding: 15px; font-weight: bold; background-color: #f0f0f0; list-style: none; position: relative; font-size: 16px; display: block; touch-action: manipulation; }
+  #hw-search-tool-root summary::after { content: "▼"; position: absolute; right: 20px; transition: transform 0.3s; color: #666; }
+  #hw-search-tool-root details[open] summary::after { transform: rotate(180deg); }
+  #hw-search-tool-root .details-content { padding: 10px; background: #fafafa; border-top: 1px solid #ccc; }
+  
+  #hw-search-tool-root input[type="text"] { width: 100%; padding: 14px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; }
+  
+  #hw-search-tool-root .searchbutton { display: block; width: 100%; padding: 20px; background: #008000; color: #fff !important; text-align: center; font-size: 24px; font-weight: bold; border-radius: 12px; margin-top: 15px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; touch-action: manipulation; }
+  
+  #hw-search-tool-root .condition-summary { background: #fafafa; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-top: 35px; font-size: 14px; color: #444; line-height: 1.6; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  #hw-search-tool-root .condition-summary-title { color: #555; margin-bottom: 5px; font-size: 15px; font-weight: bold; padding-bottom: 5px; }
+  #hw-search-tool-root .save-btn-container { display: flex; justify-content: space-between; gap: 10px; margin-top: 15px; }
+  #hw-search-tool-root .save-btn { flex: 1; padding: 12px; background: #fff; color: #555; border: 1px solid #bbb; border-radius: 6px; cursor: pointer; font-size: 14px; touch-action: manipulation; }
+  #hw-search-tool-root .save-btn:active { background: #eee; }
+
+  #hw-search-tool-root .cond-table { width: 100%; border-collapse: collapse; text-align: left; background: #fff; border-radius: 6px; overflow: hidden; border: 1px solid #e0e0e0; }
+  #hw-search-tool-root .cond-table th { width: 32%; background: #f0f7f0; color: #008000; font-weight: bold; padding: 10px 8px; border-bottom: 1px solid #e0e0e0; font-size: 13px; vertical-align: top; }
+  #hw-search-tool-root .cond-table td { width: 68%; padding: 10px 8px; border-bottom: 1px solid #e0e0e0; color: #333; font-size: 13px; line-height: 1.5; vertical-align: top; }
+  #hw-search-tool-root .cond-table tr:last-child th, #hw-search-tool-root .cond-table tr:last-child td { border-bottom: none; }
+
+  #hw-search-tool-root .floating-condition { display: none; }
+
+  /* マイページ・自主応募セクション */
+  #hw-search-tool-root .bottom-info-container { margin-top: 40px; background: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; }
+  #hw-search-tool-root .mypage-cta-section { padding: 30px 0 20px 0; background-color: #fafafa; }
+  #hw-search-tool-root .mypage-cta-header { padding: 0 20px; text-align: center; }
+  #hw-search-tool-root .mypage-cta-title { font-size: 19px; color: #333; font-weight: bold; margin: 0 0 15px 0; letter-spacing: 0.05em; }
+  #hw-search-tool-root .mypage-cta-title span { background: linear-gradient(transparent 60%, rgba(200, 90, 50, 0.3) 60%); display: inline-block; padding: 0 2px; }
+  #hw-search-tool-root .mypage-cta-intro { font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 20px; text-align: center; }
+  #hw-search-tool-root .mypage-features { background-color: #fff9f6; border-radius: 8px; padding: 22px 20px; margin: 0 20px 25px 20px; border: 1px solid #f2e3dd; }
+  #hw-search-tool-root .mypage-features-title { font-size: 15px; font-weight: bold; color: #C85A32; margin: 0 0 15px 0; text-align: center; letter-spacing: 0.05em; }
+  #hw-search-tool-root .mypage-features ul.large-benefits { list-style: none; padding: 0; margin: 0; }
+  #hw-search-tool-root .mypage-features ul.large-benefits li { font-size: 15px; font-weight: bold; color: #333; margin-bottom: 14px; padding-left: 26px; position: relative; line-height: 1.5; }
+  #hw-search-tool-root .mypage-features ul.large-benefits li::before { content: ''; position: absolute; left: 8px; top: 5px; width: 6px; height: 12px; border-right: 3px solid #C85A32; border-bottom: 3px solid #C85A32; transform: rotate(45deg); }
+  #hw-search-tool-root .mypage-features ul.large-benefits li:last-child { margin-bottom: 0; }
+  #hw-search-tool-root .mypage-cta-desc { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 10px; }
+  #hw-search-tool-root .swipe-hint { font-size: 15px; color: #C85A32; font-weight: bold; margin-bottom: 15px; }
+  
+  /* PC用カローセルボタン */
+  #hw-search-tool-root .carousel-container { position: relative; display: flex; align-items: center; justify-content: center; }
+  #hw-search-tool-root .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.95); border: 1px solid #d0d0d0; color: #C85A32; font-size: 18px; font-weight: bold; width: 44px; height: 44px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.15); transition: background 0.2s; padding: 0; }
+  #hw-search-tool-root .carousel-btn:hover { background: #fdfdfd; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+  #hw-search-tool-root .carousel-btn.left { left: 5px; }
+  #hw-search-tool-root .carousel-btn.right { right: 5px; }
+
+  #hw-search-tool-root .card-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 10px 15px 15px 15px; -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth; width: 100%; box-sizing: border-box; }
+  #hw-search-tool-root .card-carousel::-webkit-scrollbar { display: none; }
+  
+  /* スマホでのチラ見せ効果用スペーサー */
+  #hw-search-tool-root .card-carousel::after { content: ""; flex: 0 0 1px; }
+  #hw-search-tool-root .card-carousel::before { content: ""; flex: 0 0 1px; }
+
+  #hw-search-tool-root .card-item { flex: 0 0 88%; max-width: 320px; scroll-snap-align: center; background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 20px 25px 25px 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: flex; flex-direction: column; position: relative; box-sizing: border-box; }
+  #hw-search-tool-root .card-header-row { display: flex; justify-content: center; align-items: center; margin-bottom: 12px; }
+  #hw-search-tool-root .card-badge { display: inline-block; background-color: #fcece6; color: #C85A32; font-size: 11.5px; font-weight: bold; padding: 4px 10px; border-radius: 20px; }
+  #hw-search-tool-root .card-title { font-size: 16px; font-weight: bold; color: #333; margin: 0 0 15px 0; line-height: 1.4; text-align: center; }
+  #hw-search-tool-root .card-desc { font-size: 13.5px; color: #555; line-height: 1.6; flex-grow: 1; margin-bottom: 20px; }
+  #hw-search-tool-root .card-btn { display: block; width: 100%; background-color: #C85A32; color: #fff !important; text-align: center; padding: 14px 0; border-radius: 8px; font-size: 14px; font-weight: bold; text-decoration: none; transition: opacity 0.2s; box-sizing: border-box; touch-action: manipulation; }
+  
+  #hw-search-tool-root .apply-guide-section { padding: 25px 20px; background-color: #fff; border-top: 1px dashed #ddd; }
+  #hw-search-tool-root .apply-guide-title { font-size: 16px; color: #333; font-weight: bold; margin: 0 0 15px 0; border-left: 4px solid #008000; padding-left: 10px; }
+  #hw-search-tool-root .apply-guide-text { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 15px; }
+  #hw-search-tool-root .warning-box { background-color: #ffffff !important; border: 1px solid #d9a0a0; padding: 15px; border-radius: 6px; color: #b33939; font-size: 13px; line-height: 1.6; }
+  #hw-search-tool-root .contact-section { background-color: #fff; text-align: center; padding: 25px 20px; font-size: 16px; font-weight: bold; color: #333; border-top: 1px dashed #ddd; line-height: 1.6; letter-spacing: 0.05em; }
+
+  @media screen and (min-width: 601px) {
+    #hw-search-tool-root .card-item { flex: 0 0 calc(50% - 15px); }
+  }
+
+  @media screen and (max-width: 600px) {
+    #hw-search-tool-root #wrapper { padding: 10px 5px; width: 100%; padding-bottom: 140px; }
+    #hw-search-tool-root .btn-base { font-size: 14px; padding: 5px; min-height: 55px; }
+    #hw-search-tool-root .searchbutton { position: fixed; bottom: 0; left: 0; width: 100%; margin: 0; border-radius: 0; z-index: 999; padding: 20px 20px; box-shadow: 0 -5px 15px rgba(0,0,0,0.2); }
+    #hw-search-tool-root .floating-help-btn { top: 20px; font-size: 12px; padding: 8px 12px; }
+    
+    #hw-search-tool-root .floating-condition { display: block; position: fixed; bottom: 70px; left: 0; width: 100%; background: #f4f8f4; padding: 10px 15px; font-size: 14px; color: #2e7d32; font-weight: bold; z-index: 998; box-sizing: border-box; white-space: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; text-align: left; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); pointer-events: auto; }
+    #hw-search-tool-root .floating-condition::-webkit-scrollbar { display: none; }
+    /* スマホではスワイプで十分なためスクロールボタンを非表示 */
+    #hw-search-tool-root .carousel-btn { display: none; }
+  }
+</style>
+
+<script type="text/javascript">
+(function() {
+  var areaData = {
+    "matsuyama_all": { name: "松山市全域", code: "38201", words: "" },
+    "east":  { name: "城東・中央", code: "38201", words: "一番町 二番町 三番町 千舟町 大街道 湊町 道後 石手 祝谷 東野 樽味 桑原 松末" },
+    "west":  { name: "城西・中央", code: "38201", words: "大手町 南江戸 竹原 小栗 土居田 宮西 萱町 本町 花園町 藤原 保免 余戸" },
+    "north": { name: "城北",     code: "38201", words: "潮見 久枝 和気 堀江 吉藤 谷町 御幸 鴨川 平田 山越 問屋町 内宮 安城寺" },
+    "south": { name: "城南",     code: "38201", words: "石井 居相 古川 はなみずき 和泉 森松 井門 天山 朝生田 土居 北井門 小坂" },
+    "joto":  { name: "久米・小野", code: "38201", words: "小野 久米 平井 鷹子 来住 湯の山 南久米 北久米 畑寺 水泥 福音寺 高井" },
+    "josai": { name: "三津・垣生", code: "38201", words: "三津 高浜 味生 生石 垣生 空港通 富久 南吉田 梅津寺 北斎院 南斎院 別府" },
+    "hojo":  { name: "北条・島しょ", code: "38201", words: "北条 浅海 立岩 難波 正岡 河野 由良 睦野 中島 大浦 粟井 柳原 八反地" },
+    "iyo":    { name: "伊予市",     code: "38210", words: "" },
+    "toon":   { name: "東温市",     code: "38215", words: "" },
+    "masaki": { name: "松前町",     code: "38401", words: "" },
+    "tobe":   { name: "砥部町",     code: "38402", words: "" },
+    "kuma":   { name: "久万高原町", code: "38386", words: "" }
+  };
+
+  var jobData = {
+    "01": { name: "営業", subs: {"0100":"こだわらない","0101":"不動産","0102":"自動車営業","0103":"金融・保険営業","0104":"その他の商品・サービス"} },
+    "02": { name: "販売", subs: {"0200":"こだわらない","0201":"コンビニ・スーパー","0202":"アパレル・医薬品・化粧品","0203":"ガソリンスタンド","0204":"店長","0205":"レジ係","0206":"その他"} },
+    "03": { name: "飲食・フードサービス", subs: {"0300":"こだわらない","0301":"接客","0302":"調理人","0303":"調理補助","0304":"店長","0305":"洗い場"} },
+    "04": { name: "事務・オフィスワーク", subs: {"0400":"こだわらない","0401":"総務・法務・広報・知的財産・会計","0402":"一般・受付事務","0403":"営業事務","0404":"医療事務","0405":"コールセンター","0406":"物流系事務","0407":"生産工程管理等事務","0408":"その他"} },
+    "05": { name: "警備・ビル管理", subs: {"0500":"こだわらない","0501":"施設警備","0502":"道路交通誘導","0503":"マンション・ビル等管理人","0504":"駐車場・駐輪場管理人","0505":"その他"} },
+    "06": { name: "保育・教育", subs: {"0600":"こだわらない","0601":"保育関係","0602":"学校等教員","0603":"習い事講師"} },
+    "07": { name: "管理・専門職", subs: {"0700":"こだわらない","0701":"役員・管理職","0702":"公認会計士・税理士・社労士","0703":"その他の経営・金融・保険の専門職"} },
+    "08": { name: "医療・看護・保健", subs: {"0800":"こだわらない","0801":"看護師・准看護師","0802":"看護助手・歯科助手","0803":"医療技術者","0804":"栄養士","0805":"その他"} },
+    "09": { name: "介護・福祉", subs: {"0900":"こだわらない","0901":"医療事務","0902":"介護・福祉の専門職","0903":"施設介護","0904":"訪問介護"} },
+    "10": { name: "ドライバー・配達", subs: {"1000":"こだわらない","1001":"配送・集荷","1002":"貨物自動車運転手","1003":"タクシー・バス・送迎車等運転手","1004":"その他"} },
+    "11": { name: "IT・エンジニア", subs: {"1100":"こだわらない","1101":"システムエンジニア","1102":"プロジェクトマネージャ等","1103":"ヘルプデスク","1104":"Webデザイナー"} },
+    "12": { name: "製造・工場", subs: {"1200":"こだわらない","1201":"生産設備オペレーター","1202":"機械組立設備オペレーター","1203":"製品製造・加工処理","1204":"その他"} },
+    "13": { name: "清掃・軽作業", subs: {"1300":"こだわらない","1301":"清掃","1302":"包装・ピッキング","1303":"洗い場（食器）","1304":"その他"} },
+    "14": { name: "建設・土木", subs: {"1400":"こだわらない","1401":"建設","1402":"土木","1403":"施工管理","1404":"製図・CADオペレーター","1405":"建築塗装"} },
+    "15": { name: "農林・漁業", subs: {"1500":"こだわらない","1501":"農業（造園・酪農などを含む）","1502":"林業","1503":"漁業"} },
+    "16": { name: "理容・美容", subs: {"1600":"こだわらない","1601":"理容師","1602":"美容師","1603":"理容・美容補助","1604":"エステティシャン","1605":"その他"} }
+  };
+
+  var featureData = {
+    "20260101001": { name: "医療・看護・保健", subs: {"20260101002":"看護師、准看護師", "20260101003":"保健師、助産師", "20260101004":"リハビリ(PT,OT,ST,CO)", "20260101005":"歯科衛生士・歯科技工士", "20260101006":"栄養士、管理栄養士", "20260101007":"診療放射線、臨床工学、臨床検査", "20260101008":"薬剤師", "20260101009":"医師、歯科医師", "20260101010":"あはき・柔整", "20260101011":"資格不問(看護助手など)"} },
+    "20260101012": { name: "介護", subs: {"20260101013":"介護福祉士・ケアマネジャー", "20260101014":"介護スタッフ(入所型)", "20260101015":"介護スタッフ(通所型)", "20260101016":"介護スタッフ(訪問型)", "20260101017":"資格不問・初心者歓迎"} },
+    "20260101018": { name: "保育・福祉", subs: {"20260101019":"サービス管理責任者", "20260101020":"保育士", "20260101021":"幼稚園教諭", "20260101022":"保育教諭", "20260101023":"障害者支援スタッフ", "20260101024":"児童福祉支援スタッフ", "20260101025":"資格不問・初心者歓迎"} },
+    "20260101026": { name: "建設", subs: {"20260101027":"建設", "20260101028":"土木・採掘", "20260101029":"電気・通信", "20260101030":"設計・施工管理・測量", "20260101031":"初心者歓迎"} },
+    "20260101032": { name: "警備", subs: {"20260101033":"施設警備員", "20260101034":"交通誘導員", "20260101035":"その他警備員・保安員", "20260101036":"初心者歓迎"} },
+    "20260101037": { name: "運輸", subs: {"20260101038":"配送・集荷", "20260101039":"貨物自動車", "20260101040":"バス", "20260101041":"乗用車", "20260101042":"機械(フォークリフト等)", "20260101043":"初心者歓迎"} }
+  };
+
+  var matsuyamaGroup = ["matsuyama_all", "east", "west", "north", "south", "joto", "josai", "hojo"];
+  var selectedAreaKeys = [];
+  var selectedJobs = {}; 
+  var selectedFeatures = {};
+  
+  var currentEditingJobCode = null;
+  var currentEditingFeatureCode = null;
+  
+  var jobModalDOMs = {};
+  var featureModalDOMs = {};
+
+  document.addEventListener('DOMContentLoaded', function() {
+      initJobModals();
+      initFeatureModals();
+      
+      setupAutoTab('kNo1', 'kNo2', 5);
+      setupAutoTab('jNo1', 'jNo2', 4);
+      setupAutoTab('jNo2', 'jNo3', 6);
+
+      var inputs = document.querySelectorAll('#hw-search-tool-root input[type="radio"], #hw-search-tool-root input[type="checkbox"], #hw-search-tool-root input[type="text"]');
+      inputs.forEach(function(input) {
+          input.addEventListener('change', function() {
+              if (this.name === 'radioKw') {
+                  var u5 = document.getElementById('u5');
+                  document.getElementById('FreeWord').style.display = (u5 && u5.checked) ? 'block' : 'none';
+                  
+                  if (this.id !== 'u4' && this.id !== 'u5') {
+                      var areaWords = "";
+                      selectedAreaKeys.forEach(function(k) {
+                          if (areaData[k].words) areaWords += areaData[k].words + " ";
+                      });
+                      areaWords = areaWords.trim();
+                      var fwArr = [];
+                      if (areaWords) fwArr.push(areaWords);
+                      fwArr.push(this.value);
+                      if (fwArr.join(" ").length > 50) {
+                          showMyModal("文字数オーバー", "選択したキーワードとエリアの合計が50文字を超えてしまいます。<br>エリア指定を減らすか、指定しないを選んでください。", false);
+                          document.getElementById('u4').checked = true;
+                          document.getElementById('FreeWord').style.display = 'none';
+                      }
+                  }
+              }
+              updateExclusion();
+              updateConditionText();
+          });
+          if(input.type === 'text') {
+              input.addEventListener('input', updateCharCount);
+              input.addEventListener('keyup', updateConditionText);
+          }
+      });
+
+      var clearAutosetBtn = document.getElementById('clear-autoset-btn');
+      if (clearAutosetBtn) {
+          clearAutosetBtn.addEventListener('click', function(e) {
+              e.preventDefault();
+              selectedAreaKeys = []; 
+              var allBtns = document.getElementsByClassName('area-btn');
+              for(var i=0; i<allBtns.length; i++) allBtns[i].classList.remove('active');
+              updateAreaDisplay();
+              updateExclusion();
+              updateConditionText();
+              var freeW = document.getElementById('FreeW');
+              if (freeW) freeW.focus();
+          });
+      }
+
+      document.querySelectorAll('#hw-search-tool-root .area-btn').forEach(function(btn) {
+          btn.addEventListener('click', function(e) { e.preventDefault(); selectArea(this.id.replace('btn-', '')); });
+      });
+
+      document.querySelectorAll('.job-btn').forEach(function(btn) {
+          btn.addEventListener('click', function(e) {
+              e.preventDefault();
+              if(this.classList.contains('disabled')) return;
+              openJobModal(this.id.replace('btn-job-', ''));
+          });
+      });
+      document.getElementById('btn-job-0').addEventListener('click', function(e) {
+          e.preventDefault();
+          if(this.classList.contains('disabled')) return;
+          selectedJobs = {};
+          renderJobButtons();
+          updateCrossExclusion();
+          updateConditionText();
+      });
+
+      document.querySelectorAll('.feature-btn').forEach(function(btn) {
+          btn.addEventListener('click', function(e) {
+              e.preventDefault();
+              if(this.classList.contains('disabled')) return;
+              openFeatureModal(this.id.replace('btn-feature-', ''));
+          });
+      });
+      document.getElementById('btn-feature-0').addEventListener('click', function(e) {
+          e.preventDefault();
+          if(this.classList.contains('disabled')) return;
+          selectedFeatures = {};
+          renderFeatureButtons();
+          updateCrossExclusion();
+          updateConditionText();
+      });
+
+      var helpBtn = document.querySelector('#hw-search-tool-root .floating-help-btn');
+      if (helpBtn) {
+          helpBtn.addEventListener('click', function(e) {
+              e.preventDefault();
+              document.getElementById('help-modal').style.display = 'flex';
+          });
+      }
+      document.querySelectorAll('#hw-search-tool-root .modal-close-btn').forEach(function(btn) {
+          btn.addEventListener('click', function() { document.getElementById('help-modal').style.display = 'none'; });
+      });
+
+      document.getElementById('job-btn-cancel').addEventListener('click', closeJobModal);
+      document.getElementById('job-btn-apply').addEventListener('click', applyJobModal);
+      document.getElementById('feature-btn-cancel').addEventListener('click', closeFeatureModal);
+      document.getElementById('feature-btn-apply').addEventListener('click', applyFeatureModal);
+
+      document.getElementById('btn-reset-cond').addEventListener('click', resetAll);
+      document.getElementById('btn-save-cond').addEventListener('click', saveConditions);
+      
+      document.getElementById('mainSearchBtn').addEventListener('click', function(e) { e.preventDefault(); executeMySearch(); });
+      document.getElementById('numberSearchBtn').addEventListener('click', function(e) { e.preventDefault(); executeNumberSearch(); });
+
+      document.getElementById('numberResetBtn').addEventListener('click', function(e) {
+          e.preventDefault();
+          document.getElementById('kNo1').value = "";
+          document.getElementById('kNo2').value = "";
+          document.getElementById('jNo1').value = "";
+          document.getElementById('jNo2').value = "";
+          document.getElementById('jNo3').value = "";
+      });
+
+      // カルーセルの左右ボタンスクロール処理
+      var carousel = document.getElementById('card-carousel');
+      var btnLeft = document.getElementById('carousel-left');
+      var btnRight = document.getElementById('carousel-right');
+      if (carousel && btnLeft && btnRight) {
+          btnLeft.addEventListener('click', function(e) {
+              e.preventDefault();
+              var scrollAmount = carousel.clientWidth * 0.8;
+              carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+          });
+          btnRight.addEventListener('click', function(e) {
+              e.preventDefault();
+              var scrollAmount = carousel.clientWidth * 0.8;
+              carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+          });
+      }
+
+      loadConditionsAuto();
+  });
+
+  function setupAutoTab(currentId, nextId, maxLength) {
+      var current = document.getElementById(currentId);
+      if(current) {
+          current.addEventListener('input', function() {
+              if (this.value.length >= maxLength) {
+                  var next = document.getElementById(nextId);
+                  if (next) next.focus();
+              }
+          });
+      }
+  }
+
+  function showMyModal(title, text, isConfirm, callback) {
+    var overlay = document.getElementById('msg-modal-overlay');
+    document.getElementById('msg-modal-title').innerText = title;
+    
+    document.getElementById('msg-modal-text').innerHTML = text;
+    
+    var btnOk = document.getElementById('msg-btn-ok');
+    var btnCancel = document.getElementById('msg-btn-cancel');
+    var newOk = btnOk.cloneNode(true);
+    var newCancel = btnCancel.cloneNode(true);
+    btnOk.parentNode.replaceChild(newOk, btnOk);
+    btnCancel.parentNode.replaceChild(newCancel, btnCancel);
+    btnOk = document.getElementById('msg-btn-ok');
+    btnCancel = document.getElementById('msg-btn-cancel');
+
+    if(isConfirm) {
+        btnCancel.style.display = 'block';
+        btnOk.innerText = "検索する";
+    } else {
+        btnCancel.style.display = 'none';
+        btnOk.innerText = "OK";
+    }
+    overlay.style.display = 'flex';
+    btnOk.onclick = function() { overlay.style.display = 'none'; if(callback) callback(true); };
+    btnCancel.onclick = function() { overlay.style.display = 'none'; if(callback) callback(false); };
+  }
+
+  function updateCharCount() {
+    var areaWords = "";
+    var uniqueCodes = [];
+    selectedAreaKeys.forEach(function(k) {
+        var c = areaData[k].code;
+        if(uniqueCodes.indexOf(c) === -1) uniqueCodes.push(c);
+        if (areaData[k].words) areaWords += areaData[k].words + " ";
+    });
+    areaWords = areaWords.trim();
+
+    var kw = document.querySelector('input[name="radioKw"]:checked');
+    var kwVal = (kw && kw.id !== 'u4' && kw.id !== 'u5') ? kw.value : "";
+    
+    var manualKw = document.getElementById('FreeW').value.trim();
+    if (kw && kw.id !== 'u5') manualKw = "";
+
+    var fwArr = [];
+    if (areaWords) fwArr.push(areaWords);
+    if (kwVal) fwArr.push(kwVal);
+    
+    var autoText = fwArr.join(" ");
+    var autoLen = autoText.length;
+
+    var spaceLen = (autoLen > 0 && manualKw.length > 0) ? 1 : 0;
+    var currentTotal = autoLen + spaceLen + manualKw.length;
+    var remain = 50 - currentTotal;
+
+    var countEl = document.getElementById('char-count');
+    if (countEl) {
+        countEl.innerText = "残り入力：" + (remain < 0 ? 0 : remain) + "文字";
+        countEl.style.color = remain <= 10 ? "#d32f2f" : "#008000";
+    }
+
+    var badgeContainer = document.getElementById('area-badge-container');
+    var badgeText = document.getElementById('area-badge-text');
+    if (areaWords && badgeContainer && badgeText) {
+        badgeContainer.style.display = 'block';
+        badgeText.innerText = areaWords + " （計" + areaWords.length + "文字）";
+    } else if (badgeContainer) {
+        badgeContainer.style.display = 'none';
+    }
+
+    var freeW = document.getElementById('FreeW');
+    if (freeW) {
+        var spaceNeeded = (autoLen > 0) ? 1 : 0;
+        var maxManual = 50 - autoLen - spaceNeeded;
+        if (maxManual < 0) maxManual = 0;
+        
+        freeW.maxLength = maxManual;
+        
+        if (freeW.value.length > maxManual) {
+            freeW.value = freeW.value.substring(0, maxManual);
+            var newTotal = autoLen + spaceNeeded + freeW.value.length;
+            var newRemain = 50 - newTotal;
+            if (countEl) {
+                countEl.innerText = "残り入力：" + (newRemain < 0 ? 0 : newRemain) + "文字";
+            }
+        }
+    }
+  }
+
+  function initJobModals() {
+      var container = document.getElementById('job-modal-body');
+      for(var code in jobData) {
+          if(code === "0" || !jobData[code].subs) continue;
+          
+          var wrap = document.createElement('div');
+          wrap.id = 'job-sub-wrap-' + code;
+          wrap.style.display = 'none';
+
+          var info = document.createElement('div');
+          info.className = 'notice-box';
+          info.innerHTML = '最大<strong>5つ</strong>まで選択できます。';
+          wrap.appendChild(info);
+
+          var scrollBox = document.createElement('div');
+          scrollBox.style.maxHeight = '45vh';
+          scrollBox.style.overflowY = 'auto';
+          scrollBox.style.border = '1px solid #e0e0e0';
+          scrollBox.style.borderRadius = '8px';
+          scrollBox.style.padding = '8px';
+          scrollBox.style.backgroundColor = '#fafafa';
+
+          var grid = document.createElement('div');
+          grid.className = 'grid-container';
+
+          for(var subCode in jobData[code].subs) {
+              var subName = jobData[code].subs[subCode];
+              var item = document.createElement('div');
+              item.className = 'grid-item-full';
+
+              var input = document.createElement('input');
+              input.type = 'checkbox';
+              input.id = 'job-sub-' + subCode;
+              input.value = subCode;
+              input.dataset.parentCode = code;
+
+              var label = document.createElement('label');
+              label.htmlFor = 'job-sub-' + subCode;
+              label.className = 'btn-base chkLabel';
+              label.style.textAlign = 'left';
+              label.style.justifyContent = 'flex-start';
+              label.style.paddingLeft = '15px';
+              label.innerText = subName;
+
+              input.addEventListener('change', function() {
+                  var pCode = this.dataset.parentCode;
+                  var isAnyChecked = this.value.endsWith('00') && this.checked;
+                  var allInputs = document.querySelectorAll('#job-sub-wrap-' + pCode + ' input[type="checkbox"]');
+                  
+                  if (isAnyChecked) {
+                      allInputs.forEach(function(inp) {
+                          if (inp.value !== this.value) {
+                              inp.checked = false;
+                              var lbl = document.querySelector('label[for="' + inp.id + '"]');
+                              if (lbl) lbl.classList.add('locked');
+                          }
+                      }.bind(this));
+                  } else {
+                      var anyInput = document.querySelector('#job-sub-wrap-' + pCode + ' input[value$="00"]');
+                      if (anyInput) {
+                          if (!anyInput.checked) {
+                              allInputs.forEach(function(inp) {
+                                  var lbl = document.querySelector('label[for="' + inp.id + '"]');
+                                  if (lbl) lbl.classList.remove('locked');
+                              });
+                          }
+                      }
+                      
+                      var checkedBoxes = document.querySelectorAll('#job-sub-wrap-' + pCode + ' input[type="checkbox"]:checked');
+                      if(checkedBoxes.length > 5) {
+                          this.checked = false;
+                          showMyModal("選択できません", "小分類は5つまでしか選択できません。", false);
+                      }
+                  }
+              });
+
+              item.appendChild(input);
+              item.appendChild(label);
+              grid.appendChild(item);
+          }
+          scrollBox.appendChild(grid);
+          wrap.appendChild(scrollBox);
+          container.appendChild(wrap);
+          jobModalDOMs[code] = wrap;
+      }
+  }
+
+  function openJobModal(code) {
+      if (!selectedJobs[code] && Object.keys(selectedJobs).length >= 3) {
+          showMyModal("選択できません", "職種の大分類は3つまでしか選択できません。", false);
+          return;
+      }
+      currentEditingJobCode = code;
+      document.getElementById('job-modal-title').innerText = jobData[code].name;
+      
+      for(var c in jobModalDOMs) { jobModalDOMs[c].style.display = 'none'; }
+      
+      var wrap = jobModalDOMs[code];
+      if(wrap) {
+          wrap.style.display = 'block';
+          var currentSelected = selectedJobs[code] || [];
+          var inputs = wrap.querySelectorAll('input[type="checkbox"]');
+          var isAnySelected = currentSelected.some(function(v) { return v.endsWith('00'); });
+          
+          inputs.forEach(function(input) { 
+              input.checked = (currentSelected.indexOf(input.value) !== -1); 
+              var lbl = document.querySelector('label[for="' + input.id + '"]');
+              if(lbl) {
+                  if (isAnySelected && !input.value.endsWith('00')) {
+                      lbl.classList.add('locked');
+                  } else {
+                      lbl.classList.remove('locked');
+                  }
+              }
+          });
+      }
+      document.getElementById('job-modal-overlay').style.display = 'flex';
+  }
+
+  function closeJobModal() {
+      document.getElementById('job-modal-overlay').style.display = 'none';
+      if(currentEditingJobCode && jobModalDOMs[currentEditingJobCode]) {
+          jobModalDOMs[currentEditingJobCode].style.display = 'none';
+      }
+      currentEditingJobCode = null;
+  }
+
+  function applyJobModal() {
+      if(!currentEditingJobCode) return;
+      var wrap = jobModalDOMs[currentEditingJobCode];
+      if(wrap) {
+          var checkedBoxes = wrap.querySelectorAll('input[type="checkbox"]:checked');
+          if (checkedBoxes.length === 0) {
+              delete selectedJobs[currentEditingJobCode];
+          } else {
+              var arr = [];
+              checkedBoxes.forEach(function(cb) { arr.push(cb.value); });
+              selectedJobs[currentEditingJobCode] = arr;
+          }
+      }
+      renderJobButtons();
+      updateCrossExclusion();
+      closeJobModal();
+      updateConditionText();
+  }
+
+  function renderJobButtons() {
+       document.querySelectorAll('.job-btn').forEach(function(btn) { btn.classList.remove('active'); });
+       document.getElementById('btn-job-0').classList.remove('active');
+
+       if (Object.keys(selectedJobs).length === 0) {
+           document.getElementById('btn-job-0').classList.add('active');
+       } else {
+           for (var code in selectedJobs) {
+               var btn = document.getElementById('btn-job-' + code);
+               if(btn) btn.classList.add('active');
+           }
+       }
+  }
+
+  function initFeatureModals() {
+      var container = document.getElementById('feature-modal-body');
+      for(var code in featureData) {
+          if(!featureData[code].subs) continue;
+          
+          var wrap = document.createElement('div');
+          wrap.id = 'feature-sub-wrap-' + code;
+          wrap.style.display = 'none';
+
+          var info = document.createElement('div');
+          info.className = 'notice-box';
+          info.innerHTML = '最大<strong>5つ</strong>まで選択できます。';
+          wrap.appendChild(info);
+
+          var scrollBox = document.createElement('div');
+          scrollBox.style.maxHeight = '45vh';
+          scrollBox.style.overflowY = 'auto';
+          scrollBox.style.border = '1px solid #e0e0e0';
+          scrollBox.style.borderRadius = '8px';
+          scrollBox.style.padding = '8px';
+          scrollBox.style.backgroundColor = '#fafafa';
+
+          var grid = document.createElement('div');
+          grid.className = 'grid-container';
+
+          for(var subCode in featureData[code].subs) {
+              var subName = featureData[code].subs[subCode];
+              var item = document.createElement('div');
+              item.className = 'grid-item-full';
+
+              var input = document.createElement('input');
+              input.type = 'checkbox';
+              input.id = 'feature-sub-' + subCode;
+              input.value = subCode;
+              input.dataset.parentCode = code;
+
+              var label = document.createElement('label');
+              label.htmlFor = 'feature-sub-' + subCode;
+              label.className = 'btn-base chkLabel';
+              label.style.textAlign = 'left';
+              label.style.justifyContent = 'flex-start';
+              label.style.paddingLeft = '15px';
+              label.innerText = subName;
+
+              input.addEventListener('change', function() {
+                  var pCode = this.dataset.parentCode;
+                  var checkedBoxes = document.querySelectorAll('#feature-sub-wrap-' + pCode + ' input[type="checkbox"]:checked');
+                  if(checkedBoxes.length > 5) {
+                      this.checked = false;
+                      showMyModal("選択できません", "小分類は5つまでしか選択できません。", false);
+                  }
+              });
+
+              item.appendChild(input);
+              item.appendChild(label);
+              grid.appendChild(item);
+          }
+          scrollBox.appendChild(grid);
+          wrap.appendChild(scrollBox);
+          container.appendChild(wrap);
+          featureModalDOMs[code] = wrap;
+      }
+  }
+
+  function openFeatureModal(code) {
+      if (!selectedFeatures[code] && Object.keys(selectedFeatures).length >= 1) {
+          showMyModal("選択できません", "特集求人の大分類は1つのみ選択可能です。<br>（小分類は5つまで選べます）", false);
+          return;
+      }
+      currentEditingFeatureCode = code;
+      document.getElementById('feature-modal-title').innerText = featureData[code].name;
+      
+      for(var c in featureModalDOMs) { featureModalDOMs[c].style.display = 'none'; }
+      
+      var wrap = featureModalDOMs[code];
+      if(wrap) {
+          wrap.style.display = 'block';
+          var currentSelected = selectedFeatures[code] || [];
+          var inputs = wrap.querySelectorAll('input[type="checkbox"]');
+          inputs.forEach(function(input) { input.checked = (currentSelected.indexOf(input.value) !== -1); });
+      }
+      document.getElementById('feature-modal-overlay').style.display = 'flex';
+  }
+
+  function closeFeatureModal() {
+      document.getElementById('feature-modal-overlay').style.display = 'none';
+      if(currentEditingFeatureCode && featureModalDOMs[currentEditingFeatureCode]) {
+          featureModalDOMs[currentEditingFeatureCode].style.display = 'none';
+      }
+      currentEditingFeatureCode = null;
+  }
+
+  function applyFeatureModal() {
+      if(!currentEditingFeatureCode) return;
+      var wrap = featureModalDOMs[currentEditingFeatureCode];
+      if(wrap) {
+          var checkedBoxes = wrap.querySelectorAll('input[type="checkbox"]:checked');
+          if (checkedBoxes.length === 0) {
+              delete selectedFeatures[currentEditingFeatureCode];
+          } else {
+              var arr = [];
+              checkedBoxes.forEach(function(cb) { arr.push(cb.value); });
+              selectedFeatures[currentEditingFeatureCode] = arr;
+          }
+      }
+      renderFeatureButtons();
+      updateCrossExclusion();
+      closeFeatureModal();
+      updateConditionText();
+  }
+
+  function renderFeatureButtons() {
+       document.querySelectorAll('.feature-btn').forEach(function(btn) { btn.classList.remove('active'); });
+       document.getElementById('btn-feature-0').classList.remove('active');
+
+       if (Object.keys(selectedFeatures).length === 0) {
+           document.getElementById('btn-feature-0').classList.add('active');
+       } else {
+           for (var code in selectedFeatures) {
+               var btn = document.getElementById('btn-feature-' + code);
+               if(btn) btn.classList.add('active');
+           }
+       }
+  }
+
+  function updateCrossExclusion() {
+      var isJobSelected = Object.keys(selectedJobs).length > 0;
+      var isFeatureSelected = Object.keys(selectedFeatures).length > 0;
+
+      document.querySelectorAll('.job-btn, .job-btn-all').forEach(function(btn) {
+          if (isFeatureSelected) {
+              btn.classList.add('disabled');
+          } else {
+              btn.classList.remove('disabled');
+          }
+      });
+      var jobMsg = document.getElementById('job-cross-warning-msg');
+      if (jobMsg) jobMsg.style.display = isFeatureSelected ? 'block' : 'none';
+
+      document.querySelectorAll('.feature-btn, .feature-btn-all').forEach(function(btn) {
+          if (isJobSelected) {
+              btn.classList.add('disabled');
+          } else {
+              btn.classList.remove('disabled');
+          }
+      });
+      var featureMsg = document.getElementById('feature-cross-warning-msg');
+      if (featureMsg) featureMsg.style.display = isJobSelected ? 'block' : 'none';
+  }
+
+  function updateExclusion() {
+    var isKeywordSearchIntent = document.getElementById('u2').checked || 
+                                document.getElementById('u6').checked || 
+                                document.getElementById('u7').checked;
+
+    var isDetailAreaSelected = false;
+    for(var i=0; i<selectedAreaKeys.length; i++){
+        if(matsuyamaGroup.indexOf(selectedAreaKeys[i]) !== -1 && selectedAreaKeys[i] !== "matsuyama_all"){
+            isDetailAreaSelected = true; break;
+        }
+    }
+
+    matsuyamaGroup.forEach(function(key){
+        if(key !== "matsuyama_all") {
+            var btn = document.getElementById('btn-' + key);
+            if(btn) {
+              if(isKeywordSearchIntent) { btn.classList.add('disabled'); } 
+              else { btn.classList.remove('disabled'); }
+            }
+        }
+    });
+
+    var kwInputs = [ document.getElementById('u2'), document.getElementById('u6'), document.getElementById('u7') ];
+    var kwLabels = [
+        document.querySelector('label[for="u2"]'), document.querySelector('label[for="u6"]'),
+        document.querySelector('label[for="u7"]')
+    ];
+    kwLabels.forEach(function(lbl, idx) {
+        if(lbl && kwInputs[idx]) {
+          if(isDetailAreaSelected) { 
+              lbl.classList.add('disabled'); kwInputs[idx].disabled = true;
+          } else { 
+              lbl.classList.remove('disabled'); kwInputs[idx].disabled = false;
+          }
+        }
+    });
+
+    var freeWordContainer = document.getElementById('FreeWord');
+    var u5 = document.getElementById('u5');
+    if (u5 && u5.checked) { 
+        freeWordContainer.style.display = 'block'; 
+    } else {
+        freeWordContainer.style.display = 'none';
+        document.getElementById('FreeW').value = '';
+    }
+    
+    var seniorWarning = document.getElementById('senior-warning-msg');
+    var areaWarning = document.getElementById('area-warning-msg');
+    if(areaWarning) areaWarning.style.display = isKeywordSearchIntent ? 'block' : 'none';
+    if(seniorWarning) {
+        seniorWarning.style.display = isDetailAreaSelected ? 'block' : 'none';
+        if(isDetailAreaSelected) seniorWarning.innerHTML = '※詳細エリア（町名）指定中は、文字数上限保護のため<strong>特定のキーワード（シニア・子育て等）は併用できません。</strong>自由にキーワードを追加したい場合は「自分で入力する」を選んでください。';
+    }
+    updateCharCount();
+  }
+
+  function selectArea(key) {
+    var btn = document.getElementById('btn-' + key);
+    if(btn.classList.contains('disabled')) return;
+
+    var index = selectedAreaKeys.indexOf(key);
+    var isMatsuyama = matsuyamaGroup.indexOf(key) !== -1;
+    var nextSelectedKeys = selectedAreaKeys.slice();
+
+    if (isMatsuyama) {
+      if (index !== -1) {
+          nextSelectedKeys.splice(index, 1);
+      } else {
+          nextSelectedKeys = nextSelectedKeys.filter(function(k) { return matsuyamaGroup.indexOf(k) === -1; });
+          nextSelectedKeys.push(key);
+      }
+    } else {
+      if (index === -1) { nextSelectedKeys.push(key); } 
+      else { nextSelectedKeys.splice(index, 1); }
+    }
+
+    if (nextSelectedKeys.length > selectedAreaKeys.length) { 
+        var uniqueCodes = [];
+        var testAreaWords = "";
+        nextSelectedKeys.forEach(function(k) {
+            var c = areaData[k].code;
+            if(uniqueCodes.indexOf(c) === -1) uniqueCodes.push(c);
+            if (areaData[k].words) testAreaWords += areaData[k].words + " ";
+        });
+        testAreaWords = testAreaWords.trim();
+        
+        if (uniqueCodes.length > 5) {
+            showMyModal("選択できません", "ハローワークの仕様上、同時に選択できる地域（市区町村）は5つまでです。", false);
+            return;
+        }
+
+        var kw = document.querySelector('input[name="radioKw"]:checked');
+        var kwVal = (kw && kw.id !== 'u4' && kw.id !== 'u5') ? kw.value : "";
+        var fwArr = [];
+        if (testAreaWords) fwArr.push(testAreaWords);
+        if (kwVal) fwArr.push(kwVal);
+        if (fwArr.join(" ").length > 50) {
+            showMyModal("文字数オーバー", "選択したエリアとキーワードの合計が50文字を超えてしまいます。<br>組み合わせを減らしてください。", false);
+            return;
+        }
+    }
+
+    selectedAreaKeys = nextSelectedKeys;
+
+    var allBtns = document.getElementsByClassName('area-btn');
+    for(var i=0; i<allBtns.length; i++) allBtns[i].classList.remove('active');
+    
+    selectedAreaKeys.forEach(function(k){
+        var b = document.getElementById('btn-' + k);
+        if(b) b.classList.add('active');
+    });
+
+    updateAreaDisplay();
+    updateExclusion();
+    updateConditionText();
+  }
+
+  function updateAreaDisplay() {
+    var display = document.getElementById('selectedAreaDisplay');
+    if (selectedAreaKeys.length === 0) {
+      display.innerText = "指定しない";
+    } else {
+      var names = [];
+      selectedAreaKeys.forEach(function(k) { names.push(areaData[k].name); });
+      display.innerText = "選択中: " + names.join("、");
+    }
+  }
+  
+  function resetAll() {
+    showMyModal("確認", "選択した条件をすべてリセットしますか？<br>（保存されている条件も消去されます）", true, function(result){
+        if(!result) return;
+        selectedAreaKeys = [];
+        selectedJobs = {};
+        selectedFeatures = {};
+        
+        var btns = document.getElementsByClassName('area-btn');
+        for(var i=0; btns.length > i; i++) btns[i].classList.remove('active');
+        
+        var allBtnBase = document.getElementsByClassName('btn-base');
+        for(var i=0; i<allBtnBase.length; i++) allBtnBase[i].classList.remove('disabled');
+        var allLabels = document.getElementsByTagName('label');
+        for(var i=0; i<allLabels.length; i++) allLabels[i].classList.remove('disabled');
+        
+        document.getElementById('job-cross-warning-msg').style.display = 'none';
+        document.getElementById('feature-cross-warning-msg').style.display = 'none';
+
+        document.getElementById('s4').checked = true;
+        document.getElementById('t3').checked = true;
+        document.getElementById('u4').checked = true; 
+        
+        var jyoukenChecks = document.querySelectorAll('input[name="jyoukenBox"]');
+        jyoukenChecks.forEach(function(c) { c.checked = false; });
+        var hakenChecks = document.querySelectorAll('input[name="hakenBox"]');
+        hakenChecks.forEach(function(c) { c.checked = false; });
+        
+        document.getElementById('FreeW').value = "";
+        document.getElementById('FreeWord').style.display = 'none';
+        
+        updateAreaDisplay();
+        renderJobButtons();
+        renderFeatureButtons();
+        updateCrossExclusion();
+        
+        localStorage.removeItem('hw_search_conditions'); 
+        updateExclusion();
+        updateConditionText();
+    });
+  }
+
+  function updateConditionText() {
+    var html = '<table class="cond-table">';
+    
+    var area = document.getElementById('selectedAreaDisplay').innerText.replace("選択中: ", "");
+    html += '<tr><th>エリア</th><td>' + area + '</td></tr>';
+
+    var emp = document.querySelector('#hw-search-tool-root input[name="radioEmp"]:checked');
+    var empText = emp ? document.querySelector('#hw-search-tool-root label[for="' + emp.id + '"]').innerText : "";
+    var hakenText = [];
+    if(document.getElementById('h1').checked) hakenText.push("有期派遣除く");
+    if(document.getElementById('h2').checked) hakenText.push("無期派遣除く");
+    if(hakenText.length > 0) {
+        empText += " <br><span style='font-size:0.9em;color:#666;'>(" + hakenText.join("・") + ")</span>";
+    }
+    if(empText === "") empText = "指定しない";
+    html += '<tr><th>雇用形態</th><td>' + empText + '</td></tr>';
+
+    var jobNames = [];
+    var jobText = "";
+    if (Object.keys(selectedJobs).length === 0) {
+        jobText = "指定しない";
+    } else {
+        for (var c in selectedJobs) {
+            var subNames = [];
+            selectedJobs[c].forEach(function(sc) { subNames.push(jobData[c].subs[sc]); });
+            jobNames.push("・" + jobData[c].name + "<br><span style='font-size:0.9em;color:#666;'>" + subNames.join("、") + "</span>");
+        }
+        jobText = jobNames.join("<br>");
+    }
+    html += '<tr><th>職種</th><td>' + jobText + '</td></tr>';
+    
+    var featureNames = [];
+    var featureText = "";
+    if (Object.keys(selectedFeatures).length === 0) {
+        featureText = "指定しない";
+    } else {
+        for (var fc in selectedFeatures) {
+            var fSubNames = [];
+            selectedFeatures[fc].forEach(function(fsc) { fSubNames.push(featureData[fc].subs[fsc]); });
+            featureNames.push("・" + featureData[fc].name + "<br><span style='font-size:0.9em;color:#666;'>" + fSubNames.join("、") + "</span>");
+        }
+        featureText = featureNames.join("<br>");
+    }
+    html += '<tr><th>特集求人</th><td>' + featureText + '</td></tr>';
+
+    var jyoukenNames = [];
+    var jyoukenChecks = document.querySelectorAll('#hw-search-tool-root input[name="jyoukenBox"]:checked');
+    jyoukenChecks.forEach(function(c){ 
+        var lbl = document.querySelector('#hw-search-tool-root label[for="' + c.id + '"]');
+        if(lbl) jyoukenNames.push(lbl.innerText); 
+    });
+    var jText = jyoukenNames.length > 0 ? jyoukenNames.join("、<br>") : "指定しない";
+    html += '<tr><th>条件・時間</th><td>' + jText + '</td></tr>';
+
+    var kw = document.querySelector('#hw-search-tool-root input[name="radioKw"]:checked');
+    var kwText = "";
+    if(kw && kw.id !== 'u4' && kw.id !== 'u5') { 
+        kwText = document.querySelector('#hw-search-tool-root label[for="' + kw.id + '"]').innerText;
+    }
+    var manualKw = document.getElementById('FreeW').value.trim();
+    if(manualKw && kw && kw.id === 'u5') { 
+        kwText = manualKw;
+    }
+    if(kwText === "") { kwText = "指定しない"; }
+    html += '<tr><th>キーワード</th><td>' + kwText + '</td></tr>';
+
+    html += '</table>';
+
+    document.getElementById('current-conditions-text').innerHTML = html;
+    
+    var floatText = "🔍 " + area;
+    if (Object.keys(selectedJobs).length > 0) floatText += " / " + Object.keys(selectedJobs).map(k=>jobData[k].name).join("・");
+    if (Object.keys(selectedFeatures).length > 0) floatText += " / 特集:" + Object.keys(selectedFeatures).map(k=>featureData[k].name).join("・"); 
+    if (jyoukenNames.length > 0) floatText += " / " + jyoukenNames.join("・");
+    if (kwText !== "指定しない") floatText += " / " + kwText;
+    var floatEl = document.getElementById('floating-condition-text');
+    if(floatEl) floatEl.innerText = floatText;
+  }
+
+  function saveConditions() {
+    var state = { 
+        areaKeys: selectedAreaKeys, 
+        radios: {}, checkboxes: {}, 
+        freeWord: document.getElementById('FreeW').value,
+        jobs: selectedJobs,
+        features: selectedFeatures
+    };
+    var radios = document.querySelectorAll('#hw-search-tool-root input[type="radio"]');
+    radios.forEach(function(r) { if(r.checked) state.radios[r.name] = r.id; });
+    var checks = document.querySelectorAll('#hw-search-tool-root input[type="checkbox"]');
+    checks.forEach(function(c) { state.checkboxes[c.id] = c.checked; });
+
+    localStorage.setItem('hw_search_conditions', JSON.stringify(state));
+    showMyModal("保存完了", "現在の検索条件をブラウザに保存しました。<br>次回開いた時に自動で読み込まれます。", false);
+  }
+
+  function loadConditionsAuto() {
+    var saved = localStorage.getItem('hw_search_conditions');
+    if(saved) {
+        var state = JSON.parse(saved);
+        selectedAreaKeys = state.areaKeys || [];
+        selectedAreaKeys.forEach(function(k){
+            var b = document.getElementById('btn-' + k);
+            if(b) b.classList.add('active');
+        });
+        updateAreaDisplay();
+
+        if (state.jobs) { selectedJobs = state.jobs; }
+        renderJobButtons();
+        
+        if (state.features) { selectedFeatures = state.features; }
+        renderFeatureButtons();
+        updateCrossExclusion();
+
+        for(var name in state.radios) {
+            var el = document.getElementById(state.radios[name]);
+            if(el) el.checked = true;
+        }
+        for(var id in state.checkboxes) {
+            var el = document.getElementById(id);
+            if(el) el.checked = state.checkboxes[id];
+        }
+        if(state.freeWord) { document.getElementById('FreeW').value = state.freeWord; }
+        
+        var u5 = document.getElementById('u5');
+        document.getElementById('FreeWord').style.display = (u5 && u5.checked) ? 'block' : 'none';
+        
+        updateExclusion();
+        updateConditionText(); 
+    } else {
+        updateExclusion();
+        updateConditionText(); 
+    }
+  }
+
+  function executeMySearch() {
+    var fwArr = [];
+    var areaWords = "";
+    var uniqueCodes = [];
+    
+    selectedAreaKeys.forEach(function(k) {
+        var c = areaData[k].code;
+        if(uniqueCodes.indexOf(c) === -1) uniqueCodes.push(c);
+        if (areaData[k].words) areaWords += areaData[k].words + " ";
+    });
+
+    if (areaWords.trim() !== "") fwArr.push(areaWords.trim());
+
+    var kw = document.querySelector('input[name="radioKw"]:checked');
+    if (kw && kw.id !== 'u4' && kw.id !== 'u5') fwArr.push(kw.value);
+    
+    var manualKw = document.getElementById('FreeW').value.trim();
+    if (manualKw && kw && kw.id === 'u5') {
+        var manualArr = manualKw.split(/[\s ]+/);
+        manualArr.forEach(function(w) { if(w) fwArr.push(w); });
+    }
+
+    var combinedFw = fwArr.join(" ");
+    
+    if(combinedFw.length > 50) {
+        showMyModal("文字数オーバー", "エリア指定（町名）やフリーワードの文字数が上限（50文字）を超えています。<br>条件を少し減らしてください。<br><br>【現在の文字数：" + combinedFw.length + "文字】", false);
+        return;
+    }
+
+    var performOpen = function() {
+        var form = document.createElement('form');
+        form.action = 'https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=initDisp&screenId=GECA110010#ID_kensaku_float_stop';
+        form.method = 'POST';
+        form.target = '_blank';
+
+        var addHiddenInput = function(name, value) {
+            var input = document.createElement('input');
+            input.type = 'hidden'; input.name = name; input.value = value;
+            form.appendChild(input);
+        };
+
+        addHiddenInput('action', 'searchBtn');
+        addHiddenInput('screenId', 'GECA110010');
+        addHiddenInput('searchClear', '0'); 
+        addHiddenInput('kjKbnRadioBtn', '1'); 
+
+        if (uniqueCodes.length > 0) {
+            addHiddenInput('tDFK1CmbBox', '38'); 
+            addHiddenInput('siku1Hidden', uniqueCodes.join(",")); 
+        }
+
+        var emp = document.querySelector('input[name="radioEmp"]:checked');
+        var isYuukiExc = document.getElementById('h1').checked;
+        var isMukiExc = document.getElementById('h2').checked;
+
+        if (isYuukiExc || isMukiExc) {
+            var allowedCodes = [];
+            if (emp.id === 's1') {
+                allowedCodes.push("20260101003"); 
+            } else if (emp.id === 's2') {
+                allowedCodes.push("20260101003"); 
+                allowedCodes.push("20260101004"); 
+                if (!isYuukiExc) allowedCodes.push("20260101005"); 
+                if (!isMukiExc) allowedCodes.push("20260101006"); 
+            } else if (emp.id === 's3') {
+                allowedCodes.push("20260101008"); 
+                if (!isYuukiExc) allowedCodes.push("20260101009"); 
+                if (!isMukiExc) allowedCodes.push("20260101010"); 
+            } else {
+                allowedCodes.push("20260101003"); 
+                allowedCodes.push("20260101004"); 
+                allowedCodes.push("20260101008"); 
+                if (!isYuukiExc) { allowedCodes.push("20260101005"); allowedCodes.push("20260101009"); }
+                if (!isMukiExc) { allowedCodes.push("20260101006"); allowedCodes.push("20260101010"); }
+            }
+            allowedCodes.forEach(function(code) { addHiddenInput('jyoukenBox', code); });
+        } else {
+            if(emp && emp.value !== "") {
+                var parts = emp.value.split(','); 
+                parts.forEach(function(p) {
+                    var kv = p.split('=');
+                    if(kv.length === 2) addHiddenInput(kv[0], kv[1]);
+                });
+            }
+        }
+
+        var arr = document.querySelector('input[name="radioArrive"]:checked');
+        if(arr && arr.value !== "") addHiddenInput('jyoukenBox', arr.value);
+
+        for (var code in selectedJobs) {
+            addHiddenInput('daiEasyShokusyuBox', code);
+            selectedJobs[code].forEach(function(subCode) {
+                addHiddenInput('easyShokusyuBox', subCode);
+            });
+        }
+        
+        for (var fCode in selectedFeatures) {
+            addHiddenInput('daiTokusyuBox', fCode);
+            selectedFeatures[fCode].forEach(function(fSubCode) {
+                addHiddenInput('tokusyuBox', fSubCode);
+            });
+        }
+
+        var jyoukenChecks = document.querySelectorAll('input[name="jyoukenBox"]:checked');
+        jyoukenChecks.forEach(function(chk) { addHiddenInput('jyoukenBox', chk.value); });
+
+        if(combinedFw !== "") {
+            addHiddenInput('freeWordInput', combinedFw);
+            addHiddenInput('freeWordRadioBtn', '0'); 
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+    };
+
+    var currentConditionsHtml = document.getElementById('current-conditions-text').innerHTML;
+    var confirmMsg = "<div style='text-align:left; margin-bottom:15px; max-height:45vh; overflow-y:auto; border-radius:6px; box-shadow:inset 0 0 5px rgba(0,0,0,0.1);'>" + currentConditionsHtml + "</div><div style='font-weight:bold; font-size:15px; color:#333;'>上記の条件で検索を開きますか？</div>";
+
+    showMyModal("検索確認", confirmMsg, true, function(result){
+        if(result) performOpen();
+    });
+  }
+
+  function executeNumberSearch() {
+    var k1 = document.getElementById('kNo1').value.trim();
+    var k2 = document.getElementById('kNo2').value.trim();
+    var j1 = document.getElementById('jNo1').value.trim();
+    var j2 = document.getElementById('jNo2').value.trim();
+    var j3 = document.getElementById('jNo3').value.trim();
+
+    if(!k1 && !k2 && !j1 && !j2 && !j3) {
+        showMyModal("エラー", "求人番号または事業所番号を入力してください。", false);
+        return;
+    }
+
+    var performOpen = function() {
+        var form = document.createElement('form');
+        form.action = 'https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do';
+        form.method = 'POST';
+        form.target = '_blank';
+        
+        var addHidden = function(n, v) {
+            var i = document.createElement('input');
+            i.type = 'hidden'; i.name = n; i.value = v;
+            form.appendChild(i);
+        }
+        
+        addHidden('action', 'searchNoBtn');
+        addHidden('screenId', 'GECA110010');
+
+        if(k1 || k2) {
+            addHidden('kJNoJo1', k1);
+            addHidden('kJNoGe1', k2);
+        } else if (j1 || j2 || j3) {
+            addHidden('jGSHNoJo', j1);
+            addHidden('jGSHNoChuu', j2);
+            addHidden('jGSHNoGe', j3);
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+    };
+
+    showMyModal("検索確認", "入力した番号で直接求人を検索しますか？<br>（※エリアなどの条件はすべて無視されます）", true, function(result){
+        if(result) performOpen();
+    });
+  }
+
+})();
+</script>
+
+<div id="hw-search-tool-root">
+  <a class="floating-help-btn" href="#">？ 利用方法・注意事項</a>
+
+  <div id="help-modal" class="modal-overlay">
+    <div class="modal-content-help">
+      <div class="modal-header">
+        <span style="color: #008000;">ご利用案内・ご注意</span>
+        <button class="modal-close-btn">×</button>
+      </div>
+      <div class="modal-body" style="padding: 20px;">
+        <div class="help-section-title" style="margin-top: 0;">操作方法について</div>
+        <ul class="help-list" style="margin-bottom: 25px;">
+          <li><strong>条件の選択：</strong>各項目からご希望の条件をタップして選択してください。選択した条件は画面下部に表示されます。</li>
+          <li><strong>検索の実行：</strong>「この条件で検索する」ボタンを押すと、ハローワーク公式サイトの検索結果が新しいタブで開きます。</li>
+          <li><strong>条件の保存：</strong>「この条件を保存」ボタンを押すと、お使いのスマートフォンに条件が記憶され、次回開いた際に自動でセットされます。</li>
+        </ul>
+
+        <div class="help-section-title">ご利用時の注意事項</div>
+        <div class="help-notes">
+          <p class="help-note-item">
+            <strong>【検索における網羅性について】</strong><br>
+            松山市内の地区指定は主要な町名を抽出するため、すべての求人が表示されるわけではありません。漏れなく確認したい場合は<strong>「松山市全域」</strong>を選択してください。
+          </p>
+        </div>
+
+        <div style="text-align:center; margin-top:20px;">
+          <button class="modal-close-btn" style="padding:10px 25px; background:#008000; color:#fff;">閉じる</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="job-modal-overlay" class="modal-overlay">
+    <div class="modal-content-help" style="padding: 0; padding-bottom: 70px; overflow: hidden; display: flex; flex-direction: column; max-height: 85vh;">
+       <div class="modal-header">
+         <span id="job-modal-title">職種詳細</span>
+       </div>
+       <div id="job-modal-body" style="padding: 0 20px 20px 20px; overflow-y: hidden; flex: 1; display: flex; flex-direction: column;"></div>
+       
+       <div style="position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px; background: #fff; box-shadow: 0 -2px 5px rgba(0,0,0,0.1); border-radius: 0 0 12px 12px; display: flex; gap: 10px; box-sizing: border-box; z-index: 10;">
+         <button class="btn-cancel" id="job-btn-cancel">キャンセル</button>
+         <button class="btn-ok" id="job-btn-apply">決定</button>
+       </div>
+    </div>
+  </div>
+
+  <div id="feature-modal-overlay" class="modal-overlay">
+    <div class="modal-content-help" style="padding: 0; padding-bottom: 70px; overflow: hidden; display: flex; flex-direction: column; max-height: 85vh;">
+       <div class="modal-header">
+         <span id="feature-modal-title" style="color: #d35400;">特集求人 詳細</span>
+       </div>
+       <div id="feature-modal-body" style="padding: 0 20px 20px 20px; overflow-y: hidden; flex: 1; display: flex; flex-direction: column;"></div>
+       
+       <div style="position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px; background: #fff; box-shadow: 0 -2px 5px rgba(0,0,0,0.1); border-radius: 0 0 12px 12px; display: flex; gap: 10px; box-sizing: border-box; z-index: 10;">
+         <button class="btn-cancel" id="feature-btn-cancel">キャンセル</button>
+         <button class="btn-ok" id="feature-btn-apply" style="background: #d35400;">決定</button>
+       </div>
+    </div>
+  </div>
+
+  <div id="msg-modal-overlay" class="modal-overlay">
+    <div class="modal-content-msg">
+      <div id="msg-modal-title" class="msg-title"></div>
+      <div id="msg-modal-text" class="msg-body"></div>
+      <div class="msg-buttons">
+          <button id="msg-btn-cancel" class="btn-cancel">キャンセル</button>
+          <button id="msg-btn-ok" class="btn-ok">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="wrapper">
+
+    <div class="intro-text" style="margin-bottom: 15px; padding-bottom: 5px;">
+      <div style="background-color: #e8f5e9; border-left: 5px solid #4caf50; padding: 12px; margin-bottom: 15px; border-radius: 4px;">
+        <span style="font-weight: bold; color: #2e7d32; font-size: 15px;">【お知らせ：簡易求人検索リニューアルのご案内】</span><br>
+        <span style="font-size: 13px; color: #333; line-height: 1.5; display: inline-block; margin-top: 5px;">ハローワークインターネットサービスの最新仕様に合わせ、検索時のエラーや表示トラブルを防ぐための機能調整を行いました。これに伴い、一部の細かい条件指定を簡素化しております。あらかじめご了承ください。</span>
+      </div>
+      <div style="font-weight: bold; margin-bottom: 15px; color: #333;">
+        ハローワーク松山管轄の求人情報を、簡単な操作で検索することができます。
+      </div>
+      <div class="hwis-guide-box" style="border-top: 1px dashed #ccc; padding-top: 15px; text-align: center;">
+        <p style="font-size: 14px; color: #444; margin-bottom: 10px; line-height: 1.6; font-weight: bold; word-break: keep-all; overflow-wrap: anywhere;">
+          より詳細な条件で検索したい場合は、以下の公式サイトをご利用ください。<br>
+          <span style="color: #d32f2f; font-size: 13px; font-weight: normal; display: inline-block;">※リンク先の「かんたん検索」画面を下へスクロールし、</span><br class="mobile-only">
+          <span style="color: #d32f2f; font-size: 13px; font-weight: normal; display: inline-block;">【もっと詳しい条件を入力する】から検索してください。</span>
+        </p>
+        <a href="https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=initDisp&screenId=GECA110010#ID_kensaku_float_stop" target="_blank" class="hwis-link-btn">ハローワークインターネットサービスへ</a>
+      </div>
+    </div>
+
+    <div class="section" style="margin-top: 1em;">1. 地区を選択</div>
+    <div class="notice-box">
+      <strong>【エリア選択時のご注意】</strong><br>
+      ・ハローワークの仕様上、同時に選択できる地域は<strong style="color: #d32f2f;">5つまで</strong>です。<br>
+      ・松山市内の地区指定は、主要なエリア（町名）を抽出します。抜け漏れなく探したい場合は<strong style="color: #d32f2f;">「松山市全域」</strong>を推奨します。
+    </div>
+
+    <div class="sub-section">▼松山市内（1つのみ選択可）</div>
+    <div class="grid-container">
+      <div class="grid-item-2"><a href="#" id="btn-matsuyama_all" class="btn-base area-btn" style="border-color:#aaa; color:#333;">松山市全域</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-east" class="btn-base area-btn">城東・中央</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-west" class="btn-base area-btn">城西・中央</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-north" class="btn-base area-btn">城北</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-south" class="btn-base area-btn">城南</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-joto" class="btn-base area-btn">久米・小野</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-josai" class="btn-base area-btn">三津・垣生</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-hojo" class="btn-base area-btn">北条・島しょ</a></div>
+    </div>
+    <div class="sub-section" style="margin-top:10px;">▼周辺地域（複数選択可・合計5地域まで）</div>
+    <div class="grid-container">
+      <div class="grid-item-2"><a href="#" id="btn-iyo" class="btn-base area-btn">伊予市</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-toon" class="btn-base area-btn">東温市</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-masaki" class="btn-base area-btn">松前町</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-tobe" class="btn-base area-btn">砥部町</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-kuma" class="btn-base area-btn">久万高原町</a></div>
+    </div>
+    <div id="selectedAreaDisplay" style="color:#008000; font-weight:bold; margin-top:10px; margin-bottom:15px; border-bottom:1px solid #ccc; padding-bottom:5px;">指定しない</div>
+
+    <div class="section">2. 雇用形態</div>
+    <form name="empForm" class="grid-container">
+      <div class="grid-item-2"><input checked id="s4" name="radioEmp" type="radio" value=""/><label for="s4" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
+      <div class="grid-item-2"><input id="s1" name="radioEmp" type="radio" value="ippanCKBox=1,jyoukenBox=20260101003"/><label for="s1" class="btn-base chkLabel">正社員</label></div>
+      <div class="grid-item-2"><input id="s2" name="radioEmp" type="radio" value="ippanCKBox=1"/><label for="s2" class="btn-base chkLabel">フルタイム</label></div>
+      <div class="grid-item-2"><input id="s3" name="radioEmp" type="radio" value="ippanCKBox=2"/><label for="s3" class="btn-base chkLabel">パート</label></div>
+    </form>
+    
+    <div class="sub-section" style="margin-top:10px;">▼ 派遣求人の除外（任意）</div>
+    <form name="hakenForm" class="grid-container">
+      <div class="grid-item-2"><input id="h1" name="hakenBox" type="checkbox" value="yuuki"/><label for="h1" class="btn-base chkLabel">有期派遣を除く</label></div>
+      <div class="grid-item-2"><input id="h2" name="hakenBox" type="checkbox" value="muki"/><label for="h2" class="btn-base chkLabel">無期派遣を除く</label></div>
+    </form>
+
+    <div class="section">3. 新着区分</div>
+    <form name="arriveForm" class="grid-container">
+      <div class="grid-item-2"><input checked id="t3" name="radioArrive" type="radio" value=""/><label for="t3" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
+      <div class="grid-item-2"><input id="t1" name="radioArrive" type="radio" value="20260101001"/><label for="t1" class="btn-base chkLabel">新着(直近3日)</label></div>
+    </form>
+
+    <div class="section">4. 職種から探す</div>
+    <p style="font-size:0.9em; color:#e6006b; font-weight:bold; margin-top: 0;">※大分類は最大3つ、小分類は最大5つまで選択できます。</p>
+    <div id="job-cross-warning-msg" class="cross-exclusion-msg">
+      ※特集（重点分野）を選択中は、システムエラー防止のため職種は選択できません。
+    </div>
+    <details>
+      <summary>▼ 職種一覧を見る（タップで詳細選択）</summary>
+      <div class="details-content">
+        <div class="grid-container">
+          <div class="grid-item-full"><a href="#" id="btn-job-0" class="btn-base job-btn-all active">指定しない</a></div>
+          <div class="grid-item-2"><a href="#" id="btn-job-01" class="btn-base job-btn">営業</a></div>
+          <div class="grid-item-2"><a href="#" id="btn-job-02" class="btn-base job-btn">販売</a></div>
+          <div class="grid-item-2"><a href="#" id="btn-job-03" class="btn-base job-btn">飲食・フードサービス</a></div>
+          <div class="grid-item-2"><a href="#" id="btn-job-04" class="btn-base job-btn">事務・オフィスワーク</a></div>
+          <div class="grid-item-2"><a href="#" id="btn-job-05" class="btn-base job-btn">警備・ビル管理</a></div>
+          <div class="grid-item-2"><a href="#" id="btn-job-06" class="btn-base job-btn">保育・教育</a></div>
+          <div class="grid-item-2"><a href="#" id="btn-job-08" class="btn-base job-btn">医療・看護・保健</a></div>
+          <div class="grid-item-2"><a href="#" id="btn-job-09" class="btn-base job-btn">介護・福祉</a></div>
+          <div class="grid-item-2"><a href="#" id="btn-job-10" class="btn-base job-btn">ドライバー・配達</a></div>
+          <div class="grid-item-2"><a href="#" id="btn-job-11" class="btn-base job-btn">IT・エンジニア</a></div>
+          <div class="grid-item-2"><a href="#" id="btn-job-12" class="btn-base job-btn">製造・工場</a></div>
+          <div class="grid-item-2"><a href="#" id="btn-job-14" class="btn-base job-btn">建設・土木</a></div>
+          <div class="grid-item-2"><a href="#" id="btn-job-13" class="btn-base job-btn">清掃・軽作業</a></div>
+          <div class="grid-item-2"><a href="#" id="btn-job-16" class="btn-base job-btn">理容・美容</a></div>
+          <div class="grid-item-2"><a href="#" id="btn-job-07" class="btn-base job-btn">管理・専門職</a></div>
+          <div class="grid-item-2"><a href="#" id="btn-job-15" class="btn-base job-btn">農林・漁業</a></div>
+        </div>
+      </div>
+    </details>
+
+    <div class="section section-feature">5. 注目の特集求人（重点分野）</div>
+    <p style="font-size:0.9em; color:#d35400; font-weight:bold; margin-top: 0; line-height: 1.5;">ハローワーク松山が現在特に力を入れている分野です。<br>※大分類は1つのみ、小分類は最大5つまで選択できます。</p>
+    
+    <div style="background-color: #fff9f6; border: 1px dashed #d35400; padding: 10px; border-radius: 6px; margin-bottom: 15px; font-size: 13.5px; color: #333;">
+      💡 <strong>ハローワーク松山には、各分野の「専門窓口」があります！</strong><br>
+      対象分野でのお仕事探しをプロが個別にサポートします。詳しくは<a href="https://page.line.me/039qicol/showcase/1740470974131477" target="_blank" style="color: #0055b3; font-weight: bold; text-decoration: underline;">こちら（専門窓口ナビ）</a>をご確認ください。
+    </div>
+
+    <div id="feature-cross-warning-msg" class="cross-exclusion-msg">
+      ※職種を選択中は、システムエラー防止のため特集は選択できません。
+    </div>
+    <div class="grid-container" style="background: #fff8f3; padding: 15px; border-radius: 8px; border: 1px solid #f9e7d9; margin-bottom: 20px;">
+      <div class="grid-item-full"><a href="#" id="btn-feature-0" class="btn-base feature-btn-all active">指定しない</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-feature-20260101001" class="btn-base feature-btn">医療・看護・保健</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-feature-20260101012" class="btn-base feature-btn">介護</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-feature-20260101018" class="btn-base feature-btn">保育・福祉</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-feature-20260101026" class="btn-base feature-btn">建設</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-feature-20260101032" class="btn-base feature-btn">警備</a></div>
+      <div class="grid-item-2"><a href="#" id="btn-feature-20260101037" class="btn-base feature-btn">運輸</a></div>
+    </div>
+
+    <div class="section">6. 条件を選ぶ</div>
+    <form name="jyoukenForm" class="grid-container">
+      <div class="grid-item-2"><input id="j1" name="jyoukenBox" type="checkbox" value="20260101024"/><label for="j1" class="btn-base chkLabel">経験不問</label></div>
+      <div class="grid-item-2"><input id="j2" name="jyoukenBox" type="checkbox" value="20260101025"/><label for="j2" class="btn-base chkLabel">学歴不問</label></div>
+      <div class="grid-item-2"><input id="j3" name="jyoukenBox" type="checkbox" value="20260101026"/><label for="j3" class="btn-base chkLabel">資格不問</label></div>
+      <div class="grid-item-2"><input id="j4" name="jyoukenBox" type="checkbox" value="20260101016"/><label for="j4" class="btn-base chkLabel">完全週休2日(土日休)</label></div>
+      <div class="grid-item-2"><input id="j5" name="jyoukenBox" type="checkbox" value="20260101023"/><label for="j5" class="btn-base chkLabel">時間外労働なし</label></div>
+      <div class="grid-item-2"><input id="j6" name="jyoukenBox" type="checkbox" value="20260101027"/><label for="j6" class="btn-base chkLabel">転勤なし</label></div>
+      <div class="grid-item-2"><input id="j7" name="jyoukenBox" type="checkbox" value="20260101028"/><label for="j7" class="btn-base chkLabel">通勤手当あり</label></div>
+      <div class="grid-item-2"><input id="j8" name="jyoukenBox" type="checkbox" value="20260101029"/><label for="j8" class="btn-base chkLabel">マイカー通勤可</label></div>
+      <div class="grid-item-2"><input id="j9" name="jyoukenBox" type="checkbox" value="20260101030"/><label for="j9" class="btn-base chkLabel">書類選考なし</label></div>
+      <div class="grid-item-2"><input id="j10" name="jyoukenBox" type="checkbox" value="20260101031"/><label for="j10" class="btn-base chkLabel">駅近(徒歩10分以内)</label></div>
+    </form>
+    
+    <div class="sub-section" style="margin-top:20px;">▼ 就業時間の希望（任意）</div>
+    <p style="font-size:0.85em; color:#d32f2f; margin-top:0;">※就業時間を指定すると求人数が減る可能性があります。あらかじめご了承ください。</p>
+    <form name="timeForm" class="grid-container">
+      <div class="grid-item-2"><input id="t_time1" name="jyoukenBox" type="checkbox" value="20260101018"/><label for="t_time1" class="btn-base chkLabel">8時以降開始</label></div>
+      <div class="grid-item-2"><input id="t_time2" name="jyoukenBox" type="checkbox" value="20260101019"/><label for="t_time2" class="btn-base chkLabel">10時以降開始</label></div>
+      <div class="grid-item-2"><input id="t_time3" name="jyoukenBox" type="checkbox" value="20260101020"/><label for="t_time3" class="btn-base chkLabel">17時までに終業</label></div>
+      <div class="grid-item-2"><input id="t_time4" name="jyoukenBox" type="checkbox" value="20260101021"/><label for="t_time4" class="btn-base chkLabel">18時までに終業</label></div>
+      <div class="grid-item-full"><input id="t_time5" name="jyoukenBox" type="checkbox" value="20260101022"/><label for="t_time5" class="btn-base chkLabel">22時以後勤務なし</label></div>
+    </form>
+
+    <div class="section">7. キーワード・その他</div>
+    <div id="senior-warning-msg" class="exclusion-msg">
+      ※詳細エリア（町名）指定中は、文字数上限保護のため<strong>特定のキーワード（シニア・子育て等）は併用できません。</strong>自由にキーワードを追加したい場合は「自分で入力する」を選んでください。
+    </div>
+
+    <form name="kwForm" class="grid-container">
+      <div class="grid-item-2"><input checked id="u4" name="radioKw" type="radio" value=""/><label for="u4" class="btn-base chkLabel" style="border-color:#aaa; color:#333;">指定しない</label></div>
+      <div class="grid-item-2"><input id="u2" name="radioKw" type="radio" value="子育て支援"/><label for="u2" class="btn-base chkLabel">子育て支援</label></div>
+      <div class="grid-item-2"><input id="u6" name="radioKw" type="radio" value="シニア ６０歳以上"/><label for="u6" class="btn-base chkLabel">シニア(60歳~)</label></div>
+      <div class="grid-item-2"><input id="u7" name="radioKw" type="radio" value="ミドルシニア"/><label for="u7" class="btn-base chkLabel">ミドルシニア</label></div>
+      
+      <div class="grid-item-2" style="flex:100%;"><input id="u5" name="radioKw" type="radio" value="manual"/><label for="u5" class="btn-base chkLabel">自分で入力する</label></div>
+    </form>
+    <div id="FreeWord" style="display:none; margin-top: 15px;">
+      <div id="area-badge-container" style="display:none; background-color:#f0f7ff; border:1px solid #cce5ff; padding:12px; border-radius:6px; margin-bottom:10px; font-size:13px; color:#0055b3; line-height: 1.5; position: relative;">
+         <div style="font-weight:bold; margin-bottom:4px; color:#004085;">自動セット中の町名（検索時に追加されます）</div>
+         <div id="area-badge-text" style="word-break: break-all; margin-bottom: 8px;"></div>
+         <button id="clear-autoset-btn" style="background: #fff; color: #0055b3; border: 1px solid #0055b3; padding: 6px 12px; border-radius: 4px; font-size: 13px; cursor: pointer; font-weight: bold; width: 100%; box-sizing: border-box; text-align: center;">自動セットを解除してエリアをリセット</button>
+      </div>
+      <div style="background: #fff3e0; padding: 10px; border-radius: 6px; border: 1px solid #ffcc80; margin-bottom: 10px; font-size: 12.5px; color: #e65100; line-height: 1.5;">
+        ※仕様上、全体で50文字までしか入力できません。<br>特定の町名だけを探したい場合や自由にキーワードを組み合わせたい場合は、上の【自動セットを解除】を押し、下の入力欄に「一番町 事務」のように全角スペースで区切って直接ご入力ください。
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+        <span style="font-size:13px; font-weight:bold; color:#333;">追加のキーワード（町名、その他の希望条件）</span>
+        <span id="char-count" style="font-size:13px; font-weight:bold; color:#008000;">残り入力：50文字</span>
+      </div>
+      <input class="textarea" id="FreeW" placeholder="例：一番町 子育て支援 （全角スペースで区切る）" type="text" />
+    </div>
+
+    <div class="condition-summary">
+      <div class="condition-summary-title">現在の検索条件</div>
+      <p style="font-size:0.85em; color:#666; margin:0 0 10px 0;">※「この条件を保存」ボタンを押すと、次回開いた時にも同じ条件が自動でセットされます。</p>
+      
+      <div id="current-conditions-text"></div>
+      
+      <div class="save-btn-container">
+        <button class="save-btn" id="btn-reset-cond">リセット</button>
+        <button class="save-btn" id="btn-save-cond" style="border-color: #008000; color: #008000; font-weight: bold; background: #f4fcf4;">この条件を保存</button>
+      </div>
+    </div>
+
+    <div id="floating-condition-text" class="floating-condition"></div>
+    <a class="searchbutton" id="mainSearchBtn" href="#">この条件で検索する</a>
+
+    <div class="bottom-info-container" style="margin-top: 40px; box-shadow: 0 4px 10px rgba(0,128,0,0.1);">
+       <div style="background-color: #f4f8f4; border-top: 4px solid #008000; padding: 20px;">
+          <h3 style="margin: 0 0 10px 0; color: #333; font-size: 16px;">求人番号・事業所番号で直接検索</h3>
+          <p style="font-size: 13px; color: #555; margin-bottom: 15px; line-height: 1.5;">番号がわかっている場合は、ここから直接検索できます。<br><strong style="color: #d32f2f;">※上の条件（エリアなど）はすべて無視されます。</strong></p>
+
+          <div style="background: #fff; border: 1px solid #d0e8d0; padding: 12px; border-radius: 6px; margin-bottom: 20px;">
+             <div style="font-weight: bold; color: #008000; font-size: 14px; margin-bottom: 5px;">求人の詳しい「場所（地図）」を確認するには？</div>
+             <div style="font-size: 13px; color: #444; line-height: 1.6;">
+                検索結果から気になる求人を見つけたら、以下の手順で周辺地図を視覚的に確認できます。<br>
+                1. 求人の下部にある<strong>【詳細を表示】</strong>ボタンを押す<br>
+                2. 画面を少し下にスクロールし、<strong>「仕事内容」</strong>欄を見つける<br>
+                3. 「就業場所」の横にある<strong>【地図を表示】</strong>を押す
+             </div>
+          </div>
+          
+          <div style="margin-bottom: 15px;">
+             <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px; color: #333;">【求人番号】</div>
+             <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="text" inputmode="numeric" pattern="\d*" id="kNo1" style="flex: 1; padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; text-align: center;" maxlength="5" placeholder="5桁">
+                <span style="font-weight: bold; color: #666;">-</span>
+                <input type="text" inputmode="numeric" pattern="\d*" id="kNo2" style="flex: 1.5; padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; text-align: center;" maxlength="8" placeholder="8桁">
+             </div>
+          </div>
+
+          <div style="margin-bottom: 20px;">
+             <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px; color: #333;">【事業所番号】</div>
+             <div style="display: flex; align-items: center; gap: 5px;">
+                <input type="text" inputmode="numeric" pattern="\d*" id="jNo1" style="flex: 1.2; padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; text-align: center;" maxlength="4" placeholder="4桁">
+                <span style="font-weight: bold; color: #666;">-</span>
+                <input type="text" inputmode="numeric" pattern="\d*" id="jNo2" style="flex: 1.5; padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; text-align: center;" maxlength="6" placeholder="6桁">
+                <span style="font-weight: bold; color: #666;">-</span>
+                <input type="text" inputmode="numeric" pattern="\d*" id="jNo3" style="flex: 0.8; padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; text-align: center;" maxlength="1" placeholder="1桁">
+             </div>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <button id="numberResetBtn" style="flex: 1; background: #fff; color: #555; border: 1px solid #bbb; padding: 15px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">リセット</button>
+            <button id="numberSearchBtn" style="flex: 2; background: #008000; color: #fff; border: none; padding: 15px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">番号で検索する</button>
+          </div>
+       </div>
+    </div>
+
+    <div class="bottom-info-container">
+      <div class="mypage-cta-section" style="padding-bottom: 10px;">
+        <div class="mypage-cta-header">
+          <h3 class="mypage-cta-title"><span>マイページでもっと便利に</span></h3>
+          <p class="mypage-cta-intro">「ハローワークに行く時間がない」「気になる求人をストックしておきたい」<br>そんな方には、求職者マイページがおすすめです！</p>
+        </div>
+
+        <div class="mypage-features">
+          <div class="mypage-features-title">＼ 求職者マイページでできること ／</div>
+          <ul class="large-benefits">
+            <li>検索条件を保存できる</li>
+            <li>気になる求人をお気に入り登録</li>
+            <li>ハローワークからおすすめ求人が届く</li>
+            <li>ハローワークへの登録内容を確認・変更</li>
+            <li>紹介状や選考結果、応募履歴を確認できる</li>
+          </ul>
+        </div>
+
+        <div class="mypage-cta-header">
+          <p class="mypage-cta-desc">現在の状況に合わせて、以下のカードから<br>ご自身に当てはまるものを確認してください。</p>
+          <div class="swipe-hint">← スワイプ（または矢印）で確認 →</div>
+        </div>
+
+        <div class="carousel-container">
+          <button class="carousel-btn left" id="carousel-left" aria-label="前のカードへ">＜</button>
+
+          <div class="card-carousel" id="card-carousel">
+            <div class="card-item">
+              <div class="card-header-row">
+                <span class="card-badge">初めてご利用の方</span>
+              </div>
+              <h4 class="card-title">新規マイページ開設</h4>
+              <p class="card-desc">ハローワークのご利用が初めての方はこちら。スマホから「求職登録」と「マイページ開設」が同時に完了します。<br><br>スマホやパソコンから24時間いつでも登録可能です。ハローワークの開庁時間外でも、ご自宅にいながら事前に求職登録を完了させることができます。</p>
+              <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA020020.do?screenId=GEAA020020&action=execRedirect&nextScreenId=GEAA010010" target="_blank" class="card-btn">新規登録・開設はこちら</a>
+            </div>
+
+            <div class="card-item">
+              <div class="card-header-row">
+                <span class="card-badge">過去にハローワークを利用した方</span>
+              </div>
+              <h4 class="card-title">窓口でのアカウント連携</h4>
+              <p class="card-desc" style="margin-bottom: 10px;">過去（5年以内）にハローワークを利用・求職登録された方は、これまでの情報と連携させるため、お近くの窓口での手続きが必要です。<br>
+              <span style="font-size: 0.9em; color: #a02020;">※同一のメールアドレスで重複して新規登録することはできません。</span></p>
+              <div class="card-caution" style="text-align: left; margin-bottom: 15px; font-size: 12px; color: #d32f2f; background-color: #ffffff !important; padding: 10px; border-radius: 6px; border: 1px solid #d9a0a0;">
+                <strong>【登録の手順】</strong><br>
+                窓口で<strong>「アカウント作成コード」</strong>を発行します。その後、ご自身のスマートフォン等でコードを入力し、登録を完了させてください。
+              </div>
+              <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA530040.do?action=initDisp&screenId=GEAA530040" target="_blank" class="card-btn">作成コードを入力する</a>
+            </div>
+
+            <div class="card-item">
+              <div class="card-header-row">
+                <span class="card-badge">すでに登録済みの方</span>
+              </div>
+              <h4 class="card-title">マイページにログイン</h4>
+              <p class="card-desc">すでにマイページをお持ちの方はこちら。ご登録のメールアドレスとパスワードでログインしてご利用ください。<br><br>お気に入り登録した求人の確認や、応募履歴の振り返り、ハローワークからの『おすすめ求人』のチェックなど、日々の就職活動の管理に幅広くご活用ください。</p>
+              <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA040010.do?action=initDisp&screenId=GEAA040010" target="_blank" class="card-btn">ログイン画面へ</a>
+            </div>
+          </div>
+          
+          <button class="carousel-btn right" id="carousel-right" aria-label="次のカードへ">＞</button>
+        </div>
+      </div>
+
+      <div class="apply-guide-section">
+        <h3 class="apply-guide-title">求人へのご応募について</h3>
+        <p class="apply-guide-text">
+          原則として、求人へご応募いただく際はハローワークが発行する<strong>「紹介状」</strong>が必要となります。
+        </p>
+        
+        <p class="apply-guide-text" style="margin-bottom:8px; font-weight:bold;">オンライン自主応募をご利用の方へ</p>
+        <div class="warning-box">
+          <strong>【給付金等に関するご注意】</strong><br>
+          マイページから一部利用可能な「オンライン自主応募」は、応募者ご自身による直接応募の扱いとなり、ハローワークからの職業紹介には該当しません。<br>
+          そのため、ハローワークの紹介を要件とする<strong>各種給付金（再就職手当など）の支給対象外となる場合</strong>がございます。
+        </div>
+      </div>
+
+      <div class="contact-section">
+        お問い合わせ：ハローワーク松山<br>
+        <span class="tel">TEL: 089-917-8609</span>
+      </div>
+    </div>
+
+  </div>
+</div>
