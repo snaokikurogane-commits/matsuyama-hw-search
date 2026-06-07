@@ -1,11 +1,12 @@
 <style type="text/css">
-  /* 背景とスマホサイズ枠（プレビュー用）の自動調整 */
-  #hw-search-tool-root { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 0; background-color: #f0f2f5; text-align: left; display: flex; justify-content: center; padding: 20px 0; }
+  /* 背景とスマホサイズ枠（プレビュー用）の自動調整。全体を柔らかなグレージュに */
+  #hw-search-tool-root { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 0; background-color: #f5f4f0; text-align: left; display: flex; justify-content: center; padding: 20px 0; }
   
   /* max-widthを480pxに設定し、PCで見てもスマホサイズになるよう固定 */
-  #hw-search-tool-root #wrapper { width: 100%; max-width: 480px; margin: 0 auto; padding: 20px 15px; background-color: #ffffff; box-shadow: 0 8px 25px rgba(0,0,0,0.1); padding-bottom: 90px; box-sizing: border-box; position: relative; overflow-x: hidden; border-radius: 12px; }
+  #hw-search-tool-root #wrapper { width: 100%; max-width: 480px; margin: 0 auto; padding: 20px 15px; background-color: #ffffff; box-shadow: 0 8px 25px rgba(0,0,0,0.08); padding-bottom: 90px; box-sizing: border-box; position: relative; overflow-x: hidden; border-radius: 12px; }
   
-  #hw-search-tool-root .intro-text { font-size: 15px; color: #333; background: #f4f4f4; padding: 20px; border-radius: 8px; margin-bottom: 25px; line-height: 1.6; }
+  /* 灰色すぎた背景を薄いグレージュ（#faf9f6）に変更し、細い枠線を追加 */
+  #hw-search-tool-root .intro-text { font-size: 15px; color: #333; background: #faf9f6; border: 1px solid #eae8e3; padding: 20px; border-radius: 8px; margin-bottom: 25px; line-height: 1.6; }
   #hw-search-tool-root .hwis-guide-box { margin-top: 5px; text-align: center; }
   #hw-search-tool-root .hwis-link-btn { display: inline-block; background: #f0f7ff; color: #0055b3; border: 3px solid #0066cc; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px; box-shadow: 0 4px 8px rgba(0, 102, 204, 0.15); transition: all 0.2s; }
   
@@ -72,13 +73,13 @@
   #hw-search-tool-root summary { cursor: pointer; padding: 15px; font-weight: bold; background-color: #f0f0f0; list-style: none; position: relative; font-size: 15px; display: block; touch-action: manipulation; }
   #hw-search-tool-root summary::after { content: "▼"; position: absolute; right: 20px; transition: transform 0.3s; color: #666; }
   #hw-search-tool-root details[open] summary::after { transform: rotate(180deg); }
-  #hw-search-tool-root .details-content { padding: 10px; background: #fafafa; border-top: 1px solid #ccc; }
+  #hw-search-tool-root .details-content { padding: 10px; background: #faf9f6; border-top: 1px solid #ccc; }
   
   #hw-search-tool-root input[type="text"] { width: 100%; padding: 14px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; }
   
   #hw-search-tool-root .searchbutton { display: block; width: 100%; padding: 20px; background: #008000; color: #fff !important; text-align: center; font-size: 22px; font-weight: bold; border-radius: 12px; margin-top: 15px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; touch-action: manipulation; }
   
-  #hw-search-tool-root .condition-summary { background: #fafafa; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-top: 35px; font-size: 14px; color: #444; line-height: 1.6; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  #hw-search-tool-root .condition-summary { background: #faf9f6; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-top: 35px; font-size: 14px; color: #444; line-height: 1.6; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
   #hw-search-tool-root .condition-summary-title { color: #555; margin-bottom: 5px; font-size: 15px; font-weight: bold; padding-bottom: 5px; }
   #hw-search-tool-root .save-btn-container { display: flex; justify-content: space-between; gap: 10px; margin-top: 15px; }
   #hw-search-tool-root .save-btn { flex: 1; padding: 12px; background: #fff; color: #555; border: 1px solid #bbb; border-radius: 6px; cursor: pointer; font-size: 14px; touch-action: manipulation; }
@@ -93,7 +94,7 @@
 
   /* マイページ・自主応募セクション */
   #hw-search-tool-root .bottom-info-container { margin-top: 40px; background: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; }
-  #hw-search-tool-root .mypage-cta-section { padding: 30px 0 20px 0; background-color: #fafafa; }
+  #hw-search-tool-root .mypage-cta-section { padding: 30px 0 20px 0; background-color: #faf9f6; }
   #hw-search-tool-root .mypage-cta-header { padding: 0 20px; text-align: center; }
   #hw-search-tool-root .mypage-cta-title { font-size: 19px; color: #333; font-weight: bold; margin: 0 0 15px 0; letter-spacing: 0.05em; }
   #hw-search-tool-root .mypage-cta-title span { background: linear-gradient(transparent 60%, rgba(200, 90, 50, 0.3) 60%); display: inline-block; padding: 0 2px; }
@@ -140,10 +141,6 @@
   #hw-search-tool-root .apply-guide-text { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 15px; }
   #hw-search-tool-root .warning-box { background-color: #ffffff !important; border: 1px solid #d9a0a0; padding: 15px; border-radius: 6px; color: #b33939; font-size: 13px; line-height: 1.6; }
   #hw-search-tool-root .contact-section { background-color: #fff; text-align: center; padding: 25px 20px; font-size: 16px; font-weight: bold; color: #333; border-top: 1px dashed #ddd; line-height: 1.6; letter-spacing: 0.05em; }
-
-  @media screen and (min-width: 601px) {
-    #hw-search-tool-root .card-item { flex: 0 0 calc(50% - 15px); }
-  }
 
   @media screen and (max-width: 600px) {
     #hw-search-tool-root { padding: 0; background-color: #f9f9f9; }
@@ -1360,7 +1357,7 @@
         ハローワーク松山管轄の求人情報を、簡単な操作で検索することができます。
       </div>
       <div class="hwis-guide-box" style="border-top: 1px dashed #ccc; padding-top: 15px; text-align: center;">
-        <p style="font-size: 14px; color: #444; margin-bottom: 10px; line-height: 1.6; font-weight: bold; word-break: keep-all; overflow-wrap: anywhere;">
+        <p style="font-size: 14px; color: #444; margin-bottom: 10px; line-height: 1.6; font-weight: bold; word-break: keep-all; overflow-wrap: anywhere; text-align: left;">
           より詳細な条件で検索したい場合は、以下の公式サイトをご利用ください。<br>
           <span style="color: #d32f2f; font-size: 13px; font-weight: normal; display: inline-block;">※リンク先の【もっと詳しい条件を入力する】から検索してください。</span>
         </p>
@@ -1598,7 +1595,6 @@
 
         <div class="mypage-cta-header">
           <p class="mypage-cta-desc">現在の状況に合わせて、以下のカードから<br>ご自身に当てはまるものを確認してください。</p>
-          <div class="swipe-hint">← スワイプ（または矢印）で確認 →</div>
         </div>
 
         <div class="carousel-container">
