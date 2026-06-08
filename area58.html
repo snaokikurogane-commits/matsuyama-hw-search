@@ -336,6 +336,7 @@
       document.getElementById('btn-reset-cond').addEventListener('click', resetAll);
       document.getElementById('btn-save-cond').addEventListener('click', saveConditions);
       
+      // 検索実行関数にアンカーを含めないよう修正済み
       document.getElementById('mainSearchBtn').addEventListener('click', function(e) { e.preventDefault(); executeMySearch(); });
       document.getElementById('numberSearchBtn').addEventListener('click', function(e) { e.preventDefault(); executeNumberSearch(); });
 
@@ -1175,7 +1176,8 @@
 
     var performOpen = function() {
         var form = document.createElement('form');
-        form.action = 'https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=initDisp&screenId=GECA110010#ID_kensaku_float_stop';
+        // 検索実行時にはアンカー（#ID_kensaku_float_stop）を付与しない（エラー防止のため）
+        form.action = 'https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do?action=initDisp&screenId=GECA110010';
         form.method = 'POST';
         form.target = '_blank';
 
@@ -1282,6 +1284,7 @@
 
     var performOpen = function() {
         var form = document.createElement('form');
+        // 検索実行時にはアンカー（#ID_kensaku_float_stop）を付与しない（エラー防止のため）
         form.action = 'https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do';
         form.method = 'POST';
         form.target = '_blank';
@@ -1641,7 +1644,7 @@
           <p class="mypage-cta-desc">現在の状況に合わせて、以下のカードから<br>ご自身に当てはまるものを確認してください。</p>
         </div>
 
-        <div class="carousel-container" style="padding: 0 20px;">
+        <div class="carousel-container" style="padding: 0 25px;">
           <button class="carousel-btn left" id="carousel-left" aria-label="前のカードへ">＜</button>
 
           <div class="card-carousel" id="card-carousel">
@@ -1677,42 +1680,4 @@
                 <span class="card-badge">すでに登録済みの方</span>
               </div>
               <h4 class="card-title">マイページにログイン</h4>
-              <p class="card-desc">すでにマイページをお持ちの方はこちら。ご登録のメールアドレスとパスワードでログインしてご利用ください。<br><br>お気に入り登録した求人の確認や、応募履歴の振り返り、ハローワークからの『おすすめ求人』のチェックなど、日々の就職活動の管理に幅広くご活用ください。</p>
-              <div style="margin-top: auto;">
-                <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA040010.do?action=initDisp&screenId=GEAA040010" target="_blank" class="card-btn">ログイン画面へ</a>
-              </div>
-            </div>
-          </div>
-          
-          <button class="carousel-btn right" id="carousel-right" aria-label="次のカードへ">＞</button>
-        </div>
-        
-        <div class="carousel-indicators" id="carousel-indicators">
-          <span class="indicator active" data-index="0"></span>
-          <span class="indicator" data-index="1"></span>
-          <span class="indicator" data-index="2"></span>
-        </div>
-      </div>
-
-      <div class="apply-guide-section">
-        <h3 class="apply-guide-title">求人へのご応募について</h3>
-        <p class="apply-guide-text">
-          原則として、求人へご応募いただく際はハローワークが発行する<strong>「紹介状」</strong>が必要となります。
-        </p>
-        
-        <p class="apply-guide-text" style="margin-bottom:8px; font-weight:bold;">オンライン自主応募をご利用の方へ</p>
-        <div class="warning-box">
-          <strong>【給付金等に関するご注意】</strong><br>
-          マイページから一部利用可能な「オンライン自主応募」は、応募者ご自身による直接応募の扱いとなり、ハローワークからの職業紹介には該当しません。<br>
-          そのため、ハローワークの紹介を要件とする<strong>各種給付金（再就職手当など）の支給対象外となる場合</strong>がございます。
-        </div>
-      </div>
-
-      <div class="contact-section">
-        お問い合わせ：ハローワーク松山<br>
-        <span class="tel">TEL: 089-917-8618</span>
-      </div>
-    </div>
-
-  </div>
-</div>
+              <p class="card-desc">すでにマイページをお持ちの方はこちら。ご登録のメールアドレスとパスワードでログイン
