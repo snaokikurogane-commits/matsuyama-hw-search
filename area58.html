@@ -108,10 +108,11 @@
   #hw-search-tool-root .mypage-cta-desc { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 10px; }
   
   /* 横幅を限界まで広げたカローセル（PC・スマホ両対応） */
-  #hw-search-tool-root .carousel-container { position: relative; display: flex; align-items: center; justify-content: center; margin: 0; padding: 0; width: 100%; overflow: hidden; }
+  /* 余白を左右に十分確保（ボタンが隠れないようにする） */
+  #hw-search-tool-root .carousel-container { position: relative; display: flex; align-items: center; justify-content: center; margin: 0; padding: 0 25px; width: 100%; box-sizing: border-box; }
   
-  /* ボタンの文字被り解消：サイズと位置をさらに最適化 */
-  #hw-search-tool-root .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.95); border: 1px solid #d0d0d0; color: #C85A32; font-size: 16px; font-weight: bold; width: 36px; height: 36px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 10; box-shadow: 0 2px 6px rgba(0,0,0,0.2); transition: background 0.2s, opacity 0.2s, visibility 0.2s; padding: 0; }
+  /* ボタンの設定。サイズをスリムにし、確保した左右の余白内に配置 */
+  #hw-search-tool-root .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.95); border: 1px solid #d0d0d0; color: #C85A32; font-size: 16px; font-weight: bold; width: 34px; height: 34px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 10; box-shadow: 0 2px 6px rgba(0,0,0,0.2); transition: background 0.2s, opacity 0.2s, visibility 0.2s; padding: 0; }
   #hw-search-tool-root .carousel-btn:hover { background: #fdfdfd; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
   
   #hw-search-tool-root .carousel-btn.left { left: 0px; opacity: 0; visibility: hidden; pointer-events: none; }
@@ -119,20 +120,18 @@
   
   #hw-search-tool-root .carousel-btn.show { opacity: 1; visibility: visible; pointer-events: auto; }
 
-  /* コンテナ幅を最大化し、gapを小さくして画面内に1枚を大きく見せる */
-  #hw-search-tool-root .card-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 8px; padding: 5px 0 10px 0; -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth; width: 100%; box-sizing: border-box; }
+  /* コンテナ幅を最大化し、スクロール領域を広く取る */
+  #hw-search-tool-root .card-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 10px 5px 15px 5px; -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth; width: 100%; box-sizing: border-box; }
   #hw-search-tool-root .card-carousel::-webkit-scrollbar { display: none; }
   
-  #hw-search-tool-root .card-carousel::after { content: ""; flex: 0 0 2px; }
-  #hw-search-tool-root .card-carousel::before { content: ""; flex: 0 0 2px; }
-
   /* 細長さを完全に解消：幅を100%に広げ、正方形に近いバランスを実現 */
-  #hw-search-tool-root .card-item { flex: 0 0 100%; scroll-snap-align: center; background: #fff; border: 1px solid #e0e0e0; border-radius: 10px; padding: 15px 25px 20px 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); display: flex; flex-direction: column; position: relative; box-sizing: border-box; }
+  #hw-search-tool-root .card-item { flex: 0 0 100%; scroll-snap-align: center; background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 20px 25px 25px 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); display: flex; flex-direction: column; position: relative; box-sizing: border-box; }
   
-  #hw-search-tool-root .card-header-row { display: flex; justify-content: center; align-items: center; margin-bottom: 10px; }
-  #hw-search-tool-root .card-badge { display: inline-block; background-color: #fcece6; color: #C85A32; font-size: 11px; font-weight: bold; padding: 4px 10px; border-radius: 20px; }
-  #hw-search-tool-root .card-title { font-size: 16px; font-weight: bold; color: #333; margin: 0 0 10px 0; line-height: 1.4; text-align: center; }
-  #hw-search-tool-root .card-desc { font-size: 13.5px; color: #555; line-height: 1.5; flex-grow: 1; margin-bottom: 15px; }
+  #hw-search-tool-root .card-header-row { display: flex; justify-content: center; align-items: center; margin-bottom: 12px; }
+  /* バッジとタイトルのフォントサイズを拡大してインパクトUP */
+  #hw-search-tool-root .card-badge { display: inline-block; background-color: #fcece6; color: #C85A32; font-size: 13px; font-weight: bold; padding: 4px 12px; border-radius: 20px; }
+  #hw-search-tool-root .card-title { font-size: 18px; font-weight: bold; color: #333; margin: 0 0 12px 0; line-height: 1.4; text-align: center; }
+  #hw-search-tool-root .card-desc { font-size: 14px; color: #555; line-height: 1.5; flex-grow: 1; margin-bottom: 20px; }
   #hw-search-tool-root .card-btn { display: block; width: 100%; background-color: #C85A32; color: #fff !important; text-align: center; padding: 12px 0; border-radius: 8px; font-size: 14px; font-weight: bold; text-decoration: none; transition: opacity 0.2s; box-sizing: border-box; touch-action: manipulation; }
   
   /* インジケーター (ドット) */
@@ -147,7 +146,7 @@
   #hw-search-tool-root .contact-section { background-color: #fff; text-align: center; padding: 25px 20px; font-size: 16px; font-weight: bold; color: #333; border-top: 1px dashed #ddd; line-height: 1.6; letter-spacing: 0.05em; }
 
   @media screen and (min-width: 601px) {
-    /* PCなど広い画面では、全体幅(max-width)が効くので100%幅で綺麗に収まる */
+    /* PCなど広い画面でも、全体幅の制限とパディング調整により正方形に近い形を維持 */
     #hw-search-tool-root .card-item { flex: 0 0 100%; }
   }
 
@@ -160,6 +159,10 @@
     
     #hw-search-tool-root .floating-condition { display: block; position: fixed; bottom: 70px; left: 0; width: 100%; background: #f4f8f4; padding: 10px 15px; font-size: 14px; color: #2e7d32; font-weight: bold; z-index: 998; box-sizing: border-box; white-space: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; text-align: left; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); pointer-events: auto; }
     #hw-search-tool-root .floating-condition::-webkit-scrollbar { display: none; }
+    
+    /* スマホでは横の余白を少しだけ狭くし、カードを広く見せる */
+    #hw-search-tool-root .carousel-container { padding: 0 5px; }
+    #hw-search-tool-root .card-item { flex: 0 0 95%; padding: 15px 20px 20px 20px; }
     
     /* スマホではスワイプで十分なためスクロール矢印ボタンを非表示 */
     #hw-search-tool-root .carousel-btn { display: none; }
@@ -362,7 +365,7 @@
           }
           
           // スクロール位置が右端（全体の幅 - 見えている幅）なら右ボタンを消す
-          // ※ブラウザの計算誤差を安全に吸収するため、余裕（絶対値で40px）を持たせて厳密に判定
+          // ※ブラウザの計算誤差を完全に吸収するため、余裕（絶対値で40px）を持たせて厳密に判定
           var maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
           if (Math.abs(carousel.scrollLeft - maxScrollLeft) <= 40 || carousel.scrollLeft >= maxScrollLeft - 40) {
               btnRight.classList.remove('show');
@@ -391,7 +394,7 @@
               if (indicators.length > 0) {
                   var firstCard = carousel.querySelector('.card-item');
                   if(firstCard) {
-                      var cardWidth = firstCard.offsetWidth + 8; // gapが8pxのため
+                      var cardWidth = firstCard.offsetWidth + 15; // gapが15pxのため
                       var index = Math.round(carousel.scrollLeft / cardWidth);
                       if (index < 0) index = 0;
                       if (index >= indicators.length) index = indicators.length - 1;
@@ -416,7 +419,7 @@
                       var index = parseInt(this.getAttribute('data-index'));
                       var firstCard = carousel.querySelector('.card-item');
                       if(firstCard) {
-                          var cardWidth = firstCard.offsetWidth + 8;
+                          var cardWidth = firstCard.offsetWidth + 15;
                           carousel.scrollTo({ left: index * cardWidth, behavior: 'smooth' });
                       }
                   });
@@ -1392,7 +1395,7 @@
         <span style="font-weight: bold; color: #2e7d32; font-size: 15px;">【お知らせ：簡易求人検索リニューアルのご案内】</span><br>
         <span style="font-size: 13px; color: #333; display: inline-block; margin-top: 5px;">ハローワークインターネットサービスの最新仕様に合わせ、検索時のエラーや表示トラブルを防ぐための機能調整を行いました。これに伴い、一部の細かい条件指定を簡素化しております。あらかじめご了承ください。</span>
       </div>
-      <div style="font-weight: bold; margin-bottom: 15px; color: #333;">
+      <div style="font-weight: bold; margin-bottom: 15px; color: #333; text-align: left;">
         ハローワーク松山管轄の求人情報を、簡単な操作で検索することができます。
       </div>
       <div class="hwis-guide-box" style="border-top: 1px dashed #ccc; padding-top: 15px;">
@@ -1638,7 +1641,7 @@
           <p class="mypage-cta-desc">現在の状況に合わせて、以下のカードから<br>ご自身に当てはまるものを確認してください。</p>
         </div>
 
-        <div class="carousel-container" style="padding: 0 15px;">
+        <div class="carousel-container" style="padding: 0 20px;">
           <button class="carousel-btn left" id="carousel-left" aria-label="前のカードへ">＜</button>
 
           <div class="card-carousel" id="card-carousel">
@@ -1660,7 +1663,7 @@
               <h4 class="card-title">窓口でのアカウント連携</h4>
               <p class="card-desc" style="margin-bottom: 10px;">過去（5年以内）にハローワークを利用・求職登録された方は、これまでの情報と連携させるため、お近くの窓口での手続きが必要です。<br>
               <span style="font-size: 0.9em; color: #a02020;">※同一のメールアドレスで重複して新規登録することはできません。</span></p>
-              <div class="card-caution" style="text-align: left; margin-bottom: 15px; font-size: 12px; color: #d32f2f; background-color: #ffffff !important; padding: 10px; border-radius: 6px; border: 1px solid #d9a0a0;">
+              <div class="card-caution" style="text-align: left; margin-bottom: 15px; font-size: 13px; color: #d32f2f; background-color: #ffffff !important; padding: 10px; border-radius: 6px; border: 1px solid #d9a0a0;">
                 <strong>【登録の手順】</strong><br>
                 窓口で<strong>「アカウント作成コード」</strong>を発行します。その後、ご自身のスマートフォン等でコードを入力し、登録を完了させてください。
               </div>
