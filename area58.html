@@ -109,11 +109,19 @@
   #hw-search-tool-root .swipe-hint { font-size: 15px; color: #C85A32; font-weight: bold; margin-bottom: 5px; }
   
   /* 横幅を広げたカローセル（PC・スマホ両対応） */
-  #hw-search-tool-root .carousel-container { position: relative; display: flex; align-items: center; justify-content: center; margin: 0 -5px; }
-  #hw-search-tool-root .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.95); border: 1px solid #d0d0d0; color: #C85A32; font-size: 18px; font-weight: bold; width: 44px; height: 44px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.15); transition: background 0.2s; padding: 0; }
+  /* 余白を広げ、ボタンが文字に被らないよう外側に配置 */
+  #hw-search-tool-root .carousel-container { position: relative; display: flex; align-items: center; justify-content: center; margin: 0 5px; }
+  
+  /* ボタンの位置調整（マイナス値で外側へ）と初期状態の非表示設定 */
+  #hw-search-tool-root .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.95); border: 1px solid #d0d0d0; color: #C85A32; font-size: 18px; font-weight: bold; width: 44px; height: 44px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.15); transition: background 0.2s, opacity 0.2s, visibility 0.2s; padding: 0; }
   #hw-search-tool-root .carousel-btn:hover { background: #fdfdfd; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
-  #hw-search-tool-root .carousel-btn.left { left: 5px; }
-  #hw-search-tool-root .carousel-btn.right { right: 5px; }
+  
+  /* 左ボタンは初期状態では非表示（opacity 0, visibility hidden） */
+  #hw-search-tool-root .carousel-btn.left { left: -15px; opacity: 0; visibility: hidden; pointer-events: none; }
+  #hw-search-tool-root .carousel-btn.right { right: -15px; }
+  
+  /* JavaScriptで制御するためのクラス */
+  #hw-search-tool-root .carousel-btn.show { opacity: 1; visibility: visible; pointer-events: auto; }
 
   #hw-search-tool-root .card-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; padding: 10px 5px 15px 5px; -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth; width: 100%; box-sizing: border-box; }
   #hw-search-tool-root .card-carousel::-webkit-scrollbar { display: none; }
@@ -141,6 +149,10 @@
   #hw-search-tool-root .apply-guide-text { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 15px; }
   #hw-search-tool-root .warning-box { background-color: #ffffff !important; border: 1px solid #d9a0a0; padding: 15px; border-radius: 6px; color: #b33939; font-size: 13px; line-height: 1.6; }
   #hw-search-tool-root .contact-section { background-color: #fff; text-align: center; padding: 25px 20px; font-size: 16px; font-weight: bold; color: #333; border-top: 1px dashed #ddd; line-height: 1.6; letter-spacing: 0.05em; }
+
+  @media screen and (min-width: 601px) {
+    #hw-search-tool-root .card-item { flex: 0 0 calc(50% - 15px); }
+  }
 
   @media screen and (max-width: 600px) {
     #hw-search-tool-root { padding: 0; background-color: #f9f9f9; }
@@ -336,11 +348,30 @@
           document.getElementById('jNo3').value = "";
       });
 
-      // カルーセルの左右ボタンスクロール処理（PC向け）とインジケーター処理
+      // カルーセルの左右ボタンスクロール処理とボタンの表示切替
       var carousel = document.getElementById('card-carousel');
       var btnLeft = document.getElementById('carousel-left');
       var btnRight = document.getElementById('carousel-right');
       var indicators = document.querySelectorAll('#carousel-indicators .indicator');
+      
+      function updateCarouselButtons() {
+          if (!carousel || !btnLeft || !btnRight) return;
+          
+          // スクロール位置が左端（0またはわずかな誤差）なら左ボタンを消す
+          if (carousel.scrollLeft <= 5) {
+              btnLeft.classList.remove('show');
+          } else {
+              btnLeft.classList.add('show');
+          }
+          
+          // スクロール位置が右端（全体の幅 - 見えている幅）なら右ボタンを消す
+          var maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
+          if (carousel.scrollLeft >= maxScrollLeft - 5) {
+              btnRight.classList.remove('show');
+          } else {
+              btnRight.classList.add('show');
+          }
+      }
       
       if (carousel) {
           if (btnLeft && btnRight) {
@@ -356,8 +387,10 @@
               });
           }
 
-          if (indicators.length > 0) {
-              carousel.addEventListener('scroll', function() {
+          carousel.addEventListener('scroll', function() {
+              updateCarouselButtons();
+              
+              if (indicators.length > 0) {
                   var firstCard = carousel.querySelector('.card-item');
                   if(firstCard) {
                       var cardWidth = firstCard.offsetWidth + 12; // gapが12pxのため
@@ -370,8 +403,13 @@
                           else ind.classList.remove('active');
                       });
                   }
-              });
-              
+              }
+          });
+          
+          // 初期化時にボタンの表示状態をチェック
+          setTimeout(updateCarouselButtons, 100);
+          
+          if (indicators.length > 0) {
               indicators.forEach(function(ind) {
                   ind.addEventListener('click', function() {
                       var index = parseInt(this.getAttribute('data-index'));
@@ -1357,7 +1395,7 @@
         ハローワーク松山管轄の求人情報を、簡単な操作で検索することができます。
       </div>
       <div class="hwis-guide-box" style="border-top: 1px dashed #ccc; padding-top: 15px; text-align: center;">
-        <p style="font-size: 14px; color: #444; margin-bottom: 10px; line-height: 1.6; font-weight: bold; word-break: keep-all; overflow-wrap: anywhere; text-align: left;">
+        <p style="font-size: 14px; color: #444; margin-bottom: 10px; line-height: 1.6; font-weight: bold; text-align: center;">
           より詳細な条件で検索したい場合は、以下の公式サイトをご利用ください。<br>
           <span style="color: #d32f2f; font-size: 13px; font-weight: normal; display: inline-block;">※リンク先の【もっと詳しい条件を入力する】から検索してください。</span>
         </p>
