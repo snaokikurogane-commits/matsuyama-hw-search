@@ -102,42 +102,44 @@
   #hw-search-tool-root .mypage-features { background-color: #fff9f6; border-radius: 8px; padding: 22px 20px; margin: 0 20px 25px 20px; border: 1px solid #f2e3dd; }
   #hw-search-tool-root .mypage-features-title { font-size: 15px; font-weight: bold; color: #C85A32; margin: 0 0 15px 0; text-align: center; letter-spacing: 0.05em; }
   #hw-search-tool-root .mypage-features ul.large-benefits { list-style: none; padding: 0; margin: 0; }
-  #hw-search-tool-root .mypage-features ul.large-benefits li { font-size: 15px; font-weight: bold; color: #333; margin-bottom: 14px; padding-left: 26px; position: relative; line-height: 1.5; }
-  #hw-search-tool-root .mypage-features ul.large-benefits li::before { content: ''; position: absolute; left: 8px; top: 5px; width: 6px; height: 12px; border-right: 3px solid #C85A32; border-bottom: 3px solid #C85A32; transform: rotate(45deg); }
+  #hw-search-tool-root .mypage-features ul.large-benefits li { font-size: 14px; font-weight: bold; color: #333; margin-bottom: 12px; padding-left: 26px; position: relative; line-height: 1.5; text-align: left; }
+  #hw-search-tool-root .mypage-features ul.large-benefits li::before { content: ''; position: absolute; left: 8px; top: 5px; width: 5px; height: 10px; border-right: 3px solid #C85A32; border-bottom: 3px solid #C85A32; transform: rotate(45deg); }
   #hw-search-tool-root .mypage-features ul.large-benefits li:last-child { margin-bottom: 0; }
   #hw-search-tool-root .mypage-cta-desc { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 10px; }
   #hw-search-tool-root .swipe-hint { font-size: 14px; color: #C85A32; font-weight: bold; margin-bottom: 5px; }
   
   /* 横幅を広げたカローセル（PC・スマホ両対応） */
   /* 余白を広げ、ボタンが文字に被らないよう外側に配置 */
-  #hw-search-tool-root .carousel-container { position: relative; display: flex; align-items: center; justify-content: center; margin: 0; }
+  #hw-search-tool-root .carousel-container { position: relative; display: flex; align-items: center; justify-content: center; margin: 0; padding: 0 5px; }
   
-  /* ボタンの位置調整と初期状態の非表示設定 */
-  #hw-search-tool-root .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.95); border: 1px solid #d0d0d0; color: #C85A32; font-size: 18px; font-weight: bold; width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 10; box-shadow: 0 2px 6px rgba(0,0,0,0.2); transition: background 0.2s, opacity 0.2s, visibility 0.2s; padding: 0; }
+  /* ボタンの文字被り解消：サイズを少し小さくし、位置を端に寄せる */
+  #hw-search-tool-root .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.95); border: 1px solid #d0d0d0; color: #C85A32; font-size: 16px; font-weight: bold; width: 36px; height: 36px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 10; box-shadow: 0 2px 6px rgba(0,0,0,0.2); transition: background 0.2s, opacity 0.2s, visibility 0.2s; padding: 0; }
   #hw-search-tool-root .carousel-btn:hover { background: #fdfdfd; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
   
-  /* ボタンをカード端より少し外側へ配置し、左ボタンは初期非表示 */
-  #hw-search-tool-root .carousel-btn.left { left: -5px; opacity: 0; visibility: hidden; pointer-events: none; }
-  #hw-search-tool-root .carousel-btn.right { right: -5px; }
+  /* ボタンを端に配置。初期状態は左を非表示 */
+  #hw-search-tool-root .carousel-btn.left { left: 0px; opacity: 0; visibility: hidden; pointer-events: none; }
+  #hw-search-tool-root .carousel-btn.right { right: 0px; }
   
-  /* JavaScriptで制御するためのクラス */
+  /* JavaScriptで制御するための表示クラス */
   #hw-search-tool-root .carousel-btn.show { opacity: 1; visibility: visible; pointer-events: auto; }
 
-  #hw-search-tool-root .card-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 10px; padding: 10px 0 15px 0; -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth; width: 100%; box-sizing: border-box; }
+  #hw-search-tool-root .card-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 10px; padding: 5px 0 10px 0; -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth; width: 100%; box-sizing: border-box; }
   #hw-search-tool-root .card-carousel::-webkit-scrollbar { display: none; }
   
   /* スマホでのチラ見せ効果用スペーサー */
   #hw-search-tool-root .card-carousel::after { content: ""; flex: 0 0 2px; }
   #hw-search-tool-root .card-carousel::before { content: ""; flex: 0 0 2px; }
 
-  /* 細長さを解消するため、幅(94%)を広げパディングを調整 */
-  #hw-search-tool-root .card-item { flex: 0 0 94%; scroll-snap-align: center; background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 15px 15px 20px 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: flex; flex-direction: column; position: relative; box-sizing: border-box; }
+  /* 細長さを解消：幅(96%)を広げ、上下のパディングを削って正方形に近づける */
+  /* また、左右のパディングを広めに取ることで、上にボタンが被っても文字が読めるようにする */
+  #hw-search-tool-root .card-item { flex: 0 0 96%; scroll-snap-align: center; background: #fff; border: 1px solid #e0e0e0; border-radius: 10px; padding: 12px 20px 15px 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); display: flex; flex-direction: column; position: relative; box-sizing: border-box; }
   
-  #hw-search-tool-root .card-header-row { display: flex; justify-content: center; align-items: center; margin-bottom: 12px; }
-  #hw-search-tool-root .card-badge { display: inline-block; background-color: #fcece6; color: #C85A32; font-size: 11.5px; font-weight: bold; padding: 4px 10px; border-radius: 20px; }
-  #hw-search-tool-root .card-title { font-size: 15.5px; font-weight: bold; color: #333; margin: 0 0 10px 0; line-height: 1.4; text-align: center; }
-  #hw-search-tool-root .card-desc { font-size: 13px; color: #555; line-height: 1.5; flex-grow: 1; margin-bottom: 15px; }
-  #hw-search-tool-root .card-btn { display: block; width: 100%; background-color: #C85A32; color: #fff !important; text-align: center; padding: 12px 0; border-radius: 8px; font-size: 14px; font-weight: bold; text-decoration: none; transition: opacity 0.2s; box-sizing: border-box; touch-action: manipulation; }
+  #hw-search-tool-root .card-header-row { display: flex; justify-content: center; align-items: center; margin-bottom: 8px; }
+  #hw-search-tool-root .card-badge { display: inline-block; background-color: #fcece6; color: #C85A32; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 20px; }
+  #hw-search-tool-root .card-title { font-size: 15px; font-weight: bold; color: #333; margin: 0 0 8px 0; line-height: 1.4; text-align: center; }
+  /* 文字が間延びしないよう、行間とフォントサイズを微調整 */
+  #hw-search-tool-root .card-desc { font-size: 12.5px; color: #555; line-height: 1.45; flex-grow: 1; margin-bottom: 12px; }
+  #hw-search-tool-root .card-btn { display: block; width: 100%; background-color: #C85A32; color: #fff !important; text-align: center; padding: 10px 0; border-radius: 8px; font-size: 13.5px; font-weight: bold; text-decoration: none; transition: opacity 0.2s; box-sizing: border-box; touch-action: manipulation; }
   
   /* インジケーター (ドット) */
   #hw-search-tool-root .carousel-indicators { display: flex; justify-content: center; gap: 8px; margin-top: 5px; margin-bottom: 25px; }
@@ -365,8 +367,9 @@
           }
           
           // スクロール位置が右端（全体の幅 - 見えている幅）なら右ボタンを消す
+          // ※ブラウザの計算誤差を安全に吸収するため、余裕（40px）を持たせて判定
           var maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
-          if (Math.ceil(carousel.scrollLeft) >= maxScrollLeft - 20) {
+          if (Math.ceil(carousel.scrollLeft) >= maxScrollLeft - 40) {
               btnRight.classList.remove('show');
           } else {
               btnRight.classList.add('show');
@@ -1635,6 +1638,7 @@
 
         <div class="mypage-cta-header">
           <p class="mypage-cta-desc">現在の状況に合わせて、以下のカードから<br>ご自身に当てはまるものを確認してください。</p>
+          <div class="swipe-hint">← スワイプ（または矢印）で確認 →</div>
         </div>
 
         <div class="carousel-container">
