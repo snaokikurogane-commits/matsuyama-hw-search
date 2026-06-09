@@ -1,16 +1,16 @@
 <style type="text/css">
-  /* 背景を白に統一し、PCでの境界線の違和感を完全に解消 */
-  #hw-search-tool-root { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 0; background-color: #ffffff; text-align: left; display: flex; justify-content: center; padding: 20px 0; }
+  /* 背景とスマホサイズ枠（プレビュー用）の自動調整。全体を柔らかなグレージュに */
+  #hw-search-tool-root { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 0; background-color: #f5f4f0; text-align: left; display: flex; justify-content: center; padding: 20px 0; }
   
-  /* PCでの表示枠を広げつつ、影を薄くしてサイトに自然に溶け込ませる */
-  #hw-search-tool-root #wrapper { width: 100%; max-width: 540px; margin: 0 auto; padding: 10px 15px; background-color: #ffffff; padding-bottom: 90px; box-sizing: border-box; position: relative; }
+  /* max-widthを540pxに広げ、PCプレビュー時の窮屈さを解消。スマホ時は100%になる */
+  #hw-search-tool-root #wrapper { width: 100%; max-width: 540px; margin: 0 auto; padding: 20px 15px; background-color: #ffffff; box-shadow: 0 8px 25px rgba(0,0,0,0.08); padding-bottom: 90px; box-sizing: border-box; position: relative; overflow-x: hidden; border-radius: 12px; }
   
-  /* 案内文エリアのデザイン調整 */
+  /* 灰色すぎた背景を薄いグレージュ（#faf9f6）に変更し、細い枠線を追加 */
   #hw-search-tool-root .intro-text { font-size: 15px; color: #333; background: #faf9f6; border: 1px solid #eae8e3; padding: 20px; border-radius: 8px; margin-bottom: 25px; line-height: 1.6; }
-  #hw-search-tool-root .hwis-guide-box { margin-top: 10px; text-align: center; }
+  #hw-search-tool-root .hwis-guide-box { margin-top: 10px; }
   #hw-search-tool-root .hwis-link-btn { display: inline-block; background: #f0f7ff; color: #0055b3; border: 3px solid #0066cc; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px; box-shadow: 0 4px 8px rgba(0, 102, 204, 0.15); transition: all 0.2s; }
   
-  #hw-search-tool-root .floating-help-btn { position: absolute; top: 10px; right: 15px; z-index: 900; background-color: #ff9800; color: #ffffff !important; font-weight: bold; font-size: 12px; padding: 8px 14px; border-radius: 25px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.3); opacity: 0.95; cursor: pointer; }
+  #hw-search-tool-root .floating-help-btn { position: absolute; top: 15px; right: 15px; z-index: 9999; background-color: #ff9800; color: #ffffff !important; font-weight: bold; font-size: 12px; padding: 8px 14px; border-radius: 25px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.3); opacity: 0.95; cursor: pointer; }
   
   #hw-search-tool-root .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; }
   #hw-search-tool-root .modal-content-help { background-color: #fff; width: 90%; max-width: 450px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative; animation: popIn 0.2s ease-out; }
@@ -105,6 +105,7 @@
   #hw-search-tool-root .mypage-features ul.large-benefits li { font-size: 14px; font-weight: bold; color: #333; margin-bottom: 12px; padding-left: 26px; position: relative; line-height: 1.5; text-align: left; }
   #hw-search-tool-root .mypage-features ul.large-benefits li::before { content: ''; position: absolute; left: 8px; top: 5px; width: 5px; height: 10px; border-right: 3px solid #C85A32; border-bottom: 3px solid #C85A32; transform: rotate(45deg); }
   #hw-search-tool-root .mypage-features ul.large-benefits li:last-child { margin-bottom: 0; }
+  #hw-search-tool-root .mypage-cta-desc { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 10px; }
   
   /* ALAYA等で要素が消えないよう、absoluteを避け、Flexboxで堅牢に組む */
   #hw-search-tool-root .carousel-wrapper { display: flex; align-items: center; justify-content: space-between; margin: 0; padding: 0 5px; width: 100%; box-sizing: border-box; }
@@ -160,13 +161,13 @@
 (function() {
   var areaData = {
     "matsuyama_all": { name: "松山市全域", code: "38201", words: "" },
-    "east":  { name: "城東・中央", code: "38201", words: "一番町 二番町 三番町 千舟町 大街道 湊町 道後 石手 祝谷 東野 樽味 桑原 松末" },
-    "west":  { name: "城西・中央", code: "38201", words: "大手町 南江戸 竹原 小栗 土居田 宮西 萱町 本町 花園町 藤原 保免 余戸" },
-    "north": { name: "城北",     code: "38201", words: "潮見 久枝 和気 堀江 吉藤 谷町 御幸 鴨川 平田 山越 問屋町 内宮 安城寺" },
-    "south": { name: "城南",     code: "38201", words: "石井 居相 古川 はなみずき 和泉 森松 井門 天山 朝生田 土居 北井門 小坂" },
-    "joto":  { name: "久米・小野", code: "38201", words: "小野 久米 平井 鷹子 来住 湯の山 南久米 北久米 畑寺 水泥 福音寺 高井" },
-    "josai": { name: "三津・垣生", code: "38201", words: "三津 高浜 味生 生石 垣生 空港通 富久 南吉田 梅津寺 北斎院 南斎院 別府" },
-    "hojo":  { name: "北条・島しょ", code: "38201", words: "北条 浅海 立岩 難波 正岡 河野 由良 睦野 中島 大浦 粟井 柳原 八反地" },
+    "east":  { name: "城東・中央", code: "38201", words: "一番町 二番町 三番町 千舟町 大街道 湊町 道後 石手 祝谷 東野 樽味 桑原 松末 " },
+    "west":  { name: "城西・中央", code: "38201", words: "大手町 南江戸 竹原 小栗 土居田 宮西 萱町 本町 花園町 藤原 保免 余戸 " },
+    "north": { name: "城北",     code: "38201", words: "潮見 久枝 和気 堀江 吉藤 谷町 御幸 鴨川 平田 山越 問屋町 内宮 安城寺 " },
+    "south": { name: "城南",     code: "38201", words: "石井 居相 古川 はなみずき 和泉 森松 井門 天山 朝生田 土居 北井門 小坂 " },
+    "joto":  { name: "久米・小野", code: "38201", words: "小野 久米 平井 鷹子 来住 湯の山 南久米 北久米 畑寺 水泥 福音寺 高井 " },
+    "josai": { name: "三津・垣生", code: "38201", words: "三津 高浜 味生 生石 垣生 空港通 富久 南吉田 梅津寺 北斎院 南斎院 別府 " },
+    "hojo":  { name: "北条・島しょ", code: "38201", words: "北条 浅海 立岩 難波 正岡 河野 由良 睦野 中島 大浦 粟井 柳原 八反地 " },
     "iyo":    { name: "伊予市",     code: "38210", words: "" },
     "toon":   { name: "東温市",     code: "38215", words: "" },
     "masaki": { name: "松前町",     code: "38401", words: "" },
@@ -323,7 +324,6 @@
       document.getElementById('btn-reset-cond').addEventListener('click', resetAll);
       document.getElementById('btn-save-cond').addEventListener('click', saveConditions);
       
-      // ALAYA検索エラーの解決策：検索時には#ID_kensaku_float_stopを含めずすっぴんのURLへ飛ばす
       document.getElementById('mainSearchBtn').addEventListener('click', function(e) { e.preventDefault(); executeMySearch(); });
       document.getElementById('numberSearchBtn').addEventListener('click', function(e) { e.preventDefault(); executeNumberSearch(); });
 
@@ -336,7 +336,7 @@
           document.getElementById('jNo3').value = "";
       });
 
-      // ALAYA消失対策：Flexbox版カルーセルのボタン制御
+      // カルーセルの左右ボタンスクロール処理
       var carousel = document.getElementById('card-carousel');
       var btnLeft = document.getElementById('carousel-left');
       var btnRight = document.getElementById('carousel-right');
@@ -412,18 +412,6 @@
       loadConditionsAuto();
   });
 
-  function setupAutoTab(currentId, nextId, maxLength) {
-      var current = document.getElementById(currentId);
-      if(current) {
-          current.addEventListener('input', function() {
-              if (this.value.length >= maxLength) {
-                  var next = document.getElementById(nextId);
-                  if (next) next.focus();
-              }
-          });
-      }
-  }
-
   function showMyModal(title, text, isConfirm, callback) {
     var overlay = document.getElementById('msg-modal-overlay');
     document.getElementById('msg-modal-title').innerText = title;
@@ -486,11 +474,15 @@
 
     var badgeContainer = document.getElementById('area-badge-container');
     var badgeText = document.getElementById('area-badge-text');
+    var explanationText = document.getElementById('dynamic-explanation-text');
+    
     if (areaWords && badgeContainer && badgeText) {
         badgeContainer.style.display = 'block';
         badgeText.innerText = areaWords + " （計" + areaWords.length + "文字）";
-    } else if (badgeContainer) {
-        badgeContainer.style.display = 'none';
+        if(explanationText) explanationText.innerHTML = "※選択した地区の町名が自動でセットされています。自由にキーワードを組み合わせたい場合は、上の【自動セットを解除】を押してからご入力ください。";
+    } else {
+        if(badgeContainer) badgeContainer.style.display = 'none';
+        if(explanationText) explanationText.innerHTML = "※仕様上、全体で50文字までしか入力できません。<br>下の入力欄に「一番町 事務」のように全角スペースで区切って直接ご入力ください。";
     }
 
     var freeW = document.getElementById('FreeW');
@@ -1157,7 +1149,6 @@
 
     var performOpen = function() {
         var form = document.createElement('form');
-        // 検索実行時にはエラー防止のため「すっぴんのURL」を使用
         form.action = 'https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do';
         form.method = 'POST';
         form.target = '_blank';
@@ -1265,7 +1256,6 @@
 
     var performOpen = function() {
         var form = document.createElement('form');
-        // 番号検索時にもエラー防止のため「すっぴんのURL」を使用
         form.action = 'https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do';
         form.method = 'POST';
         form.target = '_blank';
@@ -1536,8 +1526,8 @@
          <div id="area-badge-text" style="word-break: break-all; margin-bottom: 8px;"></div>
          <button id="clear-autoset-btn" style="background: #fff; color: #0055b3; border: 1px solid #0055b3; padding: 6px 12px; border-radius: 4px; font-size: 13px; cursor: pointer; font-weight: bold; width: 100%; box-sizing: border-box; text-align: center;">自動セットを解除してエリアをリセット</button>
       </div>
-      <div style="background: #fff3e0; padding: 10px; border-radius: 6px; border: 1px solid #ffcc80; margin-bottom: 10px; font-size: 12.5px; color: #e65100; line-height: 1.5;">
-        ※仕様上、全体で50文字までしか入力できません。<br>特定の町名だけを探したい場合や自由にキーワードを組み合わせたい場合は、上の【自動セットを解除】を押し、下の入力欄に「一番町 事務」のように全角スペースで区切って直接ご入力ください。
+      <div style="background: #fff3e0; padding: 10px; border-radius: 6px; border: 1px solid #ffcc80; margin-bottom: 10px; font-size: 12.5px; color: #e65100; line-height: 1.5;" id="dynamic-explanation-text">
+        ※仕様上、全体で50文字までしか入力できません。<br>下の入力欄に「一番町 事務」のように全角スペースで区切って直接ご入力ください。
       </div>
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
         <span style="font-size:13px; font-weight:bold; color:#333;">追加のキーワード（町名、その他の希望条件）</span>
