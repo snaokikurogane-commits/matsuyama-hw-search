@@ -1,19 +1,22 @@
 <style type="text/css">
-  /* 背景とスマホサイズ枠（プレビュー用）の自動調整。全体を柔らかなグレージュに */
+  /* -------------------------------------------
+     全体の基本レイアウト（PC・スマホ両対応）
+  ------------------------------------------- */
   #hw-search-tool-root { font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; margin: 0; background-color: #f5f4f0; text-align: left; display: flex; justify-content: center; padding: 20px 0; }
   
-  /* max-widthを540pxに広げ、PCプレビュー時の窮屈さを解消。スマホ時は100%になる */
-  #hw-search-tool-root #wrapper { width: 100%; max-width: 540px; margin: 0 auto; padding: 20px 15px; background-color: #ffffff; box-shadow: 0 8px 25px rgba(0,0,0,0.08); padding-bottom: 90px; box-sizing: border-box; position: relative; overflow-x: hidden; border-radius: 12px; }
+  /* PCでの表示枠を「850px」まで大幅に広げ、ワイドで堂々としたレイアウトに */
+  #hw-search-tool-root #wrapper { width: 100%; max-width: 850px; margin: 0 auto; padding: 25px 20px; background-color: #ffffff; box-shadow: 0 8px 25px rgba(0,0,0,0.08); padding-bottom: 90px; box-sizing: border-box; position: relative; border-radius: 12px; overflow: visible; }
   
-  /* 灰色すぎた背景を薄いグレージュ（#faf9f6）に変更し、細い枠線を追加 */
+  /* 案内文エリア */
   #hw-search-tool-root .intro-text { font-size: 15px; color: #333; background: #faf9f6; border: 1px solid #eae8e3; padding: 20px; border-radius: 8px; margin-bottom: 25px; line-height: 1.6; }
   #hw-search-tool-root .hwis-guide-box { margin-top: 10px; }
   #hw-search-tool-root .hwis-link-btn { display: inline-block; background: #f0f7ff; color: #0055b3; border: 3px solid #0066cc; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px; box-shadow: 0 4px 8px rgba(0, 102, 204, 0.15); transition: all 0.2s; }
   
-  #hw-search-tool-root .floating-help-btn { position: absolute; top: 15px; right: 15px; z-index: 9999; background-color: #ff9800; color: #ffffff !important; font-weight: bold; font-size: 12px; padding: 8px 14px; border-radius: 25px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.3); opacity: 0.95; cursor: pointer; }
+  #hw-search-tool-root .floating-help-btn { position: absolute; top: 15px; right: 15px; z-index: 900; background-color: #ff9800; color: #ffffff !important; font-weight: bold; font-size: 13px; padding: 8px 16px; border-radius: 25px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.3); opacity: 0.95; cursor: pointer; }
   
+  /* モーダルウィンドウ */
   #hw-search-tool-root .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; }
-  #hw-search-tool-root .modal-content-help { background-color: #fff; width: 90%; max-width: 450px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative; animation: popIn 0.2s ease-out; }
+  #hw-search-tool-root .modal-content-help { background-color: #fff; width: 90%; max-width: 500px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative; animation: popIn 0.2s ease-out; }
   #hw-search-tool-root .modal-content-msg { background-color: #fff; width: 85%; max-width: 350px; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center; animation: popIn 0.2s ease-out; }
   @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   
@@ -23,14 +26,12 @@
   #hw-search-tool-root .help-section-title { color: #008000; border-left: 6px solid #008000; padding-left: 10px; margin: 20px 0 10px 0; font-size: 17px; font-weight: bold; }
   #hw-search-tool-root .help-list { padding-left: 20px; margin-top: 5px; font-size: 14.5px; color: #333; line-height: 1.6; }
   #hw-search-tool-root .help-list li { margin-bottom: 8px; }
-  
   #hw-search-tool-root .help-notes { background: #ffffff; padding: 5px 10px; }
   #hw-search-tool-root .help-note-item { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #ccc; }
   #hw-search-tool-root .help-note-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
   
   #hw-search-tool-root .msg-title { font-size: 1.2em; font-weight: bold; color: #333; margin-bottom: 12px; }
   #hw-search-tool-root .msg-body { font-size: 15px; color: #444; line-height: 1.6; margin-bottom: 25px; }
-  
   #hw-search-tool-root .msg-buttons { display: flex; justify-content: center; gap: 10px; width: 100%; box-sizing: border-box; }
   #hw-search-tool-root .btn-ok, #hw-search-tool-root .btn-cancel { flex: 1; padding: 12px 0; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; box-sizing: border-box; width: 100%; }
   #hw-search-tool-root .btn-ok { background: #008000; color: #fff; border: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
@@ -40,11 +41,16 @@
   #hw-search-tool-root .section-feature { border-bottom: 2px solid #d35400; color: #d35400; }
   #hw-search-tool-root .sub-section { font-size: 1em; color: #555; margin-bottom: 8px; }
   
+  /* -------------------------------------------
+     ボタン（グリッド）のレスポンシブ設定
+  ------------------------------------------- */
   #hw-search-tool-root .grid-container { display: flex; flex-wrap: wrap; gap: 8px; }
-  #hw-search-tool-root .grid-item-2 { flex: 1 1 calc(50% - 8px); }
-  #hw-search-tool-root .grid-item-full { flex: 1 1 100%; }
+  
+  /* PC用（デフォルト）：3列並び（約33%）に設定 */
+  #hw-search-tool-root .grid-item-2 { flex: 1 1 calc(33.333% - 8px); box-sizing: border-box; }
+  #hw-search-tool-root .grid-item-full { flex: 1 1 100%; box-sizing: border-box; }
 
-  #hw-search-tool-root .btn-base { display: flex; align-items: center; justify-content: center; padding: 5px; text-align: center; cursor: pointer; box-sizing: border-box; font-size: 14.5px; font-weight: bold; border-radius: 8px; text-decoration: none; min-height: 60px; line-height: 1.3; width: 100%; border: 2px solid transparent; touch-action: manipulation; }
+  #hw-search-tool-root .btn-base { display: flex; align-items: center; justify-content: center; padding: 5px 10px; text-align: center; cursor: pointer; box-sizing: border-box; font-size: 14.5px; font-weight: bold; border-radius: 8px; text-decoration: none; min-height: 60px; line-height: 1.3; width: 100%; border: 2px solid transparent; touch-action: manipulation; }
   
   #hw-search-tool-root .area-btn { background: #fff; color: #008000; border: 2px solid #008000; }
   #hw-search-tool-root .area-btn.active { background: #008000 !important; color: #fff !important; border-color: #008000 !important; box-shadow: 0 0 5px rgba(0,128,0,0.5); }
@@ -92,7 +98,9 @@
 
   #hw-search-tool-root .floating-condition { display: none; }
 
-  /* マイページ・自主応募セクション */
+  /* -------------------------------------------
+     マイページ・自主応募セクション（カルーセル等）
+  ------------------------------------------- */
   #hw-search-tool-root .bottom-info-container { margin-top: 40px; background: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; }
   #hw-search-tool-root .mypage-cta-section { padding: 30px 0 20px 0; background-color: #faf9f6; }
   #hw-search-tool-root .mypage-cta-header { padding: 0 20px; text-align: center; }
@@ -107,18 +115,19 @@
   #hw-search-tool-root .mypage-features ul.large-benefits li:last-child { margin-bottom: 0; }
   #hw-search-tool-root .mypage-cta-desc { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 10px; }
   
-  /* ALAYA等で要素が消えないよう、absoluteを避け、Flexboxで堅牢に組む */
-  #hw-search-tool-root .carousel-wrapper { display: flex; align-items: center; justify-content: space-between; margin: 0; padding: 0 5px; width: 100%; box-sizing: border-box; }
+  /* Flexboxで堅牢に組むカルーセルコンテナ（PCでの幅確保） */
+  #hw-search-tool-root .carousel-wrapper { display: flex; align-items: center; justify-content: space-between; margin: 0; padding: 0 10px; width: 100%; box-sizing: border-box; }
   
-  #hw-search-tool-root .carousel-btn-container { flex: 0 0 30px; display: flex; justify-content: center; }
-  #hw-search-tool-root .carousel-btn { background: #fff; border: 1px solid #d0d0d0; color: #C85A32; font-size: 16px; font-weight: bold; width: 30px; height: 30px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 0; margin: 0; transition: opacity 0.2s; }
+  #hw-search-tool-root .carousel-btn-container { flex: 0 0 35px; display: flex; justify-content: center; }
+  #hw-search-tool-root .carousel-btn { background: #fff; border: 1px solid #d0d0d0; color: #C85A32; font-size: 18px; font-weight: bold; width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 0; margin: 0; transition: opacity 0.2s; }
   #hw-search-tool-root .carousel-btn:hover { background: #fdfdfd; }
   #hw-search-tool-root .carousel-btn.hidden { opacity: 0.3; pointer-events: none; }
 
-  #hw-search-tool-root .card-carousel { flex: 1 1 auto; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 10px; padding: 10px 5px; -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth; box-sizing: border-box; }
+  #hw-search-tool-root .card-carousel { flex: 1 1 auto; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 15px 5px; -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth; box-sizing: border-box; }
   #hw-search-tool-root .card-carousel::-webkit-scrollbar { display: none; }
   
-  #hw-search-tool-root .card-item { flex: 0 0 100%; scroll-snap-align: center; background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 20px 25px 25px 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); display: flex; flex-direction: column; box-sizing: border-box; }
+  /* PC用カルーセル：ワイド画面なら2枚並べる */
+  #hw-search-tool-root .card-item { flex: 0 0 calc(50% - 8px); scroll-snap-align: center; background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 20px 25px 25px 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); display: flex; flex-direction: column; box-sizing: border-box; }
   
   #hw-search-tool-root .card-header-row { display: flex; justify-content: center; align-items: center; margin-bottom: 12px; }
   #hw-search-tool-root .card-badge { display: inline-block; background-color: #fcece6; color: #C85A32; font-size: 13px; font-weight: bold; padding: 4px 12px; border-radius: 20px; }
@@ -126,7 +135,6 @@
   #hw-search-tool-root .card-desc { font-size: 14px; color: #555; line-height: 1.5; flex-grow: 1; margin-bottom: 20px; }
   #hw-search-tool-root .card-btn { display: block; width: 100%; background-color: #C85A32; color: #fff !important; text-align: center; padding: 12px 0; border-radius: 8px; font-size: 14px; font-weight: bold; text-decoration: none; transition: opacity 0.2s; box-sizing: border-box; touch-action: manipulation; margin-top: auto; }
   
-  /* インジケーター (ドット) */
   #hw-search-tool-root .carousel-indicators { display: flex; justify-content: center; gap: 8px; margin-top: 10px; margin-bottom: 25px; }
   #hw-search-tool-root .indicator { width: 8px; height: 8px; background-color: #dcdcdc; border-radius: 50%; cursor: pointer; transition: background-color 0.3s; }
   #hw-search-tool-root .indicator.active { background-color: #C85A32; transform: scale(1.1); }
@@ -137,28 +145,32 @@
   #hw-search-tool-root .warning-box { background-color: #ffffff !important; border: 1px solid #d9a0a0; padding: 15px; border-radius: 6px; color: #b33939; font-size: 13px; line-height: 1.6; }
   #hw-search-tool-root .contact-section { background-color: #fff; text-align: center; padding: 25px 20px; font-size: 16px; font-weight: bold; color: #333; border-top: 1px dashed #ddd; line-height: 1.6; letter-spacing: 0.05em; }
 
-  @media screen and (min-width: 601px) {
-    #hw-search-tool-root .card-item { flex: 0 0 100%; }
-  }
-
-  @media screen and (max-width: 600px) {
+  /* -------------------------------------------
+     スマホ用レスポンシブ（画面幅768px以下）
+  ------------------------------------------- */
+  @media screen and (max-width: 768px) {
     #hw-search-tool-root { padding: 0; background-color: #ffffff; }
     #hw-search-tool-root #wrapper { padding: 15px 10px; width: 100%; max-width: 100%; padding-bottom: 140px; box-shadow: none; border-radius: 0; }
+    
+    /* スマホ時はボタンを2列に */
+    #hw-search-tool-root .grid-item-2 { flex: 1 1 calc(50% - 8px); }
     #hw-search-tool-root .btn-base { font-size: 14px; padding: 5px; min-height: 55px; }
+    
     #hw-search-tool-root .searchbutton { position: fixed; bottom: 0; left: 0; width: 100%; margin: 0; border-radius: 0; z-index: 999; padding: 20px 20px; box-shadow: 0 -5px 15px rgba(0,0,0,0.2); }
     #hw-search-tool-root .floating-help-btn { top: 10px; right: 10px; font-size: 12px; padding: 8px 12px; }
     
     #hw-search-tool-root .floating-condition { display: block; position: fixed; bottom: 70px; left: 0; width: 100%; background: #f4f8f4; padding: 10px 15px; font-size: 14px; color: #2e7d32; font-weight: bold; z-index: 998; box-sizing: border-box; white-space: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; text-align: left; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); pointer-events: auto; }
     #hw-search-tool-root .floating-condition::-webkit-scrollbar { display: none; }
     
-    /* スマホでは矢印ボタンのスペースを消し、カードを広く見せる */
+    /* スマホでは矢印ボタンのスペースを消し、カードを広く（1枚ずつ）見せる */
     #hw-search-tool-root .carousel-btn-container { display: none; }
-    #hw-search-tool-root .card-item { flex: 0 0 95%; padding: 15px 20px 20px 20px; }
+    #hw-search-tool-root .card-item { flex: 0 0 100%; padding: 15px 20px 20px 20px; }
   }
 </style>
 
 <script type="text/javascript">
 (function() {
+  /* 町名データをすべて全角スペース（ ）区切りに変更。最後尾にも全角スペースを追加。 */
   var areaData = {
     "matsuyama_all": { name: "松山市全域", code: "38201", words: "" },
     "east":  { name: "城東・中央", code: "38201", words: "一番町 二番町 三番町 千舟町 大街道 湊町 道後 石手 祝谷 東野 樽味 桑原 松末 " },
@@ -227,21 +239,24 @@
           input.addEventListener('change', function() {
               if (this.name === 'radioKw') {
                   var u5 = document.getElementById('u5');
-                  document.getElementById('FreeWord').style.display = (u5 && u5.checked) ? 'block' : 'none';
+                  var freeWordContainer = document.getElementById('FreeWord');
+                  if(freeWordContainer) {
+                      freeWordContainer.style.display = (u5 && u5.checked) ? 'block' : 'none';
+                  }
                   
                   if (this.id !== 'u4' && this.id !== 'u5') {
                       var areaWords = "";
                       selectedAreaKeys.forEach(function(k) {
-                          if (areaData[k].words) areaWords += areaData[k].words + " ";
+                          if (areaData[k].words) areaWords += areaData[k].words;
                       });
-                      areaWords = areaWords.trim();
                       var fwArr = [];
-                      if (areaWords) fwArr.push(areaWords);
+                      if (areaWords) fwArr.push(areaWords.trim());
                       fwArr.push(this.value);
                       if (fwArr.join(" ").length > 50) {
                           showMyModal("文字数オーバー", "選択したキーワードとエリアの合計が50文字を超えてしまいます。<br>エリア指定を減らすか、指定しないを選んでください。", false);
-                          document.getElementById('u4').checked = true;
-                          document.getElementById('FreeWord').style.display = 'none';
+                          var u4 = document.getElementById('u4');
+                          if(u4) u4.checked = true;
+                          if(freeWordContainer) freeWordContainer.style.display = 'none';
                       }
                   }
               }
@@ -270,7 +285,10 @@
       }
 
       document.querySelectorAll('#hw-search-tool-root .area-btn').forEach(function(btn) {
-          btn.addEventListener('click', function(e) { e.preventDefault(); selectArea(this.id.replace('btn-', '')); });
+          btn.addEventListener('click', function(e) { 
+              e.preventDefault(); 
+              selectArea(this.id.replace('btn-', '')); 
+          });
       });
 
       document.querySelectorAll('.job-btn').forEach(function(btn) {
@@ -280,14 +298,18 @@
               openJobModal(this.id.replace('btn-job-', ''));
           });
       });
-      document.getElementById('btn-job-0').addEventListener('click', function(e) {
-          e.preventDefault();
-          if(this.classList.contains('disabled')) return;
-          selectedJobs = {};
-          renderJobButtons();
-          updateCrossExclusion();
-          updateConditionText();
-      });
+      
+      var btnJob0 = document.getElementById('btn-job-0');
+      if(btnJob0) {
+          btnJob0.addEventListener('click', function(e) {
+              e.preventDefault();
+              if(this.classList.contains('disabled')) return;
+              selectedJobs = {};
+              renderJobButtons();
+              updateCrossExclusion();
+              updateConditionText();
+          });
+      }
 
       document.querySelectorAll('.feature-btn').forEach(function(btn) {
           btn.addEventListener('click', function(e) {
@@ -296,47 +318,68 @@
               openFeatureModal(this.id.replace('btn-feature-', ''));
           });
       });
-      document.getElementById('btn-feature-0').addEventListener('click', function(e) {
-          e.preventDefault();
-          if(this.classList.contains('disabled')) return;
-          selectedFeatures = {};
-          renderFeatureButtons();
-          updateCrossExclusion();
-          updateConditionText();
-      });
+      
+      var btnFeature0 = document.getElementById('btn-feature-0');
+      if(btnFeature0) {
+          btnFeature0.addEventListener('click', function(e) {
+              e.preventDefault();
+              if(this.classList.contains('disabled')) return;
+              selectedFeatures = {};
+              renderFeatureButtons();
+              updateCrossExclusion();
+              updateConditionText();
+          });
+      }
 
       var helpBtn = document.querySelector('#hw-search-tool-root .floating-help-btn');
       if (helpBtn) {
           helpBtn.addEventListener('click', function(e) {
               e.preventDefault();
-              document.getElementById('help-modal').style.display = 'flex';
+              var modal = document.getElementById('help-modal');
+              if(modal) modal.style.display = 'flex';
           });
       }
-      document.querySelectorAll('#hw-search-tool-root .modal-close-btn').forEach(function(btn) {
-          btn.addEventListener('click', function() { document.getElementById('help-modal').style.display = 'none'; });
-      });
-
-      document.getElementById('job-btn-cancel').addEventListener('click', closeJobModal);
-      document.getElementById('job-btn-apply').addEventListener('click', applyJobModal);
-      document.getElementById('feature-btn-cancel').addEventListener('click', closeFeatureModal);
-      document.getElementById('feature-btn-apply').addEventListener('click', applyFeatureModal);
-
-      document.getElementById('btn-reset-cond').addEventListener('click', resetAll);
-      document.getElementById('btn-save-cond').addEventListener('click', saveConditions);
       
-      document.getElementById('mainSearchBtn').addEventListener('click', function(e) { e.preventDefault(); executeMySearch(); });
-      document.getElementById('numberSearchBtn').addEventListener('click', function(e) { e.preventDefault(); executeNumberSearch(); });
-
-      document.getElementById('numberResetBtn').addEventListener('click', function(e) {
-          e.preventDefault();
-          document.getElementById('kNo1').value = "";
-          document.getElementById('kNo2').value = "";
-          document.getElementById('jNo1').value = "";
-          document.getElementById('jNo2').value = "";
-          document.getElementById('jNo3').value = "";
+      document.querySelectorAll('#hw-search-tool-root .modal-close-btn').forEach(function(btn) {
+          btn.addEventListener('click', function() { 
+              var modal = document.getElementById('help-modal');
+              if(modal) modal.style.display = 'none'; 
+          });
       });
 
-      // カルーセルの左右ボタンスクロール処理
+      var jobCancel = document.getElementById('job-btn-cancel');
+      var jobApply = document.getElementById('job-btn-apply');
+      var featureCancel = document.getElementById('feature-btn-cancel');
+      var featureApply = document.getElementById('feature-btn-apply');
+      
+      if(jobCancel) jobCancel.addEventListener('click', closeJobModal);
+      if(jobApply) jobApply.addEventListener('click', applyJobModal);
+      if(featureCancel) featureCancel.addEventListener('click', closeFeatureModal);
+      if(featureApply) featureApply.addEventListener('click', applyFeatureModal);
+
+      var btnReset = document.getElementById('btn-reset-cond');
+      var btnSave = document.getElementById('btn-save-cond');
+      var mainSearchBtn = document.getElementById('mainSearchBtn');
+      var numberSearchBtn = document.getElementById('numberSearchBtn');
+      var numberResetBtn = document.getElementById('numberResetBtn');
+      
+      if(btnReset) btnReset.addEventListener('click', resetAll);
+      if(btnSave) btnSave.addEventListener('click', saveConditions);
+      if(mainSearchBtn) mainSearchBtn.addEventListener('click', function(e) { e.preventDefault(); executeMySearch(); });
+      if(numberSearchBtn) numberSearchBtn.addEventListener('click', function(e) { e.preventDefault(); executeNumberSearch(); });
+
+      if(numberResetBtn) {
+          numberResetBtn.addEventListener('click', function(e) {
+              e.preventDefault();
+              var ids = ['kNo1', 'kNo2', 'jNo1', 'jNo2', 'jNo3'];
+              ids.forEach(function(id) {
+                  var el = document.getElementById(id);
+                  if(el) el.value = "";
+              });
+          });
+      }
+
+      // カルーセルの左右ボタンスクロール処理（PC向け）
       var carousel = document.getElementById('card-carousel');
       var btnLeft = document.getElementById('carousel-left');
       var btnRight = document.getElementById('carousel-right');
@@ -345,7 +388,7 @@
       function updateCarouselButtons() {
           if (!carousel || !btnLeft || !btnRight) return;
           
-          if (carousel.scrollLeft <= 5) {
+          if (carousel.scrollLeft <= 10) {
               btnLeft.classList.add('hidden');
           } else {
               btnLeft.classList.remove('hidden');
@@ -363,12 +406,12 @@
           if (btnLeft && btnRight) {
               btnLeft.addEventListener('click', function(e) {
                   e.preventDefault();
-                  var scrollAmount = carousel.clientWidth;
+                  var scrollAmount = carousel.clientWidth * 0.9;
                   carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
               });
               btnRight.addEventListener('click', function(e) {
                   e.preventDefault();
-                  var scrollAmount = carousel.clientWidth;
+                  var scrollAmount = carousel.clientWidth * 0.9;
                   carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
               });
           }
@@ -379,7 +422,7 @@
               if (indicators.length > 0) {
                   var firstCard = carousel.querySelector('.card-item');
                   if(firstCard) {
-                      var cardWidth = firstCard.offsetWidth + 10;
+                      var cardWidth = firstCard.offsetWidth + 15; 
                       var index = Math.round(carousel.scrollLeft / cardWidth);
                       if (index < 0) index = 0;
                       if (index >= indicators.length) index = indicators.length - 1;
@@ -401,7 +444,7 @@
                       var index = parseInt(this.getAttribute('data-index'));
                       var firstCard = carousel.querySelector('.card-item');
                       if(firstCard) {
-                          var cardWidth = firstCard.offsetWidth + 10;
+                          var cardWidth = firstCard.offsetWidth + 15;
                           carousel.scrollTo({ left: index * cardWidth, behavior: 'smooth' });
                       }
                   });
@@ -409,34 +452,43 @@
           }
       }
 
+      // 初期化処理（保存データの読み込みなど）
       loadConditionsAuto();
   });
 
   function showMyModal(title, text, isConfirm, callback) {
     var overlay = document.getElementById('msg-modal-overlay');
-    document.getElementById('msg-modal-title').innerText = title;
+    if(!overlay) return;
     
-    document.getElementById('msg-modal-text').innerHTML = text;
+    var titleEl = document.getElementById('msg-modal-title');
+    var textEl = document.getElementById('msg-modal-text');
+    if(titleEl) titleEl.innerText = title;
+    if(textEl) textEl.innerHTML = text;
     
     var btnOk = document.getElementById('msg-btn-ok');
     var btnCancel = document.getElementById('msg-btn-cancel');
-    var newOk = btnOk.cloneNode(true);
-    var newCancel = btnCancel.cloneNode(true);
-    btnOk.parentNode.replaceChild(newOk, btnOk);
-    btnCancel.parentNode.replaceChild(newCancel, btnCancel);
-    btnOk = document.getElementById('msg-btn-ok');
-    btnCancel = document.getElementById('msg-btn-cancel');
+    
+    if(btnOk && btnCancel) {
+        var newOk = btnOk.cloneNode(true);
+        var newCancel = btnCancel.cloneNode(true);
+        btnOk.parentNode.replaceChild(newOk, btnOk);
+        btnCancel.parentNode.replaceChild(newCancel, btnCancel);
+        
+        btnOk = document.getElementById('msg-btn-ok');
+        btnCancel = document.getElementById('msg-btn-cancel');
 
-    if(isConfirm) {
-        btnCancel.style.display = 'block';
-        btnOk.innerText = "検索する";
-    } else {
-        btnCancel.style.display = 'none';
-        btnOk.innerText = "OK";
+        if(isConfirm) {
+            btnCancel.style.display = 'block';
+            btnOk.innerText = "検索する";
+        } else {
+            btnCancel.style.display = 'none';
+            btnOk.innerText = "OK";
+        }
+        overlay.style.display = 'flex';
+        
+        btnOk.onclick = function() { overlay.style.display = 'none'; if(callback) callback(true); };
+        btnCancel.onclick = function() { overlay.style.display = 'none'; if(callback) callback(false); };
     }
-    overlay.style.display = 'flex';
-    btnOk.onclick = function() { overlay.style.display = 'none'; if(callback) callback(true); };
-    btnCancel.onclick = function() { overlay.style.display = 'none'; if(callback) callback(false); };
   }
 
   function updateCharCount() {
@@ -445,18 +497,18 @@
     selectedAreaKeys.forEach(function(k) {
         var c = areaData[k].code;
         if(uniqueCodes.indexOf(c) === -1) uniqueCodes.push(c);
-        if (areaData[k].words) areaWords += areaData[k].words + " ";
+        if (areaData[k].words) areaWords += areaData[k].words;
     });
-    areaWords = areaWords.trim();
-
+    
     var kw = document.querySelector('input[name="radioKw"]:checked');
     var kwVal = (kw && kw.id !== 'u4' && kw.id !== 'u5') ? kw.value : "";
     
-    var manualKw = document.getElementById('FreeW').value.trim();
+    var freeW = document.getElementById('FreeW');
+    var manualKw = freeW ? freeW.value.trim() : "";
     if (kw && kw.id !== 'u5') manualKw = "";
 
     var fwArr = [];
-    if (areaWords) fwArr.push(areaWords);
+    if (areaWords.trim()) fwArr.push(areaWords.trim());
     if (kwVal) fwArr.push(kwVal);
     
     var autoText = fwArr.join(" ");
@@ -476,16 +528,19 @@
     var badgeText = document.getElementById('area-badge-text');
     var explanationText = document.getElementById('dynamic-explanation-text');
     
-    if (areaWords && badgeContainer && badgeText) {
+    if (areaWords.trim() && badgeContainer && badgeText) {
         badgeContainer.style.display = 'block';
-        badgeText.innerText = areaWords + " （計" + areaWords.length + "文字）";
-        if(explanationText) explanationText.innerHTML = "※選択した地区の町名が自動でセットされています。自由にキーワードを組み合わせたい場合は、上の【自動セットを解除】を押してからご入力ください。";
+        badgeText.innerText = areaWords.trim() + " （計" + areaWords.trim().length + "文字）";
+        if(explanationText) {
+            explanationText.innerHTML = "※選択した地区の町名が自動でセットされています。自由にキーワードを組み合わせたい場合は、上の【自動セットを解除】を押してからご入力ください。";
+        }
     } else {
         if(badgeContainer) badgeContainer.style.display = 'none';
-        if(explanationText) explanationText.innerHTML = "※仕様上、全体で50文字までしか入力できません。<br>下の入力欄に「一番町 事務」のように全角スペースで区切って直接ご入力ください。";
+        if(explanationText) {
+            explanationText.innerHTML = "※仕様上、全体で50文字までしか入力できません。<br>下の入力欄に「一番町 事務」のように全角スペースで区切って直接ご入力ください。";
+        }
     }
 
-    var freeW = document.getElementById('FreeW');
     if (freeW) {
         var spaceNeeded = (autoLen > 0) ? 1 : 0;
         var maxManual = 50 - autoLen - spaceNeeded;
@@ -506,6 +561,8 @@
 
   function initJobModals() {
       var container = document.getElementById('job-modal-body');
+      if(!container) return;
+      
       for(var code in jobData) {
           if(code === "0" || !jobData[code].subs) continue;
           
@@ -563,13 +620,11 @@
                       }.bind(this));
                   } else {
                       var anyInput = document.querySelector('#job-sub-wrap-' + pCode + ' input[value$="00"]');
-                      if (anyInput) {
-                          if (!anyInput.checked) {
-                              allInputs.forEach(function(inp) {
-                                  var lbl = document.querySelector('label[for="' + inp.id + '"]');
-                                  if (lbl) lbl.classList.remove('locked');
-                              });
-                          }
+                      if (anyInput && !anyInput.checked) {
+                          allInputs.forEach(function(inp) {
+                              var lbl = document.querySelector('label[for="' + inp.id + '"]');
+                              if (lbl) lbl.classList.remove('locked');
+                          });
                       }
                       
                       var checkedBoxes = document.querySelectorAll('#job-sub-wrap-' + pCode + ' input[type="checkbox"]:checked');
@@ -597,7 +652,8 @@
           return;
       }
       currentEditingJobCode = code;
-      document.getElementById('job-modal-title').innerText = jobData[code].name;
+      var titleEl = document.getElementById('job-modal-title');
+      if(titleEl) titleEl.innerText = jobData[code].name;
       
       for(var c in jobModalDOMs) { jobModalDOMs[c].style.display = 'none'; }
       
@@ -620,11 +676,13 @@
               }
           });
       }
-      document.getElementById('job-modal-overlay').style.display = 'flex';
+      var overlay = document.getElementById('job-modal-overlay');
+      if(overlay) overlay.style.display = 'flex';
   }
 
   function closeJobModal() {
-      document.getElementById('job-modal-overlay').style.display = 'none';
+      var overlay = document.getElementById('job-modal-overlay');
+      if(overlay) overlay.style.display = 'none';
       if(currentEditingJobCode && jobModalDOMs[currentEditingJobCode]) {
           jobModalDOMs[currentEditingJobCode].style.display = 'none';
       }
@@ -652,10 +710,11 @@
 
   function renderJobButtons() {
        document.querySelectorAll('.job-btn').forEach(function(btn) { btn.classList.remove('active'); });
-       document.getElementById('btn-job-0').classList.remove('active');
+       var btn0 = document.getElementById('btn-job-0');
+       if(btn0) btn0.classList.remove('active');
 
        if (Object.keys(selectedJobs).length === 0) {
-           document.getElementById('btn-job-0').classList.add('active');
+           if(btn0) btn0.classList.add('active');
        } else {
            for (var code in selectedJobs) {
                var btn = document.getElementById('btn-job-' + code);
@@ -666,6 +725,8 @@
 
   function initFeatureModals() {
       var container = document.getElementById('feature-modal-body');
+      if(!container) return;
+      
       for(var code in featureData) {
           if(!featureData[code].subs) continue;
           
@@ -734,7 +795,8 @@
           return;
       }
       currentEditingFeatureCode = code;
-      document.getElementById('feature-modal-title').innerText = featureData[code].name;
+      var titleEl = document.getElementById('feature-modal-title');
+      if(titleEl) titleEl.innerText = featureData[code].name;
       
       for(var c in featureModalDOMs) { featureModalDOMs[c].style.display = 'none'; }
       
@@ -745,11 +807,13 @@
           var inputs = wrap.querySelectorAll('input[type="checkbox"]');
           inputs.forEach(function(input) { input.checked = (currentSelected.indexOf(input.value) !== -1); });
       }
-      document.getElementById('feature-modal-overlay').style.display = 'flex';
+      var overlay = document.getElementById('feature-modal-overlay');
+      if(overlay) overlay.style.display = 'flex';
   }
 
   function closeFeatureModal() {
-      document.getElementById('feature-modal-overlay').style.display = 'none';
+      var overlay = document.getElementById('feature-modal-overlay');
+      if(overlay) overlay.style.display = 'none';
       if(currentEditingFeatureCode && featureModalDOMs[currentEditingFeatureCode]) {
           featureModalDOMs[currentEditingFeatureCode].style.display = 'none';
       }
@@ -777,10 +841,11 @@
 
   function renderFeatureButtons() {
        document.querySelectorAll('.feature-btn').forEach(function(btn) { btn.classList.remove('active'); });
-       document.getElementById('btn-feature-0').classList.remove('active');
+       var btn0 = document.getElementById('btn-feature-0');
+       if(btn0) btn0.classList.remove('active');
 
        if (Object.keys(selectedFeatures).length === 0) {
-           document.getElementById('btn-feature-0').classList.add('active');
+           if(btn0) btn0.classList.add('active');
        } else {
            for (var code in selectedFeatures) {
                var btn = document.getElementById('btn-feature-' + code);
@@ -794,30 +859,25 @@
       var isFeatureSelected = Object.keys(selectedFeatures).length > 0;
 
       document.querySelectorAll('.job-btn, .job-btn-all').forEach(function(btn) {
-          if (isFeatureSelected) {
-              btn.classList.add('disabled');
-          } else {
-              btn.classList.remove('disabled');
-          }
+          if (isFeatureSelected) btn.classList.add('disabled');
+          else btn.classList.remove('disabled');
       });
       var jobMsg = document.getElementById('job-cross-warning-msg');
       if (jobMsg) jobMsg.style.display = isFeatureSelected ? 'block' : 'none';
 
       document.querySelectorAll('.feature-btn, .feature-btn-all').forEach(function(btn) {
-          if (isJobSelected) {
-              btn.classList.add('disabled');
-          } else {
-              btn.classList.remove('disabled');
-          }
+          if (isJobSelected) btn.classList.add('disabled');
+          else btn.classList.remove('disabled');
       });
       var featureMsg = document.getElementById('feature-cross-warning-msg');
       if (featureMsg) featureMsg.style.display = isJobSelected ? 'block' : 'none';
   }
 
   function updateExclusion() {
-    var isKeywordSearchIntent = document.getElementById('u2').checked || 
-                                document.getElementById('u6').checked || 
-                                document.getElementById('u7').checked;
+    var u2 = document.getElementById('u2');
+    var u6 = document.getElementById('u6');
+    var u7 = document.getElementById('u7');
+    var isKeywordSearchIntent = (u2 && u2.checked) || (u6 && u6.checked) || (u7 && u7.checked);
 
     var isDetailAreaSelected = false;
     for(var i=0; i<selectedAreaKeys.length; i++){
@@ -830,34 +890,34 @@
         if(key !== "matsuyama_all") {
             var btn = document.getElementById('btn-' + key);
             if(btn) {
-              if(isKeywordSearchIntent) { btn.classList.add('disabled'); } 
-              else { btn.classList.remove('disabled'); }
+              if(isKeywordSearchIntent) btn.classList.add('disabled'); 
+              else btn.classList.remove('disabled');
             }
         }
     });
 
-    var kwInputs = [ document.getElementById('u2'), document.getElementById('u6'), document.getElementById('u7') ];
-    var kwLabels = [
-        document.querySelector('label[for="u2"]'), document.querySelector('label[for="u6"]'),
-        document.querySelector('label[for="u7"]')
-    ];
-    kwLabels.forEach(function(lbl, idx) {
-        if(lbl && kwInputs[idx]) {
-          if(isDetailAreaSelected) { 
-              lbl.classList.add('disabled'); kwInputs[idx].disabled = true;
-          } else { 
-              lbl.classList.remove('disabled'); kwInputs[idx].disabled = false;
-          }
+    var kwInputs = [u2, u6, u7];
+    kwInputs.forEach(function(input) {
+        if(input) {
+            var lbl = document.querySelector('label[for="' + input.id + '"]');
+            if(lbl) {
+                if(isDetailAreaSelected) { 
+                    lbl.classList.add('disabled'); input.disabled = true;
+                } else { 
+                    lbl.classList.remove('disabled'); input.disabled = false;
+                }
+            }
         }
     });
 
     var freeWordContainer = document.getElementById('FreeWord');
     var u5 = document.getElementById('u5');
     if (u5 && u5.checked) { 
-        freeWordContainer.style.display = 'block'; 
+        if(freeWordContainer) freeWordContainer.style.display = 'block'; 
     } else {
-        freeWordContainer.style.display = 'none';
-        document.getElementById('FreeW').value = '';
+        if(freeWordContainer) freeWordContainer.style.display = 'none';
+        var freeW = document.getElementById('FreeW');
+        if(freeW) freeW.value = '';
     }
     
     var seniorWarning = document.getElementById('senior-warning-msg');
@@ -865,14 +925,13 @@
     if(areaWarning) areaWarning.style.display = isKeywordSearchIntent ? 'block' : 'none';
     if(seniorWarning) {
         seniorWarning.style.display = isDetailAreaSelected ? 'block' : 'none';
-        if(isDetailAreaSelected) seniorWarning.innerHTML = '※詳細エリア（町名）指定中は、文字数上限保護のため<strong>特定のキーワード（シニア・子育て等）は併用できません。</strong>自由にキーワードを追加したい場合は「自分で入力する」を選んでください。';
     }
     updateCharCount();
   }
 
   function selectArea(key) {
     var btn = document.getElementById('btn-' + key);
-    if(btn.classList.contains('disabled')) return;
+    if(!btn || btn.classList.contains('disabled')) return;
 
     var index = selectedAreaKeys.indexOf(key);
     var isMatsuyama = matsuyamaGroup.indexOf(key) !== -1;
@@ -896,9 +955,8 @@
         nextSelectedKeys.forEach(function(k) {
             var c = areaData[k].code;
             if(uniqueCodes.indexOf(c) === -1) uniqueCodes.push(c);
-            if (areaData[k].words) testAreaWords += areaData[k].words + " ";
+            if (areaData[k].words) testAreaWords += areaData[k].words;
         });
-        testAreaWords = testAreaWords.trim();
         
         if (uniqueCodes.length > 5) {
             showMyModal("選択できません", "ハローワークの仕様上、同時に選択できる地域（市区町村）は5つまでです。", false);
@@ -908,7 +966,7 @@
         var kw = document.querySelector('input[name="radioKw"]:checked');
         var kwVal = (kw && kw.id !== 'u4' && kw.id !== 'u5') ? kw.value : "";
         var fwArr = [];
-        if (testAreaWords) fwArr.push(testAreaWords);
+        if (testAreaWords.trim()) fwArr.push(testAreaWords.trim());
         if (kwVal) fwArr.push(kwVal);
         if (fwArr.join(" ").length > 50) {
             showMyModal("文字数オーバー", "選択したエリアとキーワードの合計が50文字を超えてしまいます。<br>組み合わせを減らしてください。", false);
@@ -933,6 +991,7 @@
 
   function updateAreaDisplay() {
     var display = document.getElementById('selectedAreaDisplay');
+    if(!display) return;
     if (selectedAreaKeys.length === 0) {
       display.innerText = "指定しない";
     } else {
@@ -957,20 +1016,27 @@
         var allLabels = document.getElementsByTagName('label');
         for(var i=0; i<allLabels.length; i++) allLabels[i].classList.remove('disabled');
         
-        document.getElementById('job-cross-warning-msg').style.display = 'none';
-        document.getElementById('feature-cross-warning-msg').style.display = 'none';
+        var jobMsg = document.getElementById('job-cross-warning-msg');
+        var featureMsg = document.getElementById('feature-cross-warning-msg');
+        if(jobMsg) jobMsg.style.display = 'none';
+        if(featureMsg) featureMsg.style.display = 'none';
 
-        document.getElementById('s4').checked = true;
-        document.getElementById('t3').checked = true;
-        document.getElementById('u4').checked = true; 
+        var s4 = document.getElementById('s4');
+        var t3 = document.getElementById('t3');
+        var u4 = document.getElementById('u4');
+        if(s4) s4.checked = true;
+        if(t3) t3.checked = true;
+        if(u4) u4.checked = true; 
         
         var jyoukenChecks = document.querySelectorAll('input[name="jyoukenBox"]');
         jyoukenChecks.forEach(function(c) { c.checked = false; });
         var hakenChecks = document.querySelectorAll('input[name="hakenBox"]');
         hakenChecks.forEach(function(c) { c.checked = false; });
         
-        document.getElementById('FreeW').value = "";
-        document.getElementById('FreeWord').style.display = 'none';
+        var freeW = document.getElementById('FreeW');
+        var freeWordContainer = document.getElementById('FreeWord');
+        if(freeW) freeW.value = "";
+        if(freeWordContainer) freeWordContainer.style.display = 'none';
         
         updateAreaDisplay();
         renderJobButtons();
@@ -986,14 +1052,17 @@
   function updateConditionText() {
     var html = '<table class="cond-table">';
     
-    var area = document.getElementById('selectedAreaDisplay').innerText.replace("選択中: ", "");
+    var display = document.getElementById('selectedAreaDisplay');
+    var area = display ? display.innerText.replace("選択中: ", "") : "指定しない";
     html += '<tr><th>エリア</th><td>' + area + '</td></tr>';
 
     var emp = document.querySelector('#hw-search-tool-root input[name="radioEmp"]:checked');
     var empText = emp ? document.querySelector('#hw-search-tool-root label[for="' + emp.id + '"]').innerText : "";
     var hakenText = [];
-    if(document.getElementById('h1').checked) hakenText.push("有期派遣除く");
-    if(document.getElementById('h2').checked) hakenText.push("無期派遣除く");
+    var h1 = document.getElementById('h1');
+    var h2 = document.getElementById('h2');
+    if(h1 && h1.checked) hakenText.push("有期派遣除く");
+    if(h2 && h2.checked) hakenText.push("無期派遣除く");
     if(hakenText.length > 0) {
         empText += " <br><span style='font-size:0.9em;color:#666;'>(" + hakenText.join("・") + ")</span>";
     }
@@ -1040,9 +1109,11 @@
     var kw = document.querySelector('#hw-search-tool-root input[name="radioKw"]:checked');
     var kwText = "";
     if(kw && kw.id !== 'u4' && kw.id !== 'u5') { 
-        kwText = document.querySelector('#hw-search-tool-root label[for="' + kw.id + '"]').innerText;
+        var lbl = document.querySelector('#hw-search-tool-root label[for="' + kw.id + '"]');
+        if(lbl) kwText = lbl.innerText;
     }
-    var manualKw = document.getElementById('FreeW').value.trim();
+    var freeW = document.getElementById('FreeW');
+    var manualKw = freeW ? freeW.value.trim() : "";
     if(manualKw && kw && kw.id === 'u5') { 
         kwText = manualKw;
     }
@@ -1051,7 +1122,8 @@
 
     html += '</table>';
 
-    document.getElementById('current-conditions-text').innerHTML = html;
+    var condText = document.getElementById('current-conditions-text');
+    if(condText) condText.innerHTML = html;
     
     var floatText = "🔍 " + area;
     if (Object.keys(selectedJobs).length > 0) floatText += " / " + Object.keys(selectedJobs).map(k=>jobData[k].name).join("・");
@@ -1063,10 +1135,11 @@
   }
 
   function saveConditions() {
+    var freeW = document.getElementById('FreeW');
     var state = { 
         areaKeys: selectedAreaKeys, 
         radios: {}, checkboxes: {}, 
-        freeWord: document.getElementById('FreeW').value,
+        freeWord: freeW ? freeW.value : "",
         jobs: selectedJobs,
         features: selectedFeatures
     };
@@ -1105,10 +1178,14 @@
             var el = document.getElementById(id);
             if(el) el.checked = state.checkboxes[id];
         }
-        if(state.freeWord) { document.getElementById('FreeW').value = state.freeWord; }
+        var freeW = document.getElementById('FreeW');
+        if(state.freeWord && freeW) { freeW.value = state.freeWord; }
         
         var u5 = document.getElementById('u5');
-        document.getElementById('FreeWord').style.display = (u5 && u5.checked) ? 'block' : 'none';
+        var freeWordContainer = document.getElementById('FreeWord');
+        if(freeWordContainer) {
+            freeWordContainer.style.display = (u5 && u5.checked) ? 'block' : 'none';
+        }
         
         updateExclusion();
         updateConditionText(); 
@@ -1126,7 +1203,7 @@
     selectedAreaKeys.forEach(function(k) {
         var c = areaData[k].code;
         if(uniqueCodes.indexOf(c) === -1) uniqueCodes.push(c);
-        if (areaData[k].words) areaWords += areaData[k].words + " ";
+        if (areaData[k].words) areaWords += areaData[k].words;
     });
 
     if (areaWords.trim() !== "") fwArr.push(areaWords.trim());
@@ -1134,7 +1211,8 @@
     var kw = document.querySelector('input[name="radioKw"]:checked');
     if (kw && kw.id !== 'u4' && kw.id !== 'u5') fwArr.push(kw.value);
     
-    var manualKw = document.getElementById('FreeW').value.trim();
+    var freeW = document.getElementById('FreeW');
+    var manualKw = freeW ? freeW.value.trim() : "";
     if (manualKw && kw && kw.id === 'u5') {
         var manualArr = manualKw.split(/[\s ]+/);
         manualArr.forEach(function(w) { if(w) fwArr.push(w); });
@@ -1149,6 +1227,7 @@
 
     var performOpen = function() {
         var form = document.createElement('form');
+        // すっぴんのURLでエラーを回避
         form.action = 'https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do';
         form.method = 'POST';
         form.target = '_blank';
@@ -1170,19 +1249,21 @@
         }
 
         var emp = document.querySelector('input[name="radioEmp"]:checked');
-        var isYuukiExc = document.getElementById('h1').checked;
-        var isMukiExc = document.getElementById('h2').checked;
+        var h1 = document.getElementById('h1');
+        var h2 = document.getElementById('h2');
+        var isYuukiExc = h1 && h1.checked;
+        var isMukiExc = h2 && h2.checked;
 
         if (isYuukiExc || isMukiExc) {
             var allowedCodes = [];
-            if (emp.id === 's1') {
+            if (emp && emp.id === 's1') {
                 allowedCodes.push("20260101003"); 
-            } else if (emp.id === 's2') {
+            } else if (emp && emp.id === 's2') {
                 allowedCodes.push("20260101003"); 
                 allowedCodes.push("20260101004"); 
                 if (!isYuukiExc) allowedCodes.push("20260101005"); 
                 if (!isMukiExc) allowedCodes.push("20260101006"); 
-            } else if (emp.id === 's3') {
+            } else if (emp && emp.id === 's3') {
                 allowedCodes.push("20260101008"); 
                 if (!isYuukiExc) allowedCodes.push("20260101009"); 
                 if (!isMukiExc) allowedCodes.push("20260101010"); 
@@ -1243,11 +1324,17 @@
   }
 
   function executeNumberSearch() {
-    var k1 = document.getElementById('kNo1').value.trim();
-    var k2 = document.getElementById('kNo2').value.trim();
-    var j1 = document.getElementById('jNo1').value.trim();
-    var j2 = document.getElementById('jNo2').value.trim();
-    var j3 = document.getElementById('jNo3').value.trim();
+    var elK1 = document.getElementById('kNo1');
+    var elK2 = document.getElementById('kNo2');
+    var elJ1 = document.getElementById('jNo1');
+    var elJ2 = document.getElementById('jNo2');
+    var elJ3 = document.getElementById('jNo3');
+    
+    var k1 = elK1 ? elK1.value.trim() : "";
+    var k2 = elK2 ? elK2.value.trim() : "";
+    var j1 = elJ1 ? elJ1.value.trim() : "";
+    var j2 = elJ2 ? elJ2.value.trim() : "";
+    var j3 = elJ3 ? elJ3.value.trim() : "";
 
     if(!k1 && !k2 && !j1 && !j2 && !j3) {
         showMyModal("エラー", "求人番号または事業所番号を入力してください。", false);
@@ -1627,7 +1714,9 @@
               </div>
               <h4 class="card-title">新規マイページ開設</h4>
               <p class="card-desc">ハローワークのご利用が初めての方はこちら。スマホから「求職登録」と「マイページ開設」が同時に完了します。<br><br>スマホやパソコンから24時間いつでも登録可能です。ハローワークの開庁時間外でも、ご自宅にいながら事前に求職登録を完了させることができます。</p>
-              <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA020020.do?screenId=GEAA020020&action=execRedirect&nextScreenId=GEAA010010" target="_blank" class="card-btn">新規登録・開設はこちら</a>
+              <div style="margin-top: auto;">
+                <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA020020.do?screenId=GEAA020020&action=execRedirect&nextScreenId=GEAA010010" target="_blank" class="card-btn">新規登録・開設はこちら</a>
+              </div>
             </div>
 
             <div class="card-item">
@@ -1641,7 +1730,9 @@
                 <strong>【登録の手順】</strong><br>
                 窓口で<strong>「アカウント作成コード」</strong>を発行します。その後、ご自身のスマートフォン等でコードを入力し、登録を完了させてください。
               </div>
-              <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA530040.do?action=initDisp&screenId=GEAA530040" target="_blank" class="card-btn">作成コードを入力する</a>
+              <div style="margin-top: auto;">
+                <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA530040.do?action=initDisp&screenId=GEAA530040" target="_blank" class="card-btn">作成コードを入力する</a>
+              </div>
             </div>
 
             <div class="card-item">
@@ -1650,7 +1741,9 @@
               </div>
               <h4 class="card-title">マイページにログイン</h4>
               <p class="card-desc">すでにマイページをお持ちの方はこちら。ご登録のメールアドレスとパスワードでログインしてご利用ください。<br><br>お気に入り登録した求人の確認や、応募履歴の振り返り、ハローワークからの『おすすめ求人』のチェックなど、日々の就職活動の管理に幅広くご活用ください。</p>
-              <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA040010.do?action=initDisp&screenId=GEAA040010" target="_blank" class="card-btn">ログイン画面へ</a>
+              <div style="margin-top: auto;">
+                <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA040010.do?action=initDisp&screenId=GEAA040010" target="_blank" class="card-btn">ログイン画面へ</a>
+              </div>
             </div>
           </div>
           
