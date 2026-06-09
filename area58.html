@@ -1755,8 +1755,21 @@
 
   /* ALAYAの後出し流し込みを100%制圧しフリーズを防ぐトリガー判別システム */
   if (document.readyState === 'loading') {
+      doc// 削除する：
+// document.addEventListener('DOMContentLoaded', function() { ... });
+
+// 追加する（ALAYA環境での強制起動システム）：
+(function() {
+  function initializeAllHWSystem() {
+    // ここに既存の初期化処理をすべて記述（中身はそのまま）
+  }
+
+  if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initializeAllHWSystem);
   } else {
+      initializeAllHWSystem();
+  }
+})(); {
       initializeAllHWSystem();
   }
 })();
