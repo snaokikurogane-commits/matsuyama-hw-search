@@ -150,21 +150,21 @@
   #hw-search-tool-root .mypage-features ul.large-benefits li:last-child { margin-bottom: 0; }
   #hw-search-tool-root .mypage-cta-desc { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 10px; }
   
-  /* カルーセルコンテナ */
-  #hw-search-tool-root .carousel-container { position: relative; display: flex; align-items: center; justify-content: center; margin: 0; padding: 0 25px; width: 100%; box-sizing: border-box; }
-  #hw-search-tool-root .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.95); border: 1px solid #d0d0d0; color: #C85A32; font-size: 16px; font-weight: bold; width: 34px; height: 34px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 10; box-shadow: 0 2px 6px rgba(0,0,0,0.2); transition: background 0.2s, opacity 0.2s, visibility 0.2s; padding: 0; }
-  #hw-search-tool-root .carousel-btn:hover { background: #fdfdfd; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
-  #hw-search-tool-root .carousel-btn.left { left: 0px; opacity: 0; visibility: hidden; pointer-events: none; }
-  #hw-search-tool-root .carousel-btn.right { right: 0px; opacity: 0; visibility: hidden; pointer-events: none; }
-  #hw-search-tool-root .carousel-btn.show { opacity: 1; visibility: visible; pointer-events: auto; }
+  /* Flexboxで堅牢に組むカルーセルコンテナ（PCでの幅確保） */
+  #hw-search-tool-root .carousel-wrapper { display: flex; align-items: center; justify-content: space-between; margin: 0; padding: 0 10px; width: 100%; box-sizing: border-box; }
+  
+  #hw-search-tool-root .carousel-btn-container { flex: 0 0 35px; display: flex; justify-content: center; }
+  #hw-search-tool-root .carousel-btn { background: #fff; border: 1px solid #d0d0d0; color: #C85A32; font-size: 18px; font-weight: bold; width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 0; margin: 0; transition: opacity 0.2s; }
+  #hw-search-tool-root .carousel-btn:hover { background: #fdfdfd; }
+  #hw-search-tool-root .carousel-btn.hidden { opacity: 0; pointer-events: none; }
 
-  #hw-search-tool-root .card-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 15px 5px; -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth; width: 100%; box-sizing: border-box; }
+  #hw-search-tool-root .card-carousel { flex: 1 1 auto; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 15px 5px; -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth; box-sizing: border-box; }
   #hw-search-tool-root .card-carousel::-webkit-scrollbar { display: none; }
   
-  /* デフォルト：スマホは1画面1枚、PCは横に2枚並び */
+  /* デフォルト：スマホは1枚、PCは2枚並び */
   #hw-search-tool-root .card-item { flex: 0 0 100%; scroll-snap-align: center; background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 20px 25px 25px 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); display: flex; flex-direction: column; box-sizing: border-box; }
   
-  @media screen and (min-width: 601px) {
+  @media screen and (min-width: 600px) {
       #hw-search-tool-root .card-item { flex: 0 0 calc(50% - 8px); }
   }
 
@@ -183,6 +183,25 @@
   #hw-search-tool-root .apply-guide-text { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 15px; }
   #hw-search-tool-root .warning-box { background-color: #ffffff !important; border: 1px solid #d9a0a0; padding: 15px; border-radius: 6px; color: #b33939; font-size: 13px; line-height: 1.6; }
   #hw-search-tool-root .contact-section { background-color: #fff; text-align: center; padding: 25px 20px; font-size: 16px; font-weight: bold; color: #333; border-top: 1px dashed #ddd; line-height: 1.6; letter-spacing: 0.05em; }
+
+  /* -------------------------------------------
+     スマホ用レスポンシブ（余白等の微調整）
+  ------------------------------------------- */
+  @media screen and (max-width: 600px) {
+    #hw-search-tool-root { padding: 0; background-color: #ffffff; }
+    #hw-search-tool-root #wrapper { padding: 15px 10px; width: 100%; max-width: 100%; padding-bottom: 140px; box-shadow: none; border-radius: 0; }
+    
+    #hw-search-tool-root .btn-base { font-size: 14px; padding: 5px; min-height: 55px; }
+    #hw-search-tool-root .searchbutton { position: fixed; bottom: 0; left: 0; width: 100%; margin: 0; border-radius: 0; z-index: 999; padding: 20px 20px; box-shadow: 0 -5px 15px rgba(0,0,0,0.2); }
+    #hw-search-tool-root .floating-help-btn { top: 10px; right: 10px; font-size: 12px; padding: 8px 12px; }
+    
+    #hw-search-tool-root .floating-condition { display: block; position: fixed; bottom: 70px; left: 0; width: 100%; background: #f4f8f4; padding: 10px 15px; font-size: 14px; color: #2e7d32; font-weight: bold; z-index: 998; box-sizing: border-box; white-space: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; text-align: left; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); pointer-events: auto; }
+    #hw-search-tool-root .floating-condition::-webkit-scrollbar { display: none; }
+    
+    /* スマホでは矢印ボタンのスペースを消し、カードを広く見せる */
+    #hw-search-tool-root .carousel-btn-container { display: none; }
+    #hw-search-tool-root .card-item { flex: 0 0 95%; padding: 15px 20px 20px 20px; }
+  }
 </style>
 
 <div id="hw-search-tool-root">
@@ -261,7 +280,7 @@
     <div class="intro-text">
       <div style="background-color: #e8f5e9; border-left: 5px solid #4caf50; padding: 12px; margin-bottom: 15px; border-radius: 4px;">
         <span style="font-weight: bold; color: #2e7d32; font-size: 15px;">【お知らせ：簡易求人検索リニューアルのご案内】</span><br>
-        <span style="font-size: 13px; color: #333; display: inline-block; margin-top: 5px;">ハローワークインターネットサービスの最新仕様に合わせ、検索時のエラーや表示トラブルを防ぐための機能調整を行いました。これに伴い、一部の細かい条件指定を简素化しております。あらかじめご了承ください。</span>
+        <span style="font-size: 13px; color: #333; display: inline-block; margin-top: 5px;">ハローワークインターネットサービスの最新仕様に合わせ、検索時のエラーや表示トラブルを防ぐための機能調整を行いました。これに伴い、一部の細かい条件指定を簡素化しております。あらかじめご了承ください。</span>
       </div>
       <div style="font-weight: bold; margin-bottom: 15px; color: #333; text-align: left;">
         ハローワーク松山管轄の求人情報を、簡単な操作で検索することができます。
@@ -512,8 +531,10 @@
           <p class="mypage-cta-desc">現在の状況に合わせて、以下のカードから<br>ご自身に当てはまるものを確認してください。</p>
         </div>
 
-        <div class="carousel-container">
-          <button class="carousel-btn left" id="carousel-left" aria-label="前のカードへ">＜</button>
+        <div class="carousel-wrapper">
+          <div class="carousel-btn-container">
+            <button class="carousel-btn left" id="carousel-left" aria-label="前のカードへ">＜</button>
+          </div>
 
           <div class="card-carousel" id="card-carousel">
             <div class="card-item">
@@ -555,7 +576,9 @@
             </div>
           </div>
           
-          <button class="carousel-btn right" id="carousel-right" aria-label="次のカードへ">＞</button>
+          <div class="carousel-btn-container">
+            <button class="carousel-btn right" id="carousel-right" aria-label="次のカードへ">＞</button>
+          </div>
         </div>
         
         <div class="carousel-indicators" id="carousel-indicators">
@@ -646,6 +669,209 @@
   var jobModalDOMs = {};
   var featureModalDOMs = {};
 
+  function setupAutoTab(currentId, nextId, maxLength) {
+      var current = document.getElementById(currentId);
+      if(current) {
+          current.addEventListener('input', function() {
+              if (this.value.length >= maxLength) {
+                  var next = document.getElementById(nextId);
+                  if (next) next.focus();
+              }
+          });
+      }
+  }
+
+  function showMyModal(title, text, isConfirm, callback) {
+    var overlay = document.getElementById('msg-modal-overlay');
+    if(!overlay) return;
+    
+    var titleEl = document.getElementById('msg-modal-title');
+    var textEl = document.getElementById('msg-modal-text');
+    if(titleEl) titleEl.innerText = title;
+    if(textEl) textEl.innerHTML = text;
+    
+    var btnOk = document.getElementById('msg-btn-ok');
+    var btnCancel = document.getElementById('msg-btn-cancel');
+    
+    if(btnOk && btnCancel) {
+        var newOk = btnOk.cloneNode(true);
+        var newCancel = btnCancel.cloneNode(true);
+        btnOk.parentNode.replaceChild(newOk, btnOk);
+        btnCancel.parentNode.replaceChild(newCancel, btnCancel);
+        
+        btnOk = document.getElementById('msg-btn-ok');
+        btnCancel = document.getElementById('msg-btn-cancel');
+
+        if(isConfirm) {
+            btnCancel.style.display = 'block';
+            btnOk.innerText = "検索する";
+        } else {
+            btnCancel.style.display = 'none';
+            btnOk.innerText = "OK";
+        }
+        overlay.style.display = 'flex';
+        
+        btnOk.onclick = function() { overlay.style.display = 'none'; if(callback) callback(true); };
+        btnCancel.onclick = function() { overlay.style.display = 'none'; if(callback) callback(false); };
+    }
+  }
+
+  function updateCharCount() {
+    var areaWords = "";
+    var uniqueCodes = [];
+    selectedAreaKeys.forEach(function(k) {
+        var c = areaData[k].code;
+        if(uniqueCodes.indexOf(c) === -1) uniqueCodes.push(c);
+        if (areaData[k].words) areaWords += areaData[k].words;
+    });
+    
+    var kw = document.querySelector('input[name="radioKw"]:checked');
+    var kwVal = (kw && kw.id !== 'u4' && kw.id !== 'u5') ? kw.value : "";
+    
+    var freeW = document.getElementById('FreeW');
+    var manualKw = freeW ? freeW.value.trim() : "";
+    if (kw && kw.id !== 'u5') manualKw = "";
+
+    var fwArr = [];
+    if (areaWords.trim()) fwArr.push(areaWords.trim());
+    if (kwVal) fwArr.push(kwVal);
+    
+    var autoText = fwArr.join(" ");
+    var autoLen = autoText.length;
+
+    var spaceLen = (autoLen > 0 && manualKw.length > 0) ? 1 : 0;
+    var currentTotal = autoLen + spaceLen + manualKw.length;
+    var remain = 50 - currentTotal;
+
+    var countEl = document.getElementById('char-count');
+    if (countEl) {
+        countEl.innerText = "残り入力：" + (remain < 0 ? 0 : remain) + "文字";
+        countEl.style.color = remain <= 10 ? "#d32f2f" : "#008000";
+    }
+
+    var badgeContainer = document.getElementById('area-badge-container');
+    var badgeText = document.getElementById('area-badge-text');
+    var explanationText = document.getElementById('dynamic-explanation-text');
+    
+    // ガイドテキストのスマート自動切り替え
+    if (areaWords.trim() && badgeContainer && badgeText) {
+        badgeContainer.style.display = 'block';
+        badgeText.innerText = areaWords.trim() + " （計" + areaWords.trim().length + "文字）";
+        if(explanationText) {
+            explanationText.innerHTML = "※選択した地区の町名が自動でセットされています。自由にキーワードを組み合わせたい場合は、上の【自動セットを解除】を押してからご入力ください。";
+        }
+    } else {
+        if(badgeContainer) badgeContainer.style.display = 'none';
+        if(explanationText) {
+            explanationText.innerHTML = "※仕様上、全体で50文字までしか入力できません。<br>下の入力欄に「一番町 事務」のように全角スペースで区切って直接ご入力ください。";
+        }
+    }
+
+    if (freeW) {
+        var spaceNeeded = (autoLen > 0) ? 1 : 0;
+        var maxManual = 50 - autoLen - spaceNeeded;
+        if (maxManual < 0) maxManual = 0;
+        
+        freeW.maxLength = maxManual;
+        
+        if (freeW.value.length > maxManual) {
+            freeW.value = freeW.value.substring(0, maxManual);
+            var newTotal = autoLen + spaceNeeded + freeW.value.length;
+            var newRemain = 50 - newTotal;
+            if (countEl) {
+                countEl.innerText = "残り入力：" + (newRemain < 0 ? 0 : newRemain) + "文字";
+            }
+        }
+    }
+  }
+
+  function initJobModals() {
+      var container = document.getElementById('job-modal-body');
+      if(!container) return;
+      
+      for(var code in jobData) {
+          if(code === "0" || !jobData[code].subs) continue;
+          
+          var wrap = document.createElement('div');
+          wrap.id = 'job-sub-wrap-' + code;
+          wrap.style.display = 'none';
+
+          var info = document.createElement('div');
+          info.className = 'notice-box';
+          info.innerHTML = '最大<strong>5つ</strong>まで選択できます。';
+          wrap.appendChild(info);
+
+          var scrollBox = document.createElement('div');
+          scrollBox.style.maxHeight = '45vh';
+          scrollBox.style.overflowY = 'auto';
+          scrollBox.style.border = '1px solid #e0e0e0';
+          scrollBox.style.borderRadius = '8px';
+          scrollBox.style.padding = '8px';
+          scrollBox.style.backgroundColor = '#fafafa';
+
+          var grid = document.createElement('div');
+          grid.className = 'grid-container';
+
+          for(var subCode in jobData[code].subs) {
+              var subName = jobData[code].subs[subCode];
+              var item = document.createElement('div');
+              item.className = 'grid-item-full';
+
+              var input = document.createElement('input');
+              input.type = 'checkbox';
+              input.id = 'job-sub-' + subCode;
+              input.value = subCode;
+              input.dataset.parentCode = code;
+
+              var label = document.createElement('label');
+              label.htmlFor = 'job-sub-' + subCode;
+              label.className = 'btn-base chkLabel';
+              label.style.textAlign = 'left';
+              label.style.justifyContent = 'flex-start';
+              label.style.paddingLeft = '15px';
+              label.innerText = subName;
+
+              input.addEventListener('change', function() {
+                  var pCode = this.dataset.parentCode;
+                  var isAnyChecked = this.value.endsWith('00') && this.checked;
+                  var allInputs = document.querySelectorAll('#job-sub-wrap-' + pCode + ' input[type="checkbox"]');
+                  
+                  if (isAnyChecked) {
+                      allInputs.forEach(function(inp) {
+                          if (inp.value !== this.value) {
+                              inp.checked = false;
+                              var lbl = document.querySelector('label[for="' + inp.id + '"]');
+                              if (lbl) lbl.classList.add('locked');
+                          }
+                      }.bind(this));
+                  } else {
+                      var anyInput = document.querySelector('#job-sub-wrap-' + pCode + ' input[value$="00"]');
+                      if (anyInput && !anyInput.checked) {
+                          allInputs.forEach(function(inp) {
+                              var lbl = document.querySelector('label[for="' + inp.id + '"]');
+                              if (lbl) lbl.classList.remove('locked');
+                          });
+                      }
+                      
+                      var checkedBoxes = document.querySelectorAll('#job-sub-wrap-' + pCode + ' input[type="checkbox"]:checked');
+                      if(checkedBoxes.length > 5) {
+                          this.checked = false;
+                          showMyModal("選択できません", "小分類は5つまでしか選択できません。", false);
+                      }
+                  }
+              });
+
+              item.appendChild(input);
+              item.appendChild(label);
+              grid.appendChild(item);
+          }
+          scrollBox.appendChild(grid);
+          wrap.appendChild(scrollBox);
+          container.appendChild(wrap);
+          jobModalDOMs[code] = wrap;
+      }
+  }
+
   function openJobModal(code) {
       if (!selectedJobs[code] && Object.keys(selectedJobs).length >= 3) {
           showMyModal("選択できません", "職種の大分類は3つまでしか選択できません。", false);
@@ -721,6 +947,72 @@
                if(btn) btn.classList.add('active');
            }
        }
+  }
+
+  function initFeatureModals() {
+      var container = document.getElementById('feature-modal-body');
+      if(!container) return;
+      
+      for(var code in featureData) {
+          if(!featureData[code].subs) continue;
+          
+          var wrap = document.createElement('div');
+          wrap.id = 'feature-sub-wrap-' + code;
+          wrap.style.display = 'none';
+
+          var info = document.createElement('div');
+          info.className = 'notice-box';
+          info.innerHTML = '最大<strong>5つ</strong>まで選択できます。';
+          wrap.appendChild(info);
+
+          var scrollBox = document.createElement('div');
+          scrollBox.style.maxHeight = '45vh';
+          scrollBox.style.overflowY = 'auto';
+          scrollBox.style.border = '1px solid #e0e0e0';
+          scrollBox.style.borderRadius = '8px';
+          scrollBox.style.padding = '8px';
+          scrollBox.style.backgroundColor = '#fafafa';
+
+          var grid = document.createElement('div');
+          grid.className = 'grid-container';
+
+          for(var subCode in featureData[code].subs) {
+              var subName = featureData[code].subs[subCode];
+              var item = document.createElement('div');
+              item.className = 'grid-item-full';
+
+              var input = document.createElement('input');
+              input.type = 'checkbox';
+              input.id = 'feature-sub-' + subCode;
+              input.value = subCode;
+              input.dataset.parentCode = code;
+
+              var label = document.createElement('label');
+              label.htmlFor = 'feature-sub-' + subCode;
+              label.className = 'btn-base chkLabel';
+              label.style.textAlign = 'left';
+              label.style.justifyContent = 'flex-start';
+              label.style.paddingLeft = '15px';
+              label.innerText = subName;
+
+              input.addEventListener('change', function() {
+                  var pCode = this.dataset.parentCode;
+                  var checkedBoxes = document.querySelectorAll('#feature-sub-wrap-' + pCode + ' input[type="checkbox"]:checked');
+                  if(checkedBoxes.length > 5) {
+                      this.checked = false;
+                      showMyModal("選択できません", "小分類は5つまでしか選択できません。", false);
+                  }
+              });
+
+              item.appendChild(input);
+              item.appendChild(label);
+              grid.appendChild(item);
+          }
+          scrollBox.appendChild(grid);
+          wrap.appendChild(scrollBox);
+          container.appendChild(wrap);
+          featureModalDOMs[code] = wrap;
+      }
   }
 
   function openFeatureModal(code) {
@@ -933,75 +1225,6 @@
         seniorWarning.style.display = isDetailAreaSelected ? 'block' : 'none';
     }
     updateCharCount();
-  }
-
-  function updateCharCount() {
-    var areaWords = "";
-    var uniqueCodes = [];
-    selectedAreaKeys.forEach(function(k) {
-        var c = areaData[k].code;
-        if(uniqueCodes.indexOf(c) === -1) uniqueCodes.push(c);
-        if (areaData[k].words) areaWords += areaData[k].words;
-    });
-    
-    var kw = document.querySelector('input[name="radioKw"]:checked');
-    var kwVal = (kw && kw.id !== 'u4' && kw.id !== 'u5') ? kw.value : "";
-    
-    var freeW = document.getElementById('FreeW');
-    var manualKw = freeW ? freeW.value.trim() : "";
-    if (kw && kw.id !== 'u5') manualKw = "";
-
-    var fwArr = [];
-    if (areaWords.trim()) fwArr.push(areaWords.trim());
-    if (kwVal) fwArr.push(kwVal);
-    
-    var autoText = fwArr.join(" ");
-    var autoLen = autoText.length;
-
-    var spaceLen = (autoLen > 0 && manualKw.length > 0) ? 1 : 0;
-    var currentTotal = autoLen + spaceLen + manualKw.length;
-    var remain = 50 - currentTotal;
-
-    var countEl = document.getElementById('char-count');
-    if (countEl) {
-        countEl.innerText = "残り入力：" + (remain < 0 ? 0 : remain) + "文字";
-        countEl.style.color = remain <= 10 ? "#d32f2f" : "#008000";
-    }
-
-    var badgeContainer = document.getElementById('area-badge-container');
-    var badgeText = document.getElementById('area-badge-text');
-    var explanationText = document.getElementById('dynamic-explanation-text');
-    
-    // ガイドテキストのスマート自動切り替え
-    if (areaWords.trim() && badgeContainer && badgeText) {
-        badgeContainer.style.display = 'block';
-        badgeText.innerText = areaWords.trim() + " （計" + areaWords.trim().length + "文字）";
-        if(explanationText) {
-            explanationText.innerHTML = "※選択した地区の町名が自動でセットされています。自由にキーワードを組み合わせたい場合は、上の【自動セットを解除】を押してからご入力ください。";
-        }
-    } else {
-        if(badgeContainer) badgeContainer.style.display = 'none';
-        if(explanationText) {
-            explanationText.innerHTML = "※仕様上、全体で50文字までしか入力できません。<br>下の入力欄に「一番町 事務」のように全角スペースで区切って直接ご入力ください。";
-        }
-    }
-
-    if (freeW) {
-        var spaceNeeded = (autoLen > 0) ? 1 : 0;
-        var maxManual = 50 - autoLen - spaceNeeded;
-        if (maxManual < 0) maxManual = 0;
-        
-        freeW.maxLength = maxManual;
-        
-        if (freeW.value.length > maxManual) {
-            freeW.value = freeW.value.substring(0, maxManual);
-            var newTotal = autoLen + spaceNeeded + freeW.value.length;
-            var newRemain = 50 - newTotal;
-            if (countEl) {
-                countEl.innerText = "残り入力：" + (newRemain < 0 ? 0 : newRemain) + "文字";
-            }
-        }
-    }
   }
 
   function updateConditionText() {
@@ -1378,160 +1601,9 @@
     });
   }
 
-  function initJobModals() {
-      var container = document.getElementById('job-modal-body');
-      if(!container) return;
-      
-      for(var code in jobData) {
-          if(code === "0" || !jobData[code].subs) continue;
-          
-          var wrap = document.createElement('div');
-          wrap.id = 'job-sub-wrap-' + code;
-          wrap.style.display = 'none';
-
-          var info = document.createElement('div');
-          info.className = 'notice-box';
-          info.innerHTML = '最大<strong>5つ</strong>まで選択できます。';
-          wrap.appendChild(info);
-
-          var scrollBox = document.createElement('div');
-          scrollBox.style.maxHeight = '45vh';
-          scrollBox.style.overflowY = 'auto';
-          scrollBox.style.border = '1px solid #e0e0e0';
-          scrollBox.style.borderRadius = '8px';
-          scrollBox.style.padding = '8px';
-          scrollBox.style.backgroundColor = '#fafafa';
-
-          var grid = document.createElement('div');
-          grid.className = 'grid-container';
-
-          for(var subCode in jobData[code].subs) {
-              var subName = jobData[code].subs[subCode];
-              var item = document.createElement('div');
-              item.className = 'grid-item-full';
-
-              var input = document.createElement('input');
-              input.type = 'checkbox';
-              input.id = 'job-sub-' + subCode;
-              input.value = subCode;
-              input.dataset.parentCode = code;
-
-              var label = document.createElement('label');
-              label.htmlFor = 'job-sub-' + subCode;
-              label.className = 'btn-base chkLabel';
-              label.style.textAlign = 'left';
-              label.style.justifyContent = 'flex-start';
-              label.style.paddingLeft = '15px';
-              label.innerText = subName;
-
-              input.addEventListener('change', function() {
-                  var pCode = this.dataset.parentCode;
-                  var isAnyChecked = this.value.endsWith('00') && this.checked;
-                  var allInputs = document.querySelectorAll('#job-sub-wrap-' + pCode + ' input[type="checkbox"]');
-                  
-                  if (isAnyChecked) {
-                      allInputs.forEach(function(inp) {
-                          if (inp.value !== this.value) {
-                              inp.checked = false;
-                              var lbl = document.querySelector('label[for="' + inp.id + '"]');
-                              if (lbl) lbl.classList.add('locked');
-                          }
-                      }.bind(this));
-                  } else {
-                      var anyInput = document.querySelector('#job-sub-wrap-' + pCode + ' input[value$="00"]');
-                      if (anyInput && !anyInput.checked) {
-                          allInputs.forEach(function(inp) {
-                              var lbl = document.querySelector('label[for="' + inp.id + '"]');
-                              if (lbl) lbl.classList.remove('locked');
-                          });
-                      }
-                      
-                      var checkedBoxes = document.querySelectorAll('#job-sub-wrap-' + pCode + ' input[type="checkbox"]:checked');
-                      if(checkedBoxes.length > 5) {
-                          this.checked = false;
-                          showMyModal("選択できません", "小分類は5つまでしか選択できません。", false);
-                      }
-                  }
-              });
-
-              item.appendChild(input);
-              item.appendChild(label);
-              grid.appendChild(item);
-          }
-          scrollBox.appendChild(grid);
-          wrap.appendChild(scrollBox);
-          container.appendChild(wrap);
-          jobModalDOMs[code] = wrap;
-      }
-  }
-
-  function initFeatureModals() {
-      var container = document.getElementById('feature-modal-body');
-      if(!container) return;
-      
-      for(var code in featureData) {
-          if(!featureData[code].subs) continue;
-          
-          var wrap = document.createElement('div');
-          wrap.id = 'feature-sub-wrap-' + code;
-          wrap.style.display = 'none';
-
-          var info = document.createElement('div');
-          info.className = 'notice-box';
-          info.innerHTML = '最大<strong>5つ</strong>まで選択できます。';
-          wrap.appendChild(info);
-
-          var scrollBox = document.createElement('div');
-          scrollBox.style.maxHeight = '45vh';
-          scrollBox.style.overflowY = 'auto';
-          scrollBox.style.border = '1px solid #e0e0e0';
-          scrollBox.style.borderRadius = '8px';
-          scrollBox.style.padding = '8px';
-          scrollBox.style.backgroundColor = '#fafafa';
-
-          var grid = document.createElement('div');
-          grid.className = 'grid-container';
-
-          for(var subCode in featureData[code].subs) {
-              var subName = featureData[code].subs[subCode];
-              var item = document.createElement('div');
-              item.className = 'grid-item-full';
-
-              var input = document.createElement('input');
-              input.type = 'checkbox';
-              input.id = 'feature-sub-' + subCode;
-              input.value = subCode;
-              input.dataset.parentCode = code;
-
-              var label = document.createElement('label');
-              label.htmlFor = 'feature-sub-' + subCode;
-              label.className = 'btn-base chkLabel';
-              label.style.textAlign = 'left';
-              label.style.justifyContent = 'flex-start';
-              label.style.paddingLeft = '15px';
-              label.innerText = subName;
-
-              input.addEventListener('change', function() {
-                  var pCode = this.dataset.parentCode;
-                  var checkedBoxes = document.querySelectorAll('#feature-sub-wrap-' + pCode + ' input[type="checkbox"]:checked');
-                  if(checkedBoxes.length > 5) {
-                      this.checked = false;
-                      showMyModal("選択できません", "小分類は5つまでしか選択できません。", false);
-                  }
-              });
-
-              item.appendChild(input);
-              item.appendChild(label);
-              grid.appendChild(item);
-          }
-          scrollBox.appendChild(grid);
-          wrap.appendChild(scrollBox);
-          container.appendChild(wrap);
-          featureModalDOMs[code] = wrap;
-      }
-  }
-
-  // ALAYA環境での非同期埋め込みによるフリーズを防ぐための強制即時起動コアシステム
+  // -------------------------------------------
+  // ALAYAの非同期埋め込みによるフリーズを防ぐための強制即時起動コアシステム
+  // -------------------------------------------
   function initializeAllHWSystem() {
       var inputs = document.querySelectorAll('#hw-search-tool-root input[type="radio"], #hw-search-tool-root input[type="checkbox"], #hw-search-tool-root input[type="text"]');
       inputs.forEach(function(input) {
@@ -1685,15 +1757,15 @@
       function updateCarouselButtons() {
           if (!carousel || !btnLeft || !btnRight) return;
           if (carousel.scrollLeft <= 10) {
-              btnLeft.classList.remove('show');
+              btnLeft.classList.add('hidden');
           } else {
-              btnLeft.classList.add('show');
+              btnLeft.classList.remove('hidden');
           }
           var maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
           if (Math.abs(carousel.scrollLeft - maxScrollLeft) <= 40 || carousel.scrollLeft >= maxScrollLeft - 40) {
-              btnRight.classList.remove('show');
+              btnRight.classList.add('hidden');
           } else {
-              btnRight.classList.add('show');
+              btnRight.classList.remove('hidden');
           }
       }
       
@@ -1748,28 +1820,18 @@
       setupAutoTab('kNo1', 'kNo2', 5);
       setupAutoTab('jNo1', 'jNo2', 4);
       setupAutoTab('jNo2', 'jNo3', 6);
+      
+      // ボタンを押したときのモーダル（種類）表示機能を初期化
       initJobModals();
       initFeatureModals();
+      // 保存条件のロードを初期化
       loadConditionsAuto();
   }
 
-  /* ALAYAの後出し流し込みを100%制圧しフリーズを防ぐトリガー判別システム */
-  if (document.readyState === 'loading') {
-      doc// 削除する：
-// document.addEventListener('DOMContentLoaded', function() { ... });
-
-// 追加する（ALAYA環境での強制起動システム）：
-(function() {
-  function initializeAllHWSystem() {
-    // ここに既存の初期化処理をすべて記述（中身はそのまま）
-  }
-
+  // ALAYAの特殊な読み込み環境を無視して確実に即時起動させるスイッチ
   if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initializeAllHWSystem);
   } else {
-      initializeAllHWSystem();
-  }
-})(); {
       initializeAllHWSystem();
   }
 })();
