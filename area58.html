@@ -7,6 +7,7 @@
   #hw-search-tool-root #wrapper { width: 100%; max-width: 850px; margin: 0 auto; padding: 25px 20px; background-color: #ffffff; box-shadow: 0 8px 25px rgba(0,0,0,0.08); padding-bottom: 90px; box-sizing: border-box; position: relative; border-radius: 12px; overflow: visible; }
   
   /* 案内文エリア */
+
   #hw-search-tool-root .intro-text { font-size: 15px; color: #333; background: #faf9f6; border: 1px solid #eae8e3; padding: 20px; border-radius: 8px; margin-bottom: 25px; line-height: 1.6; }
   #hw-search-tool-root .hwis-guide-box { margin-top: 10px; text-align: center; }
   #hw-search-tool-root .hwis-link-btn { display: inline-block; background: #f0f7ff; color: #0055b3; border: 3px solid #0066cc; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px; box-shadow: 0 4px 8px rgba(0, 102, 204, 0.15); transition: all 0.2s; }
@@ -324,43 +325,43 @@
 
     <div class="svg-map-wrapper">
         <p style="font-size:12px; color:#666; margin:0 0 10px 0;">※地図をタップするか、下のボタンで選択してください</p>
-        <svg width="100%" height="auto" viewBox="0 0 360 350" style="max-height: 350px;">
-            <polygon id="svg-hojo" class="map-region" points="140,10 220,10 220,60 140,60" onclick="document.getElementById('btn-hojo').click()" />
-            <text id="text-hojo" class="map-text" x="180" y="35">北条</text>
+       <svg width="100%" height="auto" viewBox="0 0 360 250" style="max-height: 280px;">
+        <polygon id="svg-hojo" class="map-region" points="140,10 220,10 220,45 140,45" onclick="document.getElementById('btn-hojo').click()" />
+        <text id="text-hojo" class="map-text" x="180" y="27">北条</text>
 
-            <polygon id="svg-north" class="map-region" points="80,60 220,60 220,110 80,110" onclick="document.getElementById('btn-north').click()" />
-            <text id="text-north" class="map-text" x="150" y="85">城北</text>
+        <polygon id="svg-north" class="map-region" points="80,45 220,45 220,80 80,80" onclick="document.getElementById('btn-north').click()" />
+        <text id="text-north" class="map-text" x="150" y="62">城北</text>
 
-            <polygon id="svg-josai" class="map-region" points="20,110 80,110 80,200 20,200" onclick="document.getElementById('btn-josai').click()" />
-            <text id="text-josai" class="map-text" x="50" y="155">三津</text>
+        <polygon id="svg-josai" class="map-region" points="20,80 80,80 80,145 20,145" onclick="document.getElementById('btn-josai').click()" />
+        <text id="text-josai" class="map-text" x="50" y="112">三津</text>
 
-            <polygon id="svg-west" class="map-region" points="80,110 140,110 140,170 80,170" onclick="document.getElementById('btn-west').click()" />
-            <text id="text-west" class="map-text" x="110" y="140">城西</text>
+        <polygon id="svg-west" class="map-region" points="80,80 140,80 140,125 80,125" onclick="document.getElementById('btn-west').click()" />
+        <text id="text-west" class="map-text" x="110" y="102">城西</text>
 
-            <polygon id="svg-east" class="map-region" points="140,110 220,110 220,160 140,160" onclick="document.getElementById('btn-east').click()" />
-            <text id="text-east" class="map-text" x="180" y="135">城東</text>
+        <polygon id="svg-east" class="map-region" points="140,80 220,80 220,115 140,115" onclick="document.getElementById('btn-east').click()" />
+        <text id="text-east" class="map-text" x="180" y="97">城東</text>
 
-            <polygon id="svg-south" class="map-region" points="140,160 220,160 220,210 140,210" onclick="document.getElementById('btn-south').click()" />
-            <text id="text-south" class="map-text" x="180" y="185">城南</text>
+        <polygon id="svg-south" class="map-region" points="140,115 220,115 220,155 140,155" onclick="document.getElementById('btn-south').click()" />
+        <text id="text-south" class="map-text" x="180" y="135">城南</text>
 
-            <polygon id="svg-joto" class="map-region" points="220,110 280,110 280,210 220,210" onclick="document.getElementById('btn-joto').click()" />
-            <text id="text-joto" class="map-text" x="250" y="160">久米</text>
+        <polygon id="svg-joto" class="map-region" points="220,80 280,80 280,155 220,155" onclick="document.getElementById('btn-joto').click()" />
+        <text id="text-joto" class="map-text" x="250" y="117">久米</text>
 
-            <polygon id="svg-toon" class="map-region" points="280,110 340,110 340,210 280,210" onclick="document.getElementById('btn-toon').click()" />
-            <text id="text-toon" class="map-text" x="310" y="160">東温</text>
+        <polygon id="svg-toon" class="map-region" points="280,80 340,80 340,155 280,155" onclick="document.getElementById('btn-toon').click()" />
+        <text id="text-toon" class="map-text" x="310" y="117">東温</text>
 
-            <polygon id="svg-masaki" class="map-region" points="80,170 140,170 140,210 80,210" onclick="document.getElementById('btn-masaki').click()" />
-            <text id="text-masaki" class="map-text" x="110" y="190">松前</text>
+        <polygon id="svg-masaki" class="map-region" points="80,125 140,125 140,155 80,155" onclick="document.getElementById('btn-masaki').click()" />
+        <text id="text-masaki" class="map-text" x="110" y="140">松前</text>
 
-            <polygon id="svg-iyo" class="map-region" points="20,200 80,200 80,210 140,210 140,270 20,270" onclick="document.getElementById('btn-iyo').click()" />
-            <text id="text-iyo" class="map-text" x="80" y="240">伊予</text>
+        <polygon id="svg-iyo" class="map-region" points="20,145 80,145 80,155 140,155 140,195 20,195" onclick="document.getElementById('btn-iyo').click()" />
+        <text id="text-iyo" class="map-text" x="80" y="175">伊予</text>
 
-            <polygon id="svg-tobe" class="map-region" points="140,210 220,210 220,270 140,270" onclick="document.getElementById('btn-tobe').click()" />
-            <text id="text-tobe" class="map-text" x="180" y="240">砥部</text>
+        <polygon id="svg-tobe" class="map-region" points="140,155 220,155 220,195 140,195" onclick="document.getElementById('btn-tobe').click()" />
+        <text id="text-tobe" class="map-text" x="180" y="175">砥部</text>
 
-            <polygon id="svg-kuma" class="map-region" points="220,210 340,210 340,330 140,330 140,270 220,270" onclick="document.getElementById('btn-kuma').click()" />
-            <text id="text-kuma" class="map-text" x="280" y="270">久万高原</text>
-        </svg>
+        <polygon id="svg-kuma" class="map-region" points="220,155 340,155 340,235 140,235 140,195 220,195" onclick="document.getElementById('btn-kuma').click()" />
+        <text id="text-kuma" class="map-text" x="280" y="195">久万高原</text>
+    </svg>
     </div>
 
     <div class="town-display-panel">
