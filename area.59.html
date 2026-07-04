@@ -1,0 +1,58 @@
+/* --- ▼ここから：地図と町名表示パネルのデザイン▼ --- */
+.svg-map-wrapper {
+    background: #fdfdfd;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px;
+    margin: 15px auto;
+    max-width: 400px;
+    text-align: center;
+}
+.map-region {
+    fill: #dcfce7; /* 通常時の色（薄い緑） */
+    stroke: #ffffff; /* 境界線の色（白） */
+    stroke-width: 3;
+    transition: fill 0.2s;
+    cursor: pointer;
+}
+.map-region:hover {
+    fill: #bbf7d0; /* 触れた時の色 */
+}
+.map-region.active {
+    fill: #16a34a; /* 選ばれた時の色（濃い緑） */
+}
+.map-text {
+    font-size: 14px;
+    font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+    font-weight: bold;
+    fill: #166534;
+    pointer-events: none; /* 文字がタップの邪魔をしないようにする */
+    text-anchor: middle;
+    dominant-baseline: central;
+}
+.map-text.active {
+    fill: #ffffff; /* 選ばれた時は文字を白にする */
+}
+
+.town-display-panel {
+    background: #fffdf7;
+    border: 2px solid #f59e0b;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+.town-title {
+    font-weight: bold;
+    color: #d97706;
+    margin-bottom: 10px;
+    font-size: 15px;
+    border-bottom: 1px dashed #fcd34d;
+    padding-bottom: 5px;
+}
+.town-content {
+    font-size: 14.5px;
+    color: #444;
+    line-height: 1.6;
+}
+/* --- ▲ここまで▲ --- */
