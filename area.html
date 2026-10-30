@@ -1,19 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>かんたん求人検索｜ハローワーク松山</title>
+  <!-- 単体表示用。ALAYAへ貼り付ける本文コードは area60.html を使用してください。 -->
+  <style>html, body { margin: 0; padding: 0; min-width: 0; }</style>
 <style type="text/css">
 /* =============================================================
    ハローワーク松山 簡易求人検索  ―  Design System v3
    コンセプト：現行の親しみやすい緑を継承しつつ、程よく整える
-   - 主色は現行より気持ちだけ落ち着かせた中間トーンの緑
    - 主色は緑の鮮やかさを保ち、白文字との明暗差を確保
    - 特集・マイページのオレンジは主色の緑と同じ空気感で統一
    - タイトルまわりは公式ロゴの紺・赤をアクセントに親しみを演出
    - 18〜75歳を想定：文字16px基準・タップ領域48px以上
    ============================================================= */
+
 #hw-search-tool-root {
   /* ---- カラートークン ---- */
-  --c-green:       #1F9457;   /* 主色：現行より少し落ち着かせた中間の緑 */
   --c-green:       #17834B;   /* 主色：白文字が読みやすい、少し濃い緑 */
   --c-green-dark:  #16713F;
-  --c-green-tint:  #E7F3EC;   /* 主色の淡色面 */
   --c-green-tint:  #E0F2E7;   /* 主色の淡色面 */
   --c-green-line:  #A6D2B8;
   --c-indigo:      #2E6394;   /* 職種：藍 */
@@ -34,6 +40,7 @@
   --radius: 12px;
   --shadow-1: 0 1px 3px rgba(38,49,43,.07);
   --shadow-2: 0 6px 20px rgba(38,49,43,.08);
+
   font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic Medium", "游ゴシック Medium", Meiryo, sans-serif;
   font-size: 16px;
   line-height: 1.7;
@@ -46,10 +53,13 @@
   padding: 24px 0;
   -webkit-text-size-adjust: 100%;
 }
+
 #hw-search-tool-root * { box-sizing: border-box; }
+
 #hw-search-tool-root #wrapper {
   width: 100%;
-  max-width: 850px;
+  max-width: 1000px;
+  min-width: 0;
   margin: 0 auto;
   padding: 28px 24px 96px;
   background-color: var(--c-paper);
@@ -57,6 +67,7 @@
   position: relative;
   border-radius: 16px;
 }
+
 /* ---- 共通：インラインSVGアイコン ---- */
 #hw-search-tool-root .icn {
   width: 1.15em; height: 1.15em;
@@ -68,6 +79,7 @@
   stroke-linejoin: round;
   flex: 0 0 auto;
 }
+
 /* ---- フォーカス・モーション配慮 ---- */
 #hw-search-tool-root a:focus-visible,
 #hw-search-tool-root button:focus-visible,
@@ -79,6 +91,7 @@
 @media (prefers-reduced-motion: reduce) {
   #hw-search-tool-root * { transition: none !important; animation: none !important; }
 }
+
 /* =============================================
    案内文エリア
    ============================================= */
@@ -90,9 +103,11 @@
   border-radius: var(--radius);
   margin-bottom: 28px;
 }
+
 #hw-search-tool-root .intro-lead {
   font-weight: bold; margin-bottom: 16px; font-size: 15.5px;
 }
+
 #hw-search-tool-root .hwis-guide-box {
   border-top: 1px dashed var(--c-line);
   padding-top: 16px;
@@ -128,6 +143,7 @@
   text-decoration: underline; text-underline-offset: 2px;
 }
 #hw-search-tool-root .mypage-quick-links .link-separator { color: #879087; }
+
 /* ---- ヘルプボタン（右上固定） ---- */
 #hw-search-tool-root .floating-help-btn {
   position: absolute; top: 16px; right: 16px; z-index: 900;
@@ -149,6 +165,7 @@
   overflow: hidden !important; clip: rect(0, 0, 0, 0) !important;
   white-space: nowrap !important; border: 0 !important;
 }
+
 /* =============================================
    モーダル
    ============================================= */
@@ -178,6 +195,7 @@
   text-align: center; animation: popIn .18s ease-out;
 }
 @keyframes popIn { from { transform: scale(.94); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
 #hw-search-tool-root .modal-header {
   font-size: 17px; font-weight: bold; color: var(--c-ink);
   border-bottom: 1px solid var(--c-line);
@@ -218,6 +236,7 @@
 #hw-search-tool-root .help-history-date {
   display: block; color: var(--c-green-dark); font-weight: bold; margin-bottom: 4px;
 }
+
 #hw-search-tool-root .msg-title { font-size: 1.15em; font-weight: bold; margin-bottom: 12px; }
 #hw-search-tool-root .msg-body { font-size: 15px; color: var(--c-ink); line-height: 1.7; margin-bottom: 22px; }
 #hw-search-tool-root .msg-buttons { display: flex; justify-content: center; gap: 10px; width: 100%; }
@@ -227,6 +246,7 @@
 }
 #hw-search-tool-root .btn-ok { background: var(--c-green); color: #fff; border: none; box-shadow: var(--shadow-1); }
 #hw-search-tool-root .btn-cancel { background: #EFEFEA; color: var(--c-ink); border: none; }
+
 /* =============================================
    セクション見出し（1〜7のステップ番号つき）
    ============================================= */
@@ -252,10 +272,12 @@
 #hw-search-tool-root .sub-section {
   font-size: 15px; color: var(--c-ink-soft); font-weight: bold; margin-bottom: 8px;
 }
+
 /* =============================================
    ボタングリッド（レスポンシブの二重安全装置は継承）
    ============================================= */
 #hw-search-tool-root .grid-container { display: flex; flex-wrap: wrap; gap: 10px; }
+
 #hw-search-tool-root .grid-item-2,
 #hw-search-tool-root .grid-item-pc-2,
 #hw-search-tool-root .grid-item-pc-3,
@@ -264,12 +286,37 @@
   min-width: 140px;
 }
 #hw-search-tool-root .grid-item-full { flex: 1 1 100%; }
+
 @media screen and (min-width: 600px) {
   #hw-search-tool-root .grid-item-2         { flex: 1 1 calc(25% - 10px); }
   #hw-search-tool-root .grid-item-pc-2      { flex: 1 1 calc(50% - 10px); }
   #hw-search-tool-root .grid-item-pc-3      { flex: 1 1 calc(33.333% - 10px); }
   #hw-search-tool-root .grid-item-feature-3 { flex: 1 1 calc(33.333% - 10px); }
 }
+
+/* キーワードは年齢を2段目に分け、狭い本文枠でも横にはみ出さない配置にする */
+#hw-search-tool-root .keyword-options-container {
+  container-type: inline-size; container-name: hw-keywords; min-width: 0;
+}
+#hw-search-tool-root .keyword-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+#hw-search-tool-root .keyword-grid > div { min-width: 0; }
+#hw-search-tool-root .keyword-grid .grid-item-full { grid-column: 1 / -1; }
+#hw-search-tool-root .keyword-grid .chkLabel {
+  height: 100%; min-height: 72px;
+  flex-direction: column; gap: 3px; line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+#hw-search-tool-root .keyword-title { max-width: 100%; }
+#hw-search-tool-root .keyword-age {
+  display: block; font-size: 14px; line-height: 1.35;
+  white-space: nowrap; color: inherit;
+}
+@container hw-keywords (min-width: 740px) {
+  #hw-search-tool-root .keyword-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
 /* ---- ボタン共通 ---- */
 #hw-search-tool-root .btn-base {
   display: flex; align-items: center; justify-content: center;
@@ -284,6 +331,7 @@
   transition: background .12s, color .12s, border-color .12s;
   touch-action: manipulation;
 }
+
 /* 地区（緑） */
 #hw-search-tool-root .area-btn { color: var(--c-green-dark); border-color: var(--c-green); }
 #hw-search-tool-root .area-btn:hover { background: var(--c-green-tint); }
@@ -292,6 +340,7 @@
   border-color: var(--c-green) !important;
   box-shadow: inset 0 2px 4px rgba(0,0,0,.12);
 }
+
 /* チェック系（緑） */
 #hw-search-tool-root .chkLabel { color: var(--c-green-dark); border-color: var(--c-green); }
 #hw-search-tool-root .chkLabel:hover { background: var(--c-green-tint); }
@@ -301,11 +350,13 @@
   color: #fff !important;
   box-shadow: inset 0 2px 4px rgba(0,0,0,.12);
 }
+
 /* 「指定しない」系（中立） */
 #hw-search-tool-root .job-btn-all, #hw-search-tool-root .feature-btn-all { color: var(--c-ink-soft); border-color: #B9BCB4; }
 #hw-search-tool-root .job-btn-all.active, #hw-search-tool-root .feature-btn-all.active {
   background: #EDEEE9 !important; border-color: #8A9088 !important; color: var(--c-ink) !important;
 }
+
 /* 職種（藍） */
 #hw-search-tool-root .job-btn { color: var(--c-indigo); border-color: var(--c-indigo); }
 #hw-search-tool-root .job-btn:hover { background: var(--c-indigo-tint); }
@@ -314,6 +365,7 @@
   border-color: var(--c-indigo) !important;
   box-shadow: inset 0 2px 4px rgba(0,0,0,.12);
 }
+
 /* 特集（オレンジ） */
 #hw-search-tool-root .feature-btn { color: var(--c-brick); border-color: var(--c-brick); }
 #hw-search-tool-root .feature-btn:hover { background: var(--c-brick-tint); }
@@ -322,6 +374,7 @@
   border-color: var(--c-brick) !important;
   box-shadow: inset 0 2px 4px rgba(0,0,0,.12);
 }
+
 /* 無効・ロック状態 */
 #hw-search-tool-root .btn-base.disabled {
   background-color: #ECEDEA !important; color: #A2A69F !important;
@@ -331,6 +384,7 @@
   background-color: #F2F3F0 !important; color: #ABAFA8 !important;
   border-color: #E0E2DC !important; pointer-events: none; box-shadow: none;
 }
+
 /* ---- 注意ボックス類 ---- */
 #hw-search-tool-root .notice-box {
   background-color: var(--c-red-tint) !important;
@@ -353,6 +407,7 @@
   margin-top: 10px; background-color: var(--c-red-tint) !important;
   padding: 12px; border-radius: 8px; border: 1px dashed #D8A9A4; text-align: center;
 }
+
 #hw-search-tool-root input[type="checkbox"],
 #hw-search-tool-root input[type="radio"] {
   position: absolute;
@@ -366,6 +421,7 @@
   outline: 3px solid #7FB59C;
   outline-offset: 2px;
 }
+
 /* ---- アコーディオン ---- */
 #hw-search-tool-root details {
   margin-bottom: 15px; border: 1px solid var(--c-line);
@@ -391,12 +447,14 @@
 }
 #hw-search-tool-root details[open] summary::after { transform: translateY(-30%) rotate(-135deg); }
 #hw-search-tool-root .details-content { padding: 12px; background: #FBFBF8; border-top: 1px solid var(--c-line); }
+
 #hw-search-tool-root input[type="text"] {
   width: 100%; padding: 14px; margin-top: 5px;
   border: 1.5px solid #CFD2CB; border-radius: 10px;
   font-size: 16px; background: #fff; color: var(--c-ink);
 }
 #hw-search-tool-root input[type="text"]:focus { border-color: var(--c-green); }
+
 /* ---- 検索ボタン ---- */
 #hw-search-tool-root .searchbutton {
   display: flex; align-items: center; justify-content: center; gap: 10px;
@@ -420,6 +478,7 @@
   width: 1.45em; height: 1.45em; vertical-align: -0.28em;
   stroke-width: 2.6;
 }
+
 /* =============================================
    現在の検索条件・保存
    ============================================= */
@@ -445,6 +504,7 @@
 #hw-search-tool-root #btn-save-cond {
   border: 2px solid var(--c-green); color: var(--c-green-dark); background: var(--c-green-tint);
 }
+
 #hw-search-tool-root .cond-table {
   width: 100%; border-collapse: collapse; text-align: left;
   background: #fff; border-radius: 8px; overflow: hidden;
@@ -461,7 +521,9 @@
 }
 #hw-search-tool-root .cond-table tr:last-child th,
 #hw-search-tool-root .cond-table tr:last-child td { border-bottom: none; }
+
 #hw-search-tool-root .floating-condition { display: none; }
+
 /* =============================================
    地図＋町名パネル
    ============================================= */
@@ -486,8 +548,8 @@
   display: block; font-size: 14px; font-weight: normal;
   color: var(--c-ink-soft);
 }
+
 #hw-search-tool-root .map-region {
-  fill: #E4EFE8; stroke: #FBFBF8; stroke-width: 3;
   fill: #DDEDE3; stroke: #FBFBF8; stroke-width: 3;
   stroke-linejoin: round;
   transition: fill .15s; cursor: pointer;
@@ -497,18 +559,13 @@
   outline: none; stroke: var(--c-green-dark); stroke-width: 3;
   filter: drop-shadow(0 0 2px rgba(22, 113, 63, .28));
 }
-#hw-search-tool-root .map-region:hover { fill: #CFE3D7; }
 #hw-search-tool-root .map-region:hover { fill: #D3E6D9; }
 #hw-search-tool-root .map-region.active { fill: var(--c-green); }
-/* 周辺地域：松山市内の淡い緑と明るさをそろえた、やわらかな青灰色で区別 */
-#hw-search-tool-root .map-region-neighbor { fill: #E3EAF2; }
-#hw-search-tool-root .map-region-neighbor:not(.active):hover { fill: #D3E1EC; }
 /* 周辺地域：淡い青灰色と同系色の文字、市・町の正式名で区別 */
 #hw-search-tool-root .map-region-neighbor { fill: #DEE6EF; }
 #hw-search-tool-root .map-region-neighbor:not(.active):hover { fill: #D2DEEA; }
 /* 松山市全域のタップ領域：他エリアと差をつけ「まとめて選べる」感を出す */
 #hw-search-tool-root .map-region-all {
-  fill: #F1F6F2; stroke: var(--c-green); stroke-width: 2;
   fill: #EEF5F0; stroke: var(--c-green); stroke-width: 2;
 }
 #hw-search-tool-root .map-region-all:hover { fill: var(--c-green-tint); }
@@ -518,12 +575,12 @@
 #hw-search-tool-root .map-text {
   font-size: 14px;
   font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
-  font-weight: bold; fill: var(--c-green-dark);
   font-weight: bold; fill: #145C37;
   pointer-events: none; text-anchor: middle; dominant-baseline: central;
 }
 #hw-search-tool-root .map-text-neighbor:not(.active) { fill: #3B4C5D; }
 #hw-search-tool-root .map-text.active { fill: #ffffff; }
+
 #hw-search-tool-root .town-display-panel {
   flex: 1 1 250px;
   background: #fff;
@@ -542,10 +599,12 @@
   position: sticky; top: -15px; background: #fff; z-index: 10;
 }
 #hw-search-tool-root .town-content { font-size: 15px; color: var(--c-ink); line-height: 1.8; }
+
 #hw-search-tool-root #selectedAreaDisplay {
   color: var(--c-green-dark); font-weight: bold;
   margin: 12px 0 15px; border-bottom: 1px solid var(--c-line); padding-bottom: 6px;
 }
+
 /* =============================================
    番号検索・下部情報コンテナ
    ============================================= */
@@ -554,6 +613,7 @@
   border: 1px solid var(--c-line); border-radius: 14px;
   box-shadow: var(--shadow-1); overflow: hidden;
 }
+
 #hw-search-tool-root .number-search-section {
   background-color: #FBFBF8;
   border-top: 0;
@@ -574,6 +634,7 @@
 }
 #hw-search-tool-root .number-search-lead { font-size: 14.5px; color: var(--c-ink-soft); margin: 0 0 15px; line-height: 1.8; }
 #hw-search-tool-root .number-search-lead strong { color: var(--c-red); }
+
 #hw-search-tool-root .map-howto-box {
   background: #fff; border: 1px solid var(--c-green-line);
   padding: 14px; border-radius: 10px; margin-bottom: 20px;
@@ -583,6 +644,7 @@
   font-weight: bold; color: var(--c-green-dark); font-size: 15px; margin-bottom: 6px;
 }
 #hw-search-tool-root .map-howto-body { font-size: 14.5px; line-height: 1.8; }
+
 #hw-search-tool-root .number-field-label { font-weight: bold; font-size: 15px; margin-bottom: 6px; }
 #hw-search-tool-root .number-field-row { display: flex; align-items: center; gap: 8px; }
 #hw-search-tool-root .number-field-row input[type="text"] {
@@ -601,11 +663,13 @@
   border-radius: 10px; cursor: pointer; box-shadow: var(--shadow-1);
 }
 #hw-search-tool-root .number-btn-reset:disabled { cursor: wait; opacity: .68; }
+
 /* =============================================
    マイページ CTA
    ============================================= */
 #hw-search-tool-root .mypage-cta-section { padding: 32px 0 12px; background: linear-gradient(180deg, #FCF8F5 0%, #FFFFFF 60%); }
 #hw-search-tool-root .mypage-cta-header { padding: 0 20px; text-align: center; }
+
 #hw-search-tool-root .mypage-eyebrow {
   display: inline-flex; align-items: center; gap: 6px;
   font-size: 12.5px; font-weight: bold; letter-spacing: .12em;
@@ -639,6 +703,7 @@
   padding-top: 12px; background: #fff;
   border-top: 1px solid var(--c-brick-line);
 }
+
 #hw-search-tool-root .mypage-features {
   background-color: #fff;
   border-radius: 12px;
@@ -687,6 +752,7 @@
   #hw-search-tool-root .mypage-features ul.benefit-tiles li { min-height: 100px; font-size: 14px; }
 }
 #hw-search-tool-root .mypage-cta-desc { font-size: 15px; color: var(--c-ink-soft); line-height: 1.8; margin-bottom: 10px; }
+
 /* ---- カルーセル ---- */
 #hw-search-tool-root .carousel-wrapper {
   display: flex; align-items: center; justify-content: space-between;
@@ -703,12 +769,14 @@
 #hw-search-tool-root .carousel-btn:hover { background: var(--c-brick-tint); }
 #hw-search-tool-root .carousel-btn.hidden,
 #hw-search-tool-root .carousel-btn:disabled { opacity: 0; pointer-events: none; }
+
 #hw-search-tool-root .card-carousel {
   flex: 1 1 auto; display: flex; overflow-x: auto;
   scroll-snap-type: x mandatory; gap: 15px; padding: 15px 5px;
   -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth;
 }
 #hw-search-tool-root .card-carousel::-webkit-scrollbar { display: none; }
+
 #hw-search-tool-root .card-item {
   flex: 0 0 100%; scroll-snap-align: center;
   background: #fff;
@@ -745,6 +813,7 @@
   transition: background .15s; touch-action: manipulation; margin-top: auto;
 }
 #hw-search-tool-root .card-btn:hover { background: var(--c-brick-dark); }
+
 #hw-search-tool-root .carousel-indicators {
   display: flex; justify-content: center; gap: 0; margin-top: 0; margin-bottom: 18px;
 }
@@ -763,6 +832,7 @@
 @media screen and (min-width: 600px) {
   #hw-search-tool-root .indicator:nth-child(3) { display: none; }
 }
+
 /* ---- 応募案内・問い合わせ ---- */
 #hw-search-tool-root .apply-guide-section { padding: 26px 20px; background-color: #fff; border-top: 1px dashed var(--c-line); }
 #hw-search-tool-root .apply-guide-title {
@@ -786,6 +856,7 @@
   display: inline-flex; align-items: center; gap: 7px;
   font-size: 18px; color: var(--c-green-dark);
 }
+
 /* =============================================
    スマホ（〜600px）
    ============================================= */
@@ -822,7 +893,11 @@
   #hw-search-tool-root .mypage-cta-title { font-size: 19px; }
 }
 </style>
+
+</head>
+<body>
 <div id="hw-search-tool-root">
+
 <!-- ==== SVGアイコン定義（この1か所にまとめて再利用） ==== -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
@@ -844,10 +919,12 @@
     <symbol id="hwic-heart" viewBox="0 0 24 24"><path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1L12 21l8.8-7.3a5 5 0 0 0 0-7.1Z"/></symbol>
   </defs>
 </svg>
+
 <button class="floating-help-btn" type="button" aria-haspopup="dialog" aria-controls="help-modal"><svg class="icn" aria-hidden="true"><use href="#hwic-help"/></svg>利用方法・注意事項</button>
 <div id="accessibility-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
 <span id="area-keyword-disabled-reason" class="sr-only">ミドルシニアのフリーワード検索を選択中のため、松山市内の詳細地区は選択できません。</span>
 <span id="job-sub-locked-reason" class="sr-only">「こだわらない」を選択中のため、他の小分類は選択できません。</span>
+
 <div id="help-modal" class="modal-overlay" aria-hidden="true">
   <div class="modal-content-help" role="dialog" aria-modal="true" aria-labelledby="help-modal-title" tabindex="-1">
     <div class="modal-header">
@@ -891,6 +968,7 @@
     </div>
   </div>
 </div>
+
 <div id="job-modal-overlay" class="modal-overlay" aria-hidden="true">
   <div class="modal-content-help" role="dialog" aria-modal="true" aria-labelledby="job-modal-title" tabindex="-1" style="padding: 0; padding-bottom: 70px; overflow: hidden; display: flex; flex-direction: column; max-height: 85vh;">
     <div class="modal-header">
@@ -903,6 +981,7 @@
     </div>
   </div>
 </div>
+
 <div id="feature-modal-overlay" class="modal-overlay" aria-hidden="true">
   <div class="modal-content-help" role="dialog" aria-modal="true" aria-labelledby="feature-modal-title" tabindex="-1" style="padding: 0; padding-bottom: 70px; overflow: hidden; display: flex; flex-direction: column; max-height: 85vh;">
     <div class="modal-header">
@@ -915,6 +994,7 @@
     </div>
   </div>
 </div>
+
 <div id="msg-modal-overlay" class="modal-overlay" aria-hidden="true">
   <div class="modal-content-msg" role="alertdialog" aria-modal="true" aria-labelledby="msg-modal-title" aria-describedby="msg-modal-text" tabindex="-1">
     <div id="msg-modal-title" class="msg-title"></div>
@@ -925,7 +1005,9 @@
     </div>
   </div>
 </div>
+
 <div id="wrapper">
+
   <!-- ==================== 案内 ==================== -->
   <div class="intro-text">
     <div class="intro-lead">
@@ -944,8 +1026,10 @@
       </div>
     </div>
   </div>
+
   <!-- ==================== 1. 地区 ==================== -->
   <h2 class="section" style="margin-top: 1em;"><span class="step-num">1</span>地区を選択</h2>
+
   <div class="notice-box" style="margin-bottom: 20px;">
     <div class="notice-title"><svg class="icn" aria-hidden="true"><use href="#hwic-alert"/></svg>エリア選択時のご注意</div>
     <ul style="margin: 0; padding-left: 20px; font-size: 14.5px; line-height: 1.8; color: #36423B;">
@@ -954,9 +1038,9 @@
       <li>地区指定は主な町名のみです。漏れなく探す場合は「松山市全域」を推奨します。</li>
     </ul>
   </div>
+
   <div class="map-and-town-container">
     <div class="svg-map-wrapper">
-      <p class="svg-map-note">地図をタップするか、下のボタンで選択してください<span class="map-legend">淡い緑：松山市内 ／ 淡い青：周辺地域</span></p>
       <p class="svg-map-note">地図をタップするか、下のボタンで選択してください<span class="map-legend">緑：松山市内 ／ 青：周辺の市・町</span></p>
       <svg width="100%" height="auto" viewBox="0 0 360 250" style="max-height: 280px;" role="group" aria-label="地区を選択する地図">
         <!-- 松山市全域：地図左上の空き領域に配置（既存の全域ボタンをclickさせる） -->
@@ -978,19 +1062,14 @@
         <polygon id="svg-joto" class="map-region" points="220,80 280,80 280,155 220,155" role="button" tabindex="0" aria-label="久米・小野を選択" aria-pressed="false" onclick="document.getElementById('btn-joto').click()" />
         <text id="text-joto" class="map-text" x="250" y="117">久米</text>
         <polygon id="svg-toon" class="map-region map-region-neighbor" points="280,80 340,80 340,155 280,155" role="button" tabindex="0" aria-label="東温市を選択" aria-pressed="false" onclick="document.getElementById('btn-toon').click()" />
-        <text id="text-toon" class="map-text" x="310" y="117">東温</text>
         <text id="text-toon" class="map-text map-text-neighbor" x="310" y="117">東温市</text>
         <polygon id="svg-masaki" class="map-region map-region-neighbor" points="80,125 140,125 140,155 80,155" role="button" tabindex="0" aria-label="松前町を選択" aria-pressed="false" onclick="document.getElementById('btn-masaki').click()" />
-        <text id="text-masaki" class="map-text" x="110" y="140">松前</text>
         <text id="text-masaki" class="map-text map-text-neighbor" x="110" y="140">松前町</text>
         <polygon id="svg-iyo" class="map-region map-region-neighbor" points="20,145 80,145 80,155 140,155 140,195 20,195" role="button" tabindex="0" aria-label="伊予市を選択" aria-pressed="false" onclick="document.getElementById('btn-iyo').click()" />
-        <text id="text-iyo" class="map-text" x="80" y="175">伊予</text>
         <text id="text-iyo" class="map-text map-text-neighbor" x="80" y="175">伊予市</text>
         <polygon id="svg-tobe" class="map-region map-region-neighbor" points="140,155 220,155 220,195 140,195" role="button" tabindex="0" aria-label="砥部町を選択" aria-pressed="false" onclick="document.getElementById('btn-tobe').click()" />
-        <text id="text-tobe" class="map-text" x="180" y="175">砥部</text>
         <text id="text-tobe" class="map-text map-text-neighbor" x="180" y="175">砥部町</text>
         <polygon id="svg-kuma" class="map-region map-region-neighbor" points="220,155 340,155 340,235 140,235 140,195 220,195" role="button" tabindex="0" aria-label="久万高原町を選択" aria-pressed="false" onclick="document.getElementById('btn-kuma').click()" />
-        <text id="text-kuma" class="map-text" x="280" y="195">久万高原</text>
         <text id="text-kuma" class="map-text map-text-neighbor" x="280" y="195">久万高原町</text>
       </svg>
     </div>
@@ -1001,6 +1080,7 @@
       </div>
     </div>
   </div>
+
   <div class="sub-section">▼松山市内（1つのみ選択可）</div>
   <div class="grid-container">
     <div class="grid-item-2"><button type="button" id="btn-matsuyama_all" class="btn-base area-btn" aria-pressed="false" style="border-color:#B9BCB4; color:#26312B;">松山市全域</button></div>
@@ -1012,6 +1092,7 @@
     <div class="grid-item-2"><button type="button" id="btn-josai" class="btn-base area-btn" aria-pressed="false">三津・垣生</button></div>
     <div class="grid-item-2"><button type="button" id="btn-hojo" class="btn-base area-btn" aria-pressed="false">北条・島しょ</button></div>
   </div>
+
   <div class="sub-section" style="margin-top:14px;">▼周辺地域（複数選択可・合計5地域まで）</div>
   <div class="grid-container">
     <div class="grid-item-pc-2"><button type="button" id="btn-iyo" class="btn-base area-btn" aria-pressed="false">伊予市</button></div>
@@ -1020,7 +1101,9 @@
     <div class="grid-item-pc-3"><button type="button" id="btn-tobe" class="btn-base area-btn" aria-pressed="false">砥部町</button></div>
     <div class="grid-item-pc-3"><button type="button" id="btn-kuma" class="btn-base area-btn" aria-pressed="false">久万高原町</button></div>
   </div>
+
   <div id="selectedAreaDisplay" role="status" aria-live="polite" aria-atomic="true">指定しない</div>
+
   <!-- ==================== 2. 雇用形態 ==================== -->
   <h2 class="section"><span class="step-num">2</span>雇用形態</h2>
   <form name="empForm" class="grid-container">
@@ -1029,6 +1112,7 @@
     <div class="grid-item-2"><input id="s2" name="radioEmp" type="radio" value="ippanCKBox=1"/><label for="s2" class="btn-base chkLabel">フルタイム</label></div>
     <div class="grid-item-2"><input id="s3" name="radioEmp" type="radio" value="ippanCKBox=2"/><label for="s3" class="btn-base chkLabel">パート</label></div>
   </form>
+
   <details class="compact-optional-details" style="margin-top:14px;">
     <summary>派遣求人を除外する（任意）</summary>
     <div class="details-content">
@@ -1038,18 +1122,22 @@
       </form>
     </div>
   </details>
+
   <!-- ==================== 3. 新着区分 ==================== -->
   <h2 class="section"><span class="step-num">3</span>新着区分</h2>
   <form name="arriveForm" class="grid-container">
     <div class="grid-item-2"><input checked id="t3" name="radioArrive" type="radio" value=""/><label for="t3" class="btn-base chkLabel" style="border-color:#B9BCB4; color:#26312B;">指定しない</label></div>
     <div class="grid-item-2"><input id="t1" name="radioArrive" type="radio" value="20260101001"/><label for="t1" class="btn-base chkLabel">新着(直近3日)</label></div>
   </form>
+
   <!-- ==================== 4. 職種 ==================== -->
   <h2 class="section"><span class="step-num">4</span>職種から探す</h2>
   <p style="font-size:.9em; color:#2E6394; font-weight:bold; margin-top: 0;">※大分類は最大3つ、小分類は最大5つまで選択できます。</p>
+
   <div id="job-cross-warning-msg" class="cross-exclusion-msg" role="alert" aria-live="assertive">
     ※特集（重点分野）を選択中は、システムエラー防止のため職種は選択できません。
   </div>
+
   <details>
     <summary>職種を選択する（詳細）</summary>
     <div class="details-content">
@@ -1074,20 +1162,24 @@
       </div>
     </div>
   </details>
+
   <!-- ==================== 5. 特集求人 ==================== -->
   <h2 class="section section-feature"><span class="step-num">5</span>注目の特集求人（重点分野）</h2>
   <details class="feature-details">
     <summary>特集求人を選択する（任意）</summary>
     <div class="details-content">
       <p style="font-size:.9em; color:#D0602A; font-weight:bold; margin-top: 0; line-height: 1.6;">ハローワーク松山が現在特に力を入れている分野です。<br>※大分類は1つのみ、小分類は最大5つまで選択できます。</p>
+
       <div style="background-color: #F8F0EA; border: 1px dashed #C99873; padding: 14px; border-radius: 10px; margin-bottom: 15px; font-size: 14.5px; color: #26312B; line-height: 1.8;">
         <strong>ハローワーク松山には、各分野の「専門窓口」があります！</strong><br>
         対象分野でのお仕事探しについて、詳しくは<a href="https://page.line.me/039qicol/showcase/1740470974131477" target="_blank" rel="noopener noreferrer" style="color: #2E6394; font-weight: bold; text-decoration: underline;">こちら（専門窓口ナビ）</a>をご確認ください。<br>
         <span style="font-size: 14px; color: #A63831;">※専門窓口でのご相談は【担当制・予約制】となります。</span>
       </div>
+
       <div id="feature-cross-warning-msg" class="cross-exclusion-msg" role="alert" aria-live="assertive">
         ※職種を選択中は、システムエラー防止のため特集は選択できません。
       </div>
+
       <div class="grid-container" style="background: #FCF8F5; padding: 15px; border-radius: 12px; border: 1px solid #E5D2C5; margin-bottom: 20px;">
         <div class="grid-item-full"><button type="button" id="btn-feature-0" class="btn-base feature-btn-all active" aria-pressed="true">指定しない</button></div>
         <div class="grid-item-feature-3"><button type="button" id="btn-feature-20260101001" class="btn-base feature-btn" aria-pressed="false">医療・看護・保健</button></div>
@@ -1099,6 +1191,7 @@
       </div>
     </div>
   </details>
+
   <!-- ==================== 6. 条件 ==================== -->
   <h2 class="section"><span class="step-num">6</span>条件を選ぶ</h2>
   <form name="jyoukenForm" class="grid-container">
@@ -1113,6 +1206,7 @@
     <div class="grid-item-2"><input id="j9" name="jyoukenBox" type="checkbox" value="20260101030"/><label for="j9" class="btn-base chkLabel">書類選考なし</label></div>
     <div class="grid-item-2"><input id="j10" name="jyoukenBox" type="checkbox" value="20260101031"/><label for="j10" class="btn-base chkLabel">駅近(徒歩10分以内)</label></div>
   </form>
+
   <details style="margin-top:20px;">
     <summary>就業時間の希望を選択する（任意）</summary>
     <div class="details-content">
@@ -1126,21 +1220,28 @@
       </form>
     </div>
   </details>
+
   <!-- ==================== 7. キーワード ==================== -->
   <h2 class="section"><span class="step-num">7</span>キーワード・その他</h2>
+
   <div id="senior-warning-msg" class="exclusion-msg" role="alert" aria-live="assertive">
     ※詳細エリア（町名）指定中は、文字数上限保護のため<strong>ミドルシニアのフリーワード検索は併用できません。</strong>自由にキーワードを追加したい場合は「自分で入力する」を選んでください。
   </div>
   <div id="keyword-feature-cross-warning-msg" class="cross-exclusion-msg" role="alert" aria-live="assertive">
     ※職種または5番の特集求人を選択中は、ここで特集求人を選べません。
   </div>
-  <form name="kwForm" class="grid-container">
+
+  <div class="keyword-options-container">
+  <form name="kwForm" class="grid-container keyword-grid">
     <div class="grid-item-2"><input checked id="u4" name="radioKw" type="radio" value=""/><label for="u4" class="btn-base chkLabel" style="border-color:#B9BCB4; color:#26312B;">指定しない</label></div>
-    <div class="grid-item-2"><input id="u2" name="radioKw" type="radio" value="仕事と子育て両立求人"/><label for="u2" class="btn-base chkLabel">仕事と子育て両立求人</label></div>
-    <div class="grid-item-2"><input id="u6" name="radioKw" type="radio" value="シニア求人"/><label for="u6" class="btn-base chkLabel">シニア求人</label></div>
-    <div class="grid-item-2"><input id="u7" name="radioKw" type="radio" value="ミドルシニア"/><label for="u7" class="btn-base chkLabel">ミドルシニア</label></div>
+    <div class="grid-item-2"><input id="u2" name="radioKw" type="radio" value="仕事と子育て両立求人"/><label for="u2" class="btn-base chkLabel"><span class="keyword-title">仕事と子育て両立求人</span></label></div>
+    <div class="grid-item-2"><input id="u6" name="radioKw" type="radio" value="シニア求人"/><label for="u6" class="btn-base chkLabel"><span class="keyword-title">シニア求人</span><span class="keyword-age">（60歳以上）</span></label></div>
+    <div class="grid-item-2"><input id="u7" name="radioKw" type="radio" value="ミドルシニア"/><label for="u7" class="btn-base chkLabel"><span class="keyword-title">ミドルシニア</span><span class="keyword-age">（35～59歳）</span></label></div>
     <div class="grid-item-full"><input id="u5" name="radioKw" type="radio" value="manual"/><label for="u5" class="btn-base chkLabel">自分で入力する</label></div>
   </form>
+
+  </div>
+
   <div id="FreeWord" style="display:none; margin-top: 15px;">
     <div style="background: #FAF4EC; padding: 12px; border-radius: 10px; border: 1px solid #E7D6BC; margin-bottom: 10px; font-size: 14px; color: #704817; line-height: 1.8;" id="dynamic-explanation-text">
       ※全体で50文字まで入力できます。半角で入力しても、確定後に自動で全角へ変換します。<br>下の入力欄に「一番町　事務」のようにスペースで区切って直接ご入力ください。
@@ -1151,6 +1252,7 @@
     </div>
     <input class="textarea" id="FreeW" maxlength="50" aria-describedby="dynamic-explanation-text char-count" placeholder="例：一番町　子育て支援（全角スペースで区切る）" type="text" />
   </div>
+
   <!-- ==================== 検索条件・保存 ==================== -->
   <div class="condition-summary">
     <div class="condition-summary-title"><svg class="icn" aria-hidden="true"><use href="#hwic-doc"/></svg>現在の検索条件</div>
@@ -1161,16 +1263,20 @@
       <button type="button" class="save-btn" id="btn-save-cond">この条件を保存</button>
     </div>
   </div>
+
   <div class="floating-condition">
     <svg class="icn" aria-hidden="true"><use href="#hwic-sliders"/></svg>
     <span id="floating-condition-text"></span>
   </div>
+
   <button class="searchbutton" id="mainSearchBtn" type="button"><svg class="icn icn-search-btn" aria-hidden="true"><use href="#hwic-search-btn"/></svg>この条件で検索する</button>
+
   <!-- ==================== 番号検索 ==================== -->
   <details class="bottom-info-container number-search-details" style="margin-top: 40px;">
     <summary class="number-search-summary"><svg class="icn" aria-hidden="true"><use href="#hwic-search"/></svg>求人番号・事業所番号で検索する（任意）</summary>
     <div class="number-search-section">
       <p class="number-search-lead">番号がわかっている場合は、ここから直接検索できます。<br><strong>※上の条件（エリアなど）はすべて無視されます。</strong></p>
+
       <div class="map-howto-box">
         <div class="map-howto-title"><svg class="icn" aria-hidden="true"><use href="#hwic-mapfold"/></svg>求人の詳しい「場所（地図）」を確認するには？</div>
         <div class="map-howto-body">
@@ -1180,6 +1286,7 @@
           3. 「就業場所」の横にある<strong>【地図を表示】</strong>を押す
         </div>
       </div>
+
       <div style="margin-bottom: 16px;">
         <div class="number-field-label" id="job-number-label">【求人番号】</div>
         <div class="number-field-row" role="group" aria-labelledby="job-number-label">
@@ -1190,6 +1297,7 @@
           <input type="text" inputmode="numeric" pattern="\d*" id="kNo2" style="flex: 1.5;" maxlength="8" placeholder="8桁">
         </div>
       </div>
+
       <div>
         <div class="number-field-label" id="office-number-label">【事業所番号】</div>
         <div class="number-field-row" role="group" aria-labelledby="office-number-label">
@@ -1203,12 +1311,14 @@
           <input type="text" inputmode="numeric" pattern="\d*" id="jNo3" style="flex: 0.8;" maxlength="1" placeholder="1桁">
         </div>
       </div>
+
       <div class="number-btn-row">
         <button type="button" id="numberResetBtn" class="number-btn-reset">リセット</button>
         <button type="button" id="numberSearchBtn" class="number-btn-go">番号で検索する</button>
       </div>
     </div>
   </details>
+
   <!-- ==================== マイページ ==================== -->
   <div id="mypage-guide" class="bottom-info-container">
     <div class="mypage-cta-section" style="padding-bottom: 10px;">
@@ -1217,6 +1327,7 @@
         <h3 class="mypage-cta-title"><span>マイページでもっと便利に</span></h3>
         <p class="mypage-cta-intro">検索条件の保存やお気に入り登録ができる、<br>無料のサービスです。</p>
       </div>
+
       <div class="mypage-features">
         <div class="mypage-features-title">＼ 求職者マイページでできること ／</div>
         <ul class="benefit-tiles">
@@ -1227,17 +1338,20 @@
           <li><span class="benefit-ic"><svg aria-hidden="true"><use href="#hwic-doc"/></svg></span><span class="benefit-tx">紹介状・応募履歴を確認</span></li>
         </ul>
       </div>
+
       <details id="mypage-details" class="mypage-details">
         <summary>マイページの詳しい案内を見る</summary>
         <div class="mypage-details-content">
           <div class="mypage-cta-header">
             <p class="mypage-cta-desc">現在の状況に合わせて、以下のカードから<br>ご自身に当てはまるものを確認してください。</p>
           </div>
+
           <div class="carousel-wrapper">
         <div class="carousel-btn-container">
           <button type="button" class="carousel-btn left" id="carousel-left" aria-label="前のカードへ">＜</button>
         </div>
         <div class="card-carousel" id="card-carousel" role="region" aria-label="求職者マイページの案内">
+
           <div class="card-item">
             <div class="card-header-row">
               <span class="card-badge">初めてご利用の方</span>
@@ -1248,6 +1362,7 @@
               <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA020020.do?screenId=GEAA020020&action=execRedirect&nextScreenId=GEAA010010" target="_blank" rel="noopener noreferrer" class="card-btn">新規登録・開設はこちら</a>
             </div>
           </div>
+
           <div class="card-item">
             <div class="card-header-row">
               <span class="card-badge">過去にハローワークを利用した方</span>
@@ -1263,6 +1378,7 @@
               <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA530040.do?action=initDisp&screenId=GEAA530040" target="_blank" rel="noopener noreferrer" class="card-btn">作成コードを入力する</a>
             </div>
           </div>
+
           <div class="card-item">
             <div class="card-header-row">
               <span class="card-badge">すでに登録済みの方</span>
@@ -1273,11 +1389,13 @@
               <a href="https://kyushoku.hellowork.mhlw.go.jp/kyushoku/GEAA040010.do?action=initDisp&screenId=GEAA040010" target="_blank" rel="noopener noreferrer" class="card-btn">ログイン画面へ</a>
             </div>
           </div>
+
         </div>
         <div class="carousel-btn-container">
           <button type="button" class="carousel-btn right" id="carousel-right" aria-label="次のカードへ">＞</button>
         </div>
           </div>
+
           <div class="carousel-indicators" id="carousel-indicators">
             <button type="button" class="indicator active" data-index="0" aria-label="マイページ案内 1枚目" aria-current="true" aria-controls="card-carousel"></button>
             <button type="button" class="indicator" data-index="1" aria-label="マイページ案内 2枚目" aria-current="false" aria-controls="card-carousel"></button>
@@ -1286,6 +1404,7 @@
         </div>
       </details>
     </div>
+
     <div class="apply-guide-section">
       <h3 class="apply-guide-title">求人へのご応募について</h3>
       <p class="apply-guide-text">
@@ -1298,13 +1417,16 @@
         そのため、ハローワークの紹介を要件とする<strong>各種給付金（再就職手当など）の支給対象外となる場合</strong>がございます。
       </div>
     </div>
+
     <div class="contact-section">
       お問い合わせ：ハローワーク松山<br>
       <span class="tel"><svg class="icn" aria-hidden="true"><use href="#hwic-phone"/></svg>TEL: 089-917-8618</span>
     </div>
   </div>
+
 </div><!-- /#wrapper -->
 </div><!-- /#hw-search-tool-root -->
+
 <script type="text/javascript">
 (function() {
   /* 町名データをすべて確実な全角スペース（ ）区切りに変更。最後尾にも必ず全角スペースを1つ追加。 */
@@ -1323,6 +1445,7 @@ var areaData = {
     "tobe":   { name: "砥部町",     code: "38402", words: "" },
     "kuma":   { name: "久万高原町", code: "38386", words: "" }
   };
+
   var jobData = {
     "01": { name: "営業", subs: {"0100":"こだわらない","0101":"不動産","0102":"自動車営業","0103":"金融・保険営業","0104":"その他の商品・サービス"} },
     "02": { name: "販売", subs: {"0200":"こだわらない","0201":"コンビニ・スーパー","0202":"アパレル・医薬品・化粧品","0203":"ガソリンスタンド","0204":"店長","0205":"レジ係","0206":"その他"} },
@@ -1341,6 +1464,7 @@ var areaData = {
     "15": { name: "農林・漁業", subs: {"1500":"こだわらない","1501":"農業（造園・酪農などを含む）","1502":"林業","1503":"漁業"} },
     "16": { name: "理容・美容", subs: {"1600":"こだわらない","1601":"理容師","1602":"美容師","1603":"理容・美容補助","1604":"エステティシャン","1605":"その他"} }
   };
+
   var featureData = {
     "20260101001": { name: "医療・看護・保健", subs: {"20260101002":"看護師、准看護師", "20260101003":"保健師、助産師", "20260101004":"リハビリ(PT,OT,ST,CO)", "20260101005":"歯科衛生士・歯科技工士", "20260101006":"栄養士、管理栄養士", "20260101007":"診療放射線、臨床工学、臨床検査", "20260101008":"薬剤師", "20260101009":"医師、歯科医師", "20260101010":"あはき・柔整", "20260101011":"資格不問(看護助手など)"} },
     "20260101012": { name: "介護", subs: {"20260101013":"介護福祉士・ケアマネジャー", "20260101014":"介護スタッフ(入所型)", "20260101015":"介護スタッフ(通所型)", "20260101016":"介護スタッフ(訪問型)", "20260101017":"資格不問・初心者歓迎"} },
@@ -1349,15 +1473,18 @@ var areaData = {
     "20260101032": { name: "警備", subs: {"20260101033":"施設警備員", "20260101034":"交通誘導員", "20260101035":"その他警備員・保安員", "20260101036":"初心者歓迎"} },
     "20260101037": { name: "運輸", subs: {"20260101038":"配送・集荷", "20260101039":"貨物自動車", "20260101040":"バス", "20260101041":"乗用車", "20260101042":"機械(フォークリフト等)", "20260101043":"初心者歓迎"} }
   };
+
   // 7番の定型選択のうち、公式サイトで特集求人として提供されるもの。
   var keywordFeaturePresets = {
     u2: { name: "仕事と子育て両立求人", parent: "20260101046", child: "20260101047" },
-    u6: { name: "シニア求人", child: "20260424001" }
+    u6: { name: "シニア求人（60歳以上）", child: "20260424001" }
   };
+
   function getSelectedKeywordFeature() {
     var kw = document.querySelector('#hw-search-tool-root input[name="radioKw"]:checked');
     return kw ? keywordFeaturePresets[kw.id] || null : null;
   }
+
   var matsuyamaGroup = ["matsuyama_all", "east", "west", "north", "south", "joto", "josai", "hojo"];
   var selectedAreaKeys = [];
   var selectedJobs = {}; 
@@ -1371,6 +1498,7 @@ var areaData = {
   
   var jobModalDOMs = {};
   var featureModalDOMs = {};
+
   // ==========================================
   // SVG地図連動用関数
   // ==========================================
@@ -1383,10 +1511,12 @@ var areaData = {
       if (isDisabled && reasonId) control.setAttribute('aria-describedby', reasonId);
       else control.removeAttribute('aria-describedby');
   }
+
   function syncPressedStates() {
       document.querySelectorAll('.area-btn, .job-btn, .job-btn-all, .feature-btn, .feature-btn-all').forEach(function(btn) {
           btn.setAttribute('aria-pressed', btn.classList.contains('active') ? 'true' : 'false');
       });
+
       document.querySelectorAll('.map-region').forEach(function(region) {
           var key = region.id.replace('svg-', '');
           var linkedButton = document.getElementById('btn-' + key);
@@ -1400,6 +1530,7 @@ var areaData = {
           else region.removeAttribute('aria-describedby');
       });
   }
+
   function updateMapAndTowns() {
       var activeKeys = [];
       document.querySelectorAll('.area-btn').forEach(function(btn) {
@@ -1407,11 +1538,14 @@ var areaData = {
               activeKeys.push(btn.id.replace('btn-', ''));
           }
       });
+
       var matsuyamaAreas = ['hojo', 'north', 'josai', 'west', 'east', 'south', 'joto'];
       var hasMatsuyamaAll = activeKeys.includes('matsuyama_all');
+
       document.querySelectorAll('.map-region, .map-text').forEach(function(el){
           el.classList.remove('active');
       });
+
       activeKeys.forEach(function(key) {
           if (key === 'matsuyama_all') {
               matsuyamaAreas.forEach(function(mk) {
@@ -1431,13 +1565,17 @@ var areaData = {
               if (txt) txt.classList.add('active');
           }
       });
+
       syncPressedStates();
+
       var display = document.getElementById('town-names-content');
       if (!display) return;
+
       if (activeKeys.length === 0) {
           display.innerHTML = '<span style="color:#999;">地図やボタンを押してエリアを選択してください。</span>';
           return;
       }
+
       var html = "";
       
       // 松山市全域の時は町名リストを出さず、メッセージだけにする
@@ -1473,6 +1611,7 @@ var areaData = {
       
       display.innerHTML = html;
   }
+
   function setupAutoTab(currentId, nextId, maxLength) {
       var current = document.getElementById(currentId);
       if(current) {
@@ -1484,7 +1623,9 @@ var areaData = {
           });
       }
   }
+
   var statusAnnouncementTimer = null;
+
   function announceStatus(message) {
       var status = document.getElementById('accessibility-status');
       if (!status) return;
@@ -1494,6 +1635,7 @@ var areaData = {
           status.textContent = message;
       }, 30);
   }
+
   function beginSearchLaunch(button) {
       if (searchLaunchInProgress) {
           announceStatus('検索を開いています。しばらくお待ちください。');
@@ -1509,6 +1651,7 @@ var areaData = {
       announceStatus('検索を開いています。');
       return true;
   }
+
   function endSearchLaunch(button) {
       window.setTimeout(function() {
           searchLaunchInProgress = false;
@@ -1520,6 +1663,7 @@ var areaData = {
           }
       }, 1500);
   }
+
   function getFocusableElements(container) {
       if (!container) return [];
       var selector = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -1527,6 +1671,7 @@ var areaData = {
           return el.getClientRects().length > 0;
       });
   }
+
   function openAccessibleModal(overlay) {
       if (!overlay) return;
       overlay._returnFocus = document.activeElement;
@@ -1537,6 +1682,7 @@ var areaData = {
           if (dialog && overlay.getAttribute('aria-hidden') === 'false') dialog.focus();
       }, 0);
   }
+
   function closeAccessibleModal(overlay) {
       if (!overlay) return;
       var returnFocus = overlay._returnFocus;
@@ -1548,21 +1694,25 @@ var areaData = {
           returnFocus.focus();
       }
   }
+
   function getTopOpenModal() {
       var openModals = Array.prototype.slice.call(document.querySelectorAll('#hw-search-tool-root .modal-overlay')).filter(function(overlay) {
           return overlay.getAttribute('aria-hidden') === 'false';
       });
       return openModals.length ? openModals[openModals.length - 1] : null;
   }
+
   function handleModalKeyboard(event) {
       var overlay = getTopOpenModal();
       if (!overlay) return;
+
       if (event.key === 'Escape') {
           event.preventDefault();
           if (typeof overlay._escapeAction === 'function') overlay._escapeAction();
           else closeAccessibleModal(overlay);
           return;
       }
+
       if (event.key !== 'Tab') return;
       var focusable = getFocusableElements(overlay);
       var dialog = overlay.querySelector('[role="dialog"], [role="alertdialog"]');
@@ -1571,6 +1721,7 @@ var areaData = {
           if (dialog) dialog.focus();
           return;
       }
+
       var first = focusable[0];
       var last = focusable[focusable.length - 1];
       if (event.shiftKey && (document.activeElement === first || document.activeElement === dialog || !overlay.contains(document.activeElement))) {
@@ -1581,6 +1732,7 @@ var areaData = {
           first.focus();
       }
   }
+
   function showMyModal(title, text, isConfirm, callback, confirmLabel) {
     var overlay = document.getElementById('msg-modal-overlay');
     if(!overlay) return;
@@ -1601,6 +1753,7 @@ var areaData = {
         
         btnOk = document.getElementById('msg-btn-ok');
         btnCancel = document.getElementById('msg-btn-cancel');
+
         if(isConfirm) {
             btnCancel.style.display = 'block';
             btnOk.innerText = confirmLabel || "検索する";
@@ -1609,6 +1762,7 @@ var areaData = {
             btnOk.innerText = "OK";
         }
         openAccessibleModal(overlay);
+
         var cancelModal = function() {
             closeAccessibleModal(overlay);
             if(callback) callback(false);
@@ -1618,10 +1772,12 @@ var areaData = {
         btnCancel.onclick = cancelModal;
     }
   }
+
   function splitFreeWords(value) {
     if (!value) return [];
     return value.trim().split(/[\s　]+/).filter(function(word) { return word !== ""; });
   }
+
   function uniqueFreeWords(words) {
     var uniqueWords = [];
     words.forEach(function(word) {
@@ -1629,6 +1785,7 @@ var areaData = {
     });
     return uniqueWords;
   }
+
   function getAreaWordList(areaKeys) {
     var words = [];
     (areaKeys || []).forEach(function(key) {
@@ -1638,9 +1795,11 @@ var areaData = {
     });
     return uniqueFreeWords(words);
   }
+
   function formatFreeWords(words) {
     return uniqueFreeWords(words).join("　");
   }
+
   function normalizeFreeWordCharacters(value) {
     // 半角カナだけを互換変換し、「㈱」など既存の全角表記は変えない。
     var normalized = String(value || '').replace(/[\uFF61-\uFF9F]+/g, function(chars) {
@@ -1650,9 +1809,11 @@ var areaData = {
       return String.fromCharCode(char.charCodeAt(0) + 0xFEE0);
     }).replace(/[\s　]+/g, '　');
   }
+
   function normalizeFreeWordForSearch(value) {
     return normalizeFreeWordCharacters(value).trim();
   }
+
   function normalizeFreeWordInput(input, trimEdges) {
     if (!input) return;
     var original = input.value;
@@ -1672,6 +1833,7 @@ var areaData = {
       );
     }
   }
+
   function initializeFreeWordInput(input) {
     var isComposing = false;
     var refresh = function(trimEdges) {
@@ -1708,16 +1870,19 @@ var areaData = {
       refresh(false);
     });
   }
+
   function escapeHtml(value) {
     return String(value == null ? '' : value).replace(/[&<>"']/g, function(char) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char];
     });
   }
+
   function sanitizeAreaKeys(keys) {
     var source = Array.isArray(keys) ? keys : [];
     var result = [];
     var matsuyamaKey = null;
     var usedCodes = [];
+
     source.forEach(function(key) {
       if (!areaData[key]) return;
       if (matsuyamaGroup.indexOf(key) !== -1) {
@@ -1730,6 +1895,7 @@ var areaData = {
         usedCodes.push(code);
       }
     });
+
     if (matsuyamaKey) {
       result = result.slice(0, 4);
       result.unshift(matsuyamaKey);
@@ -1738,9 +1904,11 @@ var areaData = {
     }
     return result;
   }
+
   function sanitizeSelectionMap(savedSelection, sourceData, maxParents, maxSubs) {
     var result = {};
     if (!savedSelection || typeof savedSelection !== 'object' || Array.isArray(savedSelection)) return result;
+
     Object.keys(savedSelection).some(function(code) {
       if (!sourceData[code] || !sourceData[code].subs) return false;
       var rawSubs = Array.isArray(savedSelection[code]) ? savedSelection[code] : [];
@@ -1754,6 +1922,7 @@ var areaData = {
     });
     return result;
   }
+
   function buildSyncedFreeWord(nextAreaKeys) {
     var freeW = document.getElementById('FreeW');
     var currentWords = splitFreeWords(normalizeFreeWordForSearch(freeW ? freeW.value : ""));
@@ -1761,12 +1930,14 @@ var areaData = {
     var areaWordsChanged = nextAreaWords.length !== syncedAreaWords.length || nextAreaWords.some(function(word, index) {
       return word !== syncedAreaWords[index];
     });
+
     if (!areaWordsChanged) {
       return {
         areaWords: nextAreaWords,
         value: formatFreeWords(currentWords)
       };
     }
+
     var customWords = currentWords.filter(function(word) {
       return syncedAreaWords.indexOf(word) === -1;
     });
@@ -1775,12 +1946,14 @@ var areaData = {
       value: formatFreeWords(nextAreaWords.concat(customWords))
     };
   }
+
   function applySyncedFreeWord(syncResult) {
     var freeW = document.getElementById('FreeW');
     if (freeW) freeW.value = normalizeFreeWordForSearch(syncResult.value);
     syncedAreaWords = syncResult.areaWords.slice();
     updateCharCount();
   }
+
   function initializeManualFreeWord() {
     var freeW = document.getElementById('FreeW');
     var areaWords = getAreaWordList(selectedAreaKeys);
@@ -1791,18 +1964,21 @@ var areaData = {
     syncedAreaWords = areaWords.slice();
     updateCharCount();
   }
+
   function updateCharCount() {
     var kw = document.querySelector('input[name="radioKw"]:checked');
     var freeW = document.getElementById('FreeW');
     var currentTotal = (kw && kw.id === 'u5' && freeW) ? freeW.value.length : 0;
     var remain = 50 - currentTotal;
     var countEl = document.getElementById('char-count');
+
     if (freeW) freeW.maxLength = 50;
     if (freeW) freeW.setAttribute('aria-invalid', remain < 0 ? 'true' : 'false');
     if (countEl) {
       countEl.innerText = "残り入力：" + (remain < 0 ? 0 : remain) + "文字";
       countEl.style.color = remain <= 10 ? "#d32f2f" : "#008000";
     }
+
     var explanationText = document.getElementById('dynamic-explanation-text');
     if (explanationText) {
       if (getAreaWordList(selectedAreaKeys).length > 0) {
@@ -1812,6 +1988,7 @@ var areaData = {
       }
     }
   }
+
   function initJobModals() {
       var container = document.getElementById('job-modal-body');
       if(!container) return;
@@ -1822,10 +1999,12 @@ var areaData = {
           var wrap = document.createElement('div');
           wrap.id = 'job-sub-wrap-' + code;
           wrap.style.display = 'none';
+
           var info = document.createElement('div');
           info.className = 'notice-box';
           info.innerHTML = '最大<strong>5つ</strong>まで選択できます。';
           wrap.appendChild(info);
+
           var scrollBox = document.createElement('div');
           scrollBox.style.maxHeight = '45vh';
           scrollBox.style.overflowY = 'auto';
@@ -1833,17 +2012,21 @@ var areaData = {
           scrollBox.style.borderRadius = '8px';
           scrollBox.style.padding = '8px';
           scrollBox.style.backgroundColor = '#fafafa';
+
           var grid = document.createElement('div');
           grid.className = 'grid-container';
+
           for(var subCode in jobData[code].subs) {
               var subName = jobData[code].subs[subCode];
               var item = document.createElement('div');
               item.className = 'grid-item-full';
+
               var input = document.createElement('input');
               input.type = 'checkbox';
               input.id = 'job-sub-' + subCode;
               input.value = subCode;
               input.dataset.parentCode = code;
+
               var label = document.createElement('label');
               label.htmlFor = 'job-sub-' + subCode;
               label.className = 'btn-base chkLabel';
@@ -1851,6 +2034,7 @@ var areaData = {
               label.style.justifyContent = 'flex-start';
               label.style.paddingLeft = '15px';
               label.innerText = subName;
+
               input.addEventListener('change', function() {
                   var pCode = this.dataset.parentCode;
                   var isAnyChecked = this.value.endsWith('00') && this.checked;
@@ -1892,6 +2076,7 @@ var areaData = {
                       }
                   }
               });
+
               item.appendChild(input);
               item.appendChild(label);
               grid.appendChild(item);
@@ -1902,6 +2087,7 @@ var areaData = {
           jobModalDOMs[code] = wrap;
       }
   }
+
   function openJobModal(code) {
       if (!selectedJobs[code] && Object.keys(selectedJobs).length >= 3) {
           showMyModal("選択できません", "職種の大分類は3つまでしか選択できません。", false);
@@ -1946,6 +2132,7 @@ var areaData = {
           overlay._escapeAction = closeJobModal;
       }
   }
+
   function closeJobModal() {
       var overlay = document.getElementById('job-modal-overlay');
       if(overlay) closeAccessibleModal(overlay);
@@ -1954,6 +2141,7 @@ var areaData = {
       }
       currentEditingJobCode = null;
   }
+
   function applyJobModal() {
       if(!currentEditingJobCode) return;
       var wrap = jobModalDOMs[currentEditingJobCode];
@@ -1973,10 +2161,12 @@ var areaData = {
       updateConditionText();
       announceStatus('職種の選択を更新しました。');
   }
+
   function renderJobButtons() {
        document.querySelectorAll('.job-btn').forEach(function(btn) { btn.classList.remove('active'); });
        var btn0 = document.getElementById('btn-job-0');
        if(btn0) btn0.classList.remove('active');
+
        if (Object.keys(selectedJobs).length === 0) {
            if(btn0) btn0.classList.add('active');
        } else {
@@ -1987,6 +2177,7 @@ var areaData = {
        }
        syncPressedStates();
   }
+
   function initFeatureModals() {
       var container = document.getElementById('feature-modal-body');
       if(!container) return;
@@ -1997,10 +2188,12 @@ var areaData = {
           var wrap = document.createElement('div');
           wrap.id = 'feature-sub-wrap-' + code;
           wrap.style.display = 'none';
+
           var info = document.createElement('div');
           info.className = 'notice-box';
           info.innerHTML = '最大<strong>5つ</strong>まで選択できます。';
           wrap.appendChild(info);
+
           var scrollBox = document.createElement('div');
           scrollBox.style.maxHeight = '45vh';
           scrollBox.style.overflowY = 'auto';
@@ -2008,17 +2201,21 @@ var areaData = {
           scrollBox.style.borderRadius = '8px';
           scrollBox.style.padding = '8px';
           scrollBox.style.backgroundColor = '#fafafa';
+
           var grid = document.createElement('div');
           grid.className = 'grid-container';
+
           for(var subCode in featureData[code].subs) {
               var subName = featureData[code].subs[subCode];
               var item = document.createElement('div');
               item.className = 'grid-item-full';
+
               var input = document.createElement('input');
               input.type = 'checkbox';
               input.id = 'feature-sub-' + subCode;
               input.value = subCode;
               input.dataset.parentCode = code;
+
               var label = document.createElement('label');
               label.htmlFor = 'feature-sub-' + subCode;
               label.className = 'btn-base chkLabel';
@@ -2026,6 +2223,7 @@ var areaData = {
               label.style.justifyContent = 'flex-start';
               label.style.paddingLeft = '15px';
               label.innerText = subName;
+
               input.addEventListener('change', function() {
                   var pCode = this.dataset.parentCode;
                   var checkedBoxes = document.querySelectorAll('#feature-sub-wrap-' + pCode + ' input[type="checkbox"]:checked');
@@ -2034,6 +2232,7 @@ var areaData = {
                       showMyModal("選択できません", "小分類は5つまでしか選択できません。", false);
                   }
               });
+
               item.appendChild(input);
               item.appendChild(label);
               grid.appendChild(item);
@@ -2044,6 +2243,7 @@ var areaData = {
           featureModalDOMs[code] = wrap;
       }
   }
+
   function openFeatureModal(code) {
       if (!selectedFeatures[code] && Object.keys(selectedFeatures).length >= 1) {
           showMyModal("選択できません", "特集求人の大分類は1つのみ選択可能です。<br>（小分類は5つまで選べます）", false);
@@ -2068,6 +2268,7 @@ var areaData = {
           overlay._escapeAction = closeFeatureModal;
       }
   }
+
   function closeFeatureModal() {
       var overlay = document.getElementById('feature-modal-overlay');
       if(overlay) closeAccessibleModal(overlay);
@@ -2076,6 +2277,7 @@ var areaData = {
       }
       currentEditingFeatureCode = null;
   }
+
   function applyFeatureModal() {
       if(!currentEditingFeatureCode) return;
       var wrap = featureModalDOMs[currentEditingFeatureCode];
@@ -2095,10 +2297,12 @@ var areaData = {
       updateConditionText();
       announceStatus('特集求人の選択を更新しました。');
   }
+
   function renderFeatureButtons() {
        document.querySelectorAll('.feature-btn').forEach(function(btn) { btn.classList.remove('active'); });
        var btn0 = document.getElementById('btn-feature-0');
        if(btn0) btn0.classList.remove('active');
+
        if (Object.keys(selectedFeatures).length === 0) {
            if(btn0) btn0.classList.add('active');
        } else {
@@ -2109,16 +2313,19 @@ var areaData = {
        }
        syncPressedStates();
   }
+
   function updateCrossExclusion() {
       var isJobSelected = Object.keys(selectedJobs).length > 0;
       var isSectionFeatureSelected = Object.keys(selectedFeatures).length > 0;
       var isKeywordFeatureSelected = !!getSelectedKeywordFeature();
       var isFeatureSelected = isSectionFeatureSelected || isKeywordFeatureSelected;
+
       document.querySelectorAll('.job-btn, .job-btn-all').forEach(function(btn) {
           setControlDisabled(btn, isFeatureSelected, 'job-cross-warning-msg');
       });
       var jobMsg = document.getElementById('job-cross-warning-msg');
       if (jobMsg) jobMsg.style.display = isFeatureSelected ? 'block' : 'none';
+
       document.querySelectorAll('.feature-btn, .feature-btn-all').forEach(function(btn) {
           setControlDisabled(btn, isJobSelected || isKeywordFeatureSelected, 'feature-cross-warning-msg');
       });
@@ -2129,6 +2336,7 @@ var areaData = {
               : '※7番の特集求人を選択中です。変更する場合は7番で「指定しない」を選択してください。';
           featureMsg.style.display = (isJobSelected || isKeywordFeatureSelected) ? 'block' : 'none';
       }
+
       ['u2', 'u6'].forEach(function(id) {
           var input = document.getElementById(id);
           var label = document.querySelector('label[for="' + id + '"]');
@@ -2144,12 +2352,15 @@ var areaData = {
       if (keywordFeatureMsg) keywordFeatureMsg.style.display = (isJobSelected || isSectionFeatureSelected) ? 'block' : 'none';
       syncPressedStates();
   }
+
   function selectArea(key) {
     var btn = document.getElementById('btn-' + key);
     if(!btn || btn.classList.contains('disabled')) return;
+
     var index = selectedAreaKeys.indexOf(key);
     var isMatsuyama = matsuyamaGroup.indexOf(key) !== -1;
     var nextSelectedKeys = selectedAreaKeys.slice();
+
     if (isMatsuyama) {
       if (index !== -1) {
           nextSelectedKeys.splice(index, 1);
@@ -2161,6 +2372,7 @@ var areaData = {
       if (index === -1) { nextSelectedKeys.push(key); } 
       else { nextSelectedKeys.splice(index, 1); }
     }
+
     var currentKw = document.querySelector('input[name="radioKw"]:checked');
     var pendingManualSync = null;
     if (currentKw && currentKw.id === 'u5') {
@@ -2170,6 +2382,7 @@ var areaData = {
         return;
       }
     }
+
     if (nextSelectedKeys.length > selectedAreaKeys.length) { 
         var uniqueCodes = [];
         var testAreaWords = "";
@@ -2183,6 +2396,7 @@ var areaData = {
             showMyModal("選択できません", "ハローワークの仕様上、同時に選択できる地域（市区町村）は5つまでです。", false);
             return;
         }
+
         var kw = document.querySelector('input[name="radioKw"]:checked');
         var kwVal = (kw && kw.id === 'u7') ? kw.value : "";
         var fwArr = [];
@@ -2193,8 +2407,11 @@ var areaData = {
             return;
         }
     }
+
     selectedAreaKeys = nextSelectedKeys;
+
     if (pendingManualSync) applySyncedFreeWord(pendingManualSync);
+
     var allBtns = document.getElementsByClassName('area-btn');
     for(var i=0; i<allBtns.length; i++) allBtns[i].classList.remove('active');
     
@@ -2202,12 +2419,14 @@ var areaData = {
         var b = document.getElementById('btn-' + k);
         if(b) b.classList.add('active');
     });
+
     updateAreaDisplay();
     updateExclusion();
     updateConditionText();
     // ここでSVGマップと連動させる
     updateMapAndTowns();
   }
+
   function updateAreaDisplay() {
     var display = document.getElementById('selectedAreaDisplay');
     if(!display) return;
@@ -2219,21 +2438,25 @@ var areaData = {
       display.innerText = "選択中: " + names.join("、");
     }
   }
+
   function updateExclusion() {
     var u7 = document.getElementById('u7');
     var isKeywordSearchIntent = !!(u7 && u7.checked);
+
     var isDetailAreaSelected = false;
     for(var i=0; i<selectedAreaKeys.length; i++){
         if(matsuyamaGroup.indexOf(selectedAreaKeys[i]) !== -1 && selectedAreaKeys[i] !== "matsuyama_all"){
             isDetailAreaSelected = true; break;
         }
     }
+
     matsuyamaGroup.forEach(function(key){
         if(key !== "matsuyama_all") {
             var btn = document.getElementById('btn-' + key);
             setControlDisabled(btn, isKeywordSearchIntent, 'area-keyword-disabled-reason');
         }
     });
+
     var kwInputs = [u7];
     kwInputs.forEach(function(input) {
         if(input) {
@@ -2251,6 +2474,7 @@ var areaData = {
             }
         }
     });
+
     var freeWordContainer = document.getElementById('FreeWord');
     var u5 = document.getElementById('u5');
     if (u5 && u5.checked) { 
@@ -2269,12 +2493,14 @@ var areaData = {
     updateCharCount();
     syncPressedStates();
   }
+
   function updateConditionText() {
     var html = '<table class="cond-table">';
     
     var display = document.getElementById('selectedAreaDisplay');
     var areaPlain = display ? display.innerText.replace("選択中: ", "") : "指定しない";
     html += '<tr><th>エリア</th><td>' + escapeHtml(areaPlain) + '</td></tr>';
+
     var emp = document.querySelector('#hw-search-tool-root input[name="radioEmp"]:checked');
     var empLabel = emp ? document.querySelector('#hw-search-tool-root label[for="' + emp.id + '"]') : null;
     var empText = empLabel ? escapeHtml(empLabel.innerText) : "";
@@ -2288,10 +2514,12 @@ var areaData = {
     }
     if(empText === "") empText = "指定しない";
     html += '<tr><th>雇用形態</th><td>' + empText + '</td></tr>';
+
     var arrive = document.querySelector('#hw-search-tool-root input[name="radioArrive"]:checked');
     var arriveLabel = arrive ? document.querySelector('#hw-search-tool-root label[for="' + arrive.id + '"]') : null;
     var arrivePlain = (arrive && arrive.value !== "" && arriveLabel) ? arriveLabel.innerText : "指定しない";
     html += '<tr><th>新着区分</th><td>' + escapeHtml(arrivePlain) + '</td></tr>';
+
     var jobNames = [];
     var jobText = "";
     if (Object.keys(selectedJobs).length === 0) {
@@ -2322,6 +2550,7 @@ var areaData = {
         featureText = featureNames.join("<br>");
     }
     html += '<tr><th>特集求人</th><td>' + featureText + '</td></tr>';
+
     var jyoukenNames = [];
     var jyoukenChecks = document.querySelectorAll('#hw-search-tool-root input[name="jyoukenBox"]:checked');
     jyoukenChecks.forEach(function(c){ 
@@ -2330,6 +2559,7 @@ var areaData = {
     });
     var jText = jyoukenNames.length > 0 ? jyoukenNames.map(escapeHtml).join("、<br>") : "指定しない";
     html += '<tr><th>条件・時間</th><td>' + jText + '</td></tr>';
+
     var kw = document.querySelector('#hw-search-tool-root input[name="radioKw"]:checked');
     var kwPlain = "";
     if(kw && kw.id === 'u7') { 
@@ -2344,7 +2574,9 @@ var areaData = {
     if(kwPlain === "") { kwPlain = "指定しない"; }
     var kwText = escapeHtml(kwPlain);
     html += '<tr><th>キーワード</th><td>' + kwText + '</td></tr>';
+
     html += '</table>';
+
     var condText = document.getElementById('current-conditions-text');
     if(condText) condText.innerHTML = html;
     
@@ -2358,6 +2590,7 @@ var areaData = {
     var floatEl = document.getElementById('floating-condition-text');
     if(floatEl) floatEl.innerText = floatText;
   }
+
   function readSavedConditions() {
     try {
       var raw = localStorage.getItem('hw_search_conditions');
@@ -2370,6 +2603,7 @@ var areaData = {
       return null;
     }
   }
+
   function saveConditions() {
     var freeW = document.getElementById('FreeW');
     normalizeFreeWordInput(freeW, true);
@@ -2387,6 +2621,7 @@ var areaData = {
     radios.forEach(function(r) { if(r.checked) state.radios[r.name] = r.id; });
     var checks = document.querySelectorAll('#hw-search-tool-root input[type="checkbox"]');
     checks.forEach(function(c) { state.checkboxes[c.id] = c.checked; });
+
     try {
         localStorage.setItem('hw_search_conditions', JSON.stringify(state));
         showMyModal("保存完了", "現在の検索条件をブラウザに保存しました。<br>次回開いた時に自動で読み込まれます。", false);
@@ -2394,6 +2629,7 @@ var areaData = {
         showMyModal("保存できません", "このブラウザでは検索条件を保存できませんでした。<br>検索自体はそのまま利用できます。", false);
     }
   }
+
   function loadConditionsAuto() {
     var saved = readSavedConditions();
     if(saved) {
@@ -2404,6 +2640,7 @@ var areaData = {
             if(b) b.classList.add('active');
         });
         updateAreaDisplay();
+
         selectedJobs = sanitizeSelectionMap(state.jobs, jobData, 3, 5);
         renderJobButtons();
         
@@ -2441,6 +2678,7 @@ var areaData = {
             normalizeFreeWordInput(freeW, true);
             syncedAreaWords = savedAreaWords.slice();
         }
+
         var freeWordContainer = document.getElementById('FreeWord');
         if(freeWordContainer) {
             freeWordContainer.style.display = (u5 && u5.checked) ? 'block' : 'none';
@@ -2457,6 +2695,7 @@ var areaData = {
     // ここでSVGマップも読み込み直後に連動させる
     updateMapAndTowns();
   }
+
   function resetAll() {
     showMyModal("確認", "選択した条件をすべてリセットしますか？<br>（保存されている条件も消去されます）", true, function(result){
         if(!result) return;
@@ -2477,6 +2716,7 @@ var areaData = {
         var featureMsg = document.getElementById('feature-cross-warning-msg');
         if(jobMsg) jobMsg.style.display = 'none';
         if(featureMsg) featureMsg.style.display = 'none';
+
         var s4 = document.getElementById('s4');
         var t3 = document.getElementById('t3');
         var u4 = document.getElementById('u4');
@@ -2510,11 +2750,13 @@ var areaData = {
         announceStatus('すべての検索条件をリセットしました。');
     }, "リセットする");
   }
+
   function buildSearchPayload() {
     var validationErrors = [];
     var areaKeys = Array.isArray(selectedAreaKeys) ? selectedAreaKeys : [];
     var uniqueCodes = [];
     var matsuyamaKeys = [];
+
     areaKeys.forEach(function(key) {
       if (!areaData[key]) {
         validationErrors.push("選択された地区の情報を確認できません。地区を選び直してください。");
@@ -2528,6 +2770,7 @@ var areaData = {
       }
       if (matsuyamaGroup.indexOf(key) !== -1) matsuyamaKeys.push(key);
     });
+
     if (matsuyamaKeys.length > 1) {
       validationErrors.push("松山市内の地区は1つだけ選択できます。地区を選び直してください。");
     }
@@ -2541,6 +2784,7 @@ var areaData = {
     if (keywordFeature && Object.keys(selectedFeatures).length > 0) {
       validationErrors.push("5番と7番の特集求人は同時に指定できません。どちらか一方を解除してください。");
     }
+
     var kw = document.querySelector('input[name="radioKw"]:checked');
     var freeW = document.getElementById('FreeW');
     var freeWordParts = [];
@@ -2550,6 +2794,7 @@ var areaData = {
       freeWordParts.push(formatFreeWords(getAreaWordList(areaKeys)));
       if (kw && kw.id === 'u7') freeWordParts.push(kw.value);
     }
+
     var freeWords = [];
     freeWordParts.forEach(function(part) {
       freeWords = freeWords.concat(splitFreeWords(normalizeFreeWordForSearch(part)));
@@ -2558,6 +2803,7 @@ var areaData = {
     if (combinedFw.length > 50) {
       validationErrors.push("フリーワードは50文字以内で入力してください（現在" + combinedFw.length + "文字）。");
     }
+
     if (validationErrors.length > 0) {
       return {
         ok: false,
@@ -2566,23 +2812,28 @@ var areaData = {
         hiddens: []
       };
     }
+
     var hiddens = [];
     var addHidden = function(name, value) {
       hiddens.push({ name: name, value: String(value) });
     };
+
     addHidden('action', 'searchBtn');
     addHidden('screenId', 'GECA110010');
     addHidden('searchClear', '0');
     addHidden('kjKbnRadioBtn', '1');
+
     if (uniqueCodes.length > 0) {
       addHidden('tDFK1CmbBox', '38');
       addHidden('siku1Hidden', uniqueCodes.join(","));
     }
+
     var emp = document.querySelector('input[name="radioEmp"]:checked');
     var h1 = document.getElementById('h1');
     var h2 = document.getElementById('h2');
     var isYuukiExc = h1 && h1.checked;
     var isMukiExc = h2 && h2.checked;
+
     if (isYuukiExc || isMukiExc) {
       var allowedCodes = [];
       if (emp && emp.id === 's1') {
@@ -2610,39 +2861,48 @@ var areaData = {
         if (keyValue.length === 2) addHidden(keyValue[0], keyValue[1]);
       });
     }
+
     var arr = document.querySelector('input[name="radioArrive"]:checked');
     if (arr && arr.value !== "") addHidden('jyoukenBox', arr.value);
+
     for (var code in selectedJobs) {
       addHidden('daiEasyShokusyuBox', code);
       selectedJobs[code].forEach(function(subCode) {
         addHidden('easyShokusyuBox', subCode);
       });
     }
+
     for (var fCode in selectedFeatures) {
       addHidden('daiTokusyuBox', fCode);
       selectedFeatures[fCode].forEach(function(fSubCode) {
         addHidden('tokusyuBox', fSubCode);
       });
     }
+
     if (keywordFeature) {
       if (keywordFeature.parent) addHidden('daiTokusyuBox', keywordFeature.parent);
       addHidden('tokusyuBox', keywordFeature.child);
     }
+
     document.querySelectorAll('input[name="jyoukenBox"]:checked').forEach(function(chk) {
       addHidden('jyoukenBox', chk.value);
     });
+
     if (combinedFw !== "") {
       addHidden('freeWordInput', combinedFw);
       addHidden('freeWordRadioBtn', '0');
     }
+
     return { ok: true, message: "", freeWord: combinedFw, hiddens: hiddens };
   }
+
   function executeMySearch() {
     var payload = buildSearchPayload();
     if (!payload.ok) {
       showMyModal("検索できません", payload.message, false);
       return;
     }
+
     var performOpen = function() {
       var searchButton = document.getElementById('mainSearchBtn');
       if (!beginSearchLaunch(searchButton)) return;
@@ -2650,6 +2910,7 @@ var areaData = {
       form.action = 'https://www.hellowork.mhlw.go.jp/kensaku/GECA110010.do';
       form.method = 'POST';
       form.target = '_blank';
+
       payload.hiddens.forEach(function(hidden) {
         var input = document.createElement('input');
         input.type = 'hidden';
@@ -2657,6 +2918,7 @@ var areaData = {
         input.value = hidden.value;
         form.appendChild(input);
       });
+
       try {
         document.body.appendChild(form);
         form.submit();
@@ -2665,14 +2927,17 @@ var areaData = {
         endSearchLaunch(searchButton);
       }
     };
+
     var currentConditionsHtml = document.getElementById('current-conditions-text').innerHTML;
     var sendFreeWord = payload.freeWord ? escapeHtml(payload.freeWord) : "なし";
     var sendFreeWordHtml = "<div style='text-align:left; margin:0 0 15px; padding:10px 12px; border:1px solid #BFD6C7; border-radius:8px; background:#F3F8F4;'><strong>ハローワークへ送信するフリーワード</strong><br><span style='word-break:break-all;'>" + sendFreeWord + "</span></div>";
     var confirmMsg = "<div style='text-align:left; margin-bottom:15px; max-height:45vh; overflow-y:auto; border-radius:6px; box-shadow:inset 0 0 5px rgba(0,0,0,0.1);'>" + currentConditionsHtml + "</div>" + sendFreeWordHtml + "<div style='font-weight:bold; font-size:15px; color:#333;'>上記の条件で検索を開きますか？</div>";
+
     showMyModal("検索確認", confirmMsg, true, function(result) {
       if (result) performOpen();
     });
   }
+
   function normalizeNumberInputValue(value) {
     return String(value || "")
       .replace(/[０-９]/g, function(character) {
@@ -2680,24 +2945,28 @@ var areaData = {
       })
       .replace(/[^0-9]/g, "");
   }
+
   function showNumberInputError(input, message) {
     if (input) input.setAttribute('aria-invalid', 'true');
     showMyModal("入力内容を確認してください", message, false, function() {
       if (input && document.contains(input)) input.focus();
     });
   }
+
   function executeNumberSearch() {
     var elK1 = document.getElementById('kNo1');
     var elK2 = document.getElementById('kNo2');
     var elJ1 = document.getElementById('jNo1');
     var elJ2 = document.getElementById('jNo2');
     var elJ3 = document.getElementById('jNo3');
+
     var numberInputs = [elK1, elK2, elJ1, elJ2, elJ3];
     numberInputs.forEach(function(input) {
       if (!input) return;
       input.removeAttribute('aria-invalid');
       input.value = normalizeNumberInputValue(input.value);
     });
+
     var k1 = elK1 ? elK1.value : "";
     var k2 = elK2 ? elK2.value : "";
     var j1 = elJ1 ? elJ1.value : "";
@@ -2705,6 +2974,7 @@ var areaData = {
     var j3 = elJ3 ? elJ3.value : "";
     var hasJobNumber = !!(k1 || k2);
     var hasOfficeNumber = !!(j1 || j2 || j3);
+
     if (!hasJobNumber && !hasOfficeNumber) {
         showNumberInputError(elK1, "求人番号または事業所番号を入力してください。");
         return;
@@ -2737,6 +3007,7 @@ var areaData = {
             return;
         }
     }
+
     var performOpen = function() {
         var searchButton = document.getElementById('numberSearchBtn');
         if (!beginSearchLaunch(searchButton)) return;
@@ -2753,6 +3024,7 @@ var areaData = {
         
         addHidden('action', 'searchNoBtn');
         addHidden('screenId', 'GECA110010');
+
         if(k1 || k2) {
             addHidden('kJNoJo1', k1);
             addHidden('kJNoGe1', k2);
@@ -2761,6 +3033,7 @@ var areaData = {
             addHidden('jGSHNoChuu', j2);
             addHidden('jGSHNoGe', j3);
         }
+
         try {
             document.body.appendChild(form);
             form.submit();
@@ -2769,10 +3042,12 @@ var areaData = {
             endSearchLaunch(searchButton);
         }
     };
+
     showMyModal("検索確認", "入力した番号で直接求人を検索しますか？<br>（※エリアなどの条件はすべて無視されます）", true, function(result){
         if(result) performOpen();
     });
   }
+
   // -------------------------------------------
   // ALAYAの非同期埋め込みによるフリーズを防ぐための強制即時起動コアシステム
   // -------------------------------------------
@@ -2821,6 +3096,7 @@ var areaData = {
               });
           }
       });
+
       document.querySelectorAll('#hw-search-tool-root .map-region').forEach(function(region) {
           region.addEventListener('keydown', function(e) {
               if (e.key !== 'Enter' && e.key !== ' ') return;
@@ -2830,12 +3106,14 @@ var areaData = {
               if (linkedButton && !linkedButton.disabled) linkedButton.click();
           });
       });
+
       document.querySelectorAll('#hw-search-tool-root .area-btn').forEach(function(btn) {
           btn.addEventListener('click', function(e) { 
               e.preventDefault(); 
               selectArea(this.id.replace('btn-', '')); 
           });
       });
+
       document.querySelectorAll('.job-btn').forEach(function(btn) {
           btn.setAttribute('aria-haspopup', 'dialog');
           btn.setAttribute('aria-controls', 'job-modal-overlay');
@@ -2858,6 +3136,7 @@ var areaData = {
               announceStatus('職種を「指定しない」に戻しました。');
           });
       }
+
       document.querySelectorAll('.feature-btn').forEach(function(btn) {
           btn.setAttribute('aria-haspopup', 'dialog');
           btn.setAttribute('aria-controls', 'feature-modal-overlay');
@@ -2880,6 +3159,7 @@ var areaData = {
               announceStatus('特集求人を「指定しない」に戻しました。');
           });
       }
+
       var helpBtn = document.querySelector('#hw-search-tool-root .floating-help-btn');
       if (helpBtn) {
           helpBtn.addEventListener('click', function(e) {
@@ -2898,7 +3178,9 @@ var areaData = {
               if(modal) closeAccessibleModal(modal);
           });
       });
+
       document.addEventListener('keydown', handleModalKeyboard);
+
       var jobCancel = document.getElementById('job-btn-cancel');
       var jobApply = document.getElementById('job-btn-apply');
       var featureCancel = document.getElementById('feature-btn-cancel');
@@ -2908,11 +3190,13 @@ var areaData = {
       if(jobApply) jobApply.addEventListener('click', applyJobModal);
       if(featureCancel) featureCancel.addEventListener('click', closeFeatureModal);
       if(featureApply) featureApply.addEventListener('click', applyFeatureModal);
+
       var btnReset = document.getElementById('btn-reset-cond');
       var btnSave = document.getElementById('btn-save-cond');
       var mainSearchBtn = document.getElementById('mainSearchBtn');
       var numberSearchBtn = document.getElementById('numberSearchBtn');
       var numberResetBtn = document.getElementById('numberResetBtn');
+
       [btnReset, btnSave, mainSearchBtn, numberSearchBtn].forEach(function(btn) {
           if (!btn) return;
           btn.setAttribute('aria-haspopup', 'dialog');
@@ -2923,6 +3207,7 @@ var areaData = {
       if(btnSave) btnSave.addEventListener('click', saveConditions);
       if(mainSearchBtn) mainSearchBtn.addEventListener('click', function(e) { e.preventDefault(); executeMySearch(); });
       if(numberSearchBtn) numberSearchBtn.addEventListener('click', function(e) { e.preventDefault(); executeNumberSearch(); });
+
       if(numberResetBtn) {
           numberResetBtn.addEventListener('click', function(e) {
               e.preventDefault();
@@ -2934,6 +3219,7 @@ var areaData = {
               announceStatus('求人番号と事業所番号の入力を消去しました。');
           });
       }
+
       var carousel = document.getElementById('card-carousel');
       var btnLeft = document.getElementById('carousel-left');
       var btnRight = document.getElementById('carousel-right');
@@ -2963,6 +3249,7 @@ var areaData = {
                   carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
               });
           }
+
           carousel.addEventListener('scroll', function() {
               updateCarouselButtons();
               if (indicators.length > 0) {
@@ -2983,6 +3270,7 @@ var areaData = {
           
           window.addEventListener('resize', updateCarouselButtons);
           setTimeout(updateCarouselButtons, 150);
+
           var mypageDetails = document.getElementById('mypage-details');
           if (mypageDetails) {
               mypageDetails.addEventListener('toggle', function() {
@@ -3008,6 +3296,7 @@ var areaData = {
               });
           }
       }
+
       ['kNo1', 'kNo2', 'jNo1', 'jNo2', 'jNo3'].forEach(function(id) {
           var numberInput = document.getElementById(id);
           if (!numberInput) return;
@@ -3017,6 +3306,7 @@ var areaData = {
               this.removeAttribute('aria-invalid');
           });
       });
+
       setupAutoTab('kNo1', 'kNo2', 5);
       setupAutoTab('jNo1', 'jNo2', 4);
       setupAutoTab('jNo2', 'jNo3', 6);
@@ -3027,6 +3317,7 @@ var areaData = {
       // 保存条件のロードを初期化
       loadConditionsAuto();
   }
+
   // ALAYAの特殊な読み込み環境を無視して確実に即時起動させるスイッチ
   if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initializeAllHWSystem);
@@ -3035,3 +3326,5 @@ var areaData = {
   }
 })();
 </script>
+</body>
+</html>
